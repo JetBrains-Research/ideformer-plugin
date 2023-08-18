@@ -1,0 +1,16 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.ide-assistant-plugin</id>
+    <name>IDE Assistant</name>
+    <vendor>JB</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <toolWindow id="IDE Assistant" anchor="right" factoryClass="com.ideassistant.IDEAssistantToolWindowFactory"/>
+    </extensions>
+
+</idea-plugin>
