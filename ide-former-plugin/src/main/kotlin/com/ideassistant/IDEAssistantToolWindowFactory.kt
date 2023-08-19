@@ -5,22 +5,35 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
+import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.JTextField
 
-internal class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
+class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
     private class IDEAssistantToolWindow {
         val contentPanel = JPanel()
-        private val chatArea = JTextArea(10, 40)
+        private val chatArea = JTextArea(10, 50).apply {
+            lineWrap = true
+            wrapStyleWord = true
+            isEditable = false
+        }
+
+        // TODO: change to JTextArea
         private val userInputField = JTextField(30)
 
         init {
             contentPanel.apply {
-                add(userInputField)
-                add(chatArea)
+                add(JLabel("User input:"))
+                add(JScrollPane(userInputField))
+                add(JScrollPane(chatArea))
             }
 
+            startDialog()
+        }
+
+        private fun startDialog() {
             userInputField.addActionListener {
                 chatArea.append("User: ${userInputField.text}\n")
                 chatArea.append("Assistant: This is a model response stub\n\n")
