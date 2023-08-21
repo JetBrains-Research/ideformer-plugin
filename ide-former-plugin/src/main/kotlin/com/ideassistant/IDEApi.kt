@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.PsiTreeUtil
+import kotlin.reflect.KClass
 
 object IDEApis {
     fun getAllProjectModules(project: Project): List<Module> = ModuleManager.getInstance(project).modules.toList()
@@ -41,6 +42,14 @@ object IDEApis {
 interface IDEApiMethod {
     fun call(): String
 }
+
+val apiNameToApiMethodClass: Map<String, KClass<out IDEApiMethod>> = mapOf(
+    "GetAllProjectModules" to GetAllProjectModules::class,
+    "GetAllProjectFiles" to GetAllProjectFiles::class,
+    "GetAllModuleFiles" to GetAllModuleFiles::class,
+    "GetAllProjectKtMethods" to GetAllProjectKtMethods::class,
+    "GetProjectFileByName" to GetProjectFileByName::class,
+)
 
 data class GetAllProjectModules(val project: Project) : IDEApiMethod {
     override fun call(): String =
