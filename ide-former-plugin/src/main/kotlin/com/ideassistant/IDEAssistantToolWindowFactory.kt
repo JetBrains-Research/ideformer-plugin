@@ -2,6 +2,7 @@ package com.ideassistant
 
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
@@ -36,7 +37,11 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         private fun startDialog() {
             userInputField.addActionListener {
                 chatArea.append("User: ${userInputField.text}\n")
-                chatArea.append("Assistant: This is a model response stub\n\n")
+                val modelResponse = LLMSimulator.processUserQuery(
+                    userInputField.text,
+                    ProjectManager.getInstance().openProjects.first()
+                )
+                chatArea.append("Assistant: ${modelResponse}\n")
                 userInputField.text = ""
             }
         }
