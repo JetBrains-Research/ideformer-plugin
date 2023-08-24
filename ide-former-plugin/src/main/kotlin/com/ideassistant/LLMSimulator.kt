@@ -19,5 +19,6 @@ object LLMSimulator {
     }
 
     // TODO: when a model appears here instead of a temporary scenario, it will need the prev step information
+    @Suppress("UNUSED_PARAMETER")
     fun getAPIQuery(prevStepInfo: String): IDEApiMethod? = KtMethodsScenarioGenerator.generateNextQuery()
 }

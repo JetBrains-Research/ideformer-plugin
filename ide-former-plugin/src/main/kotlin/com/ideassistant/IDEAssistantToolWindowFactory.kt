@@ -23,7 +23,9 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
 
         // TODO: change to JTextArea
         private val userInputField = JTextField(30)
-        private val ideApiExecutor = IdeApiExecutor(ProjectManager.getInstance().openProjects.first())
+        private val ideApiExecutor = IdeApiExecutor(getUserProject())
+
+        private fun getUserProject(): Project = ProjectManager.getInstance().openProjects.first()
 
         init {
             contentPanel.apply {
@@ -60,6 +62,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 val apiCallRes = ideApiExecutor.executeApiMethod(modelAPIMethodQuery)
                 interactionChain.append("[API Call Res]: $apiCallRes\n")
 
+                ideApiExecutor.updateProject(getUserProject())
                 prevStepInfo = apiCallRes
             }
 
