@@ -2,7 +2,6 @@ package com.ideassistant
 
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
@@ -10,7 +9,6 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.PsiTreeUtil
-import kotlin.reflect.KClass
 
 object IDEApis {
     fun getAllProjectModules(project: Project): List<Module> = ModuleManager.getInstance(project).modules.toList()
@@ -18,60 +16,34 @@ object IDEApis {
     fun getAllModuleFiles(module: Module): List<VirtualFile> =
         FileTypeIndex.getFiles(KotlinFileType.INSTANCE, module.moduleScope).toList()
 
-    fun getAllProjectFiles(project: Project): List<VirtualFile> =
-        getAllProjectModules(project)
-            .map { getAllModuleFiles(it) }
-            .flatten()
+    fun getProjectModuleByName(project: Project, moduleName: String): Module? =
+        getAllProjectModules(project).firstOrNull { it.name == moduleName }
 
-    fun getAllProjectKtMethods(project: Project): List<KtNamedFunction> {
-        val ktFunList = mutableListOf<KtNamedFunction>()
-        getAllProjectFiles(project)
-            .map { PsiManager.getInstance(project).findFile(it) }
-            .filterIsInstance<KtFile>()
-            .forEach {
-                PsiTreeUtil.findChildOfType(it, KtNamedFunction::class.java)
-            }
-        return ktFunList
+    fun getKtFileKtMethods(ktFile: KtFile): List<KtNamedFunction> =
+        PsiTreeUtil.findChildrenOfType(ktFile, KtNamedFunction::class.java).toList()
+}
+class IdeApiExecutor(private var userProject: Project) {
+    fun updateProject(updatedProject: Project) {
+        userProject = updatedProject
     }
 
-    fun getProjectFileByName(project: Project, fileName: String): VirtualFile? =
-        getAllProjectFiles(project).firstOrNull { it.name == fileName }
+    fun executeApiMethod(apiMethod: IDEApiMethod): String {
+        val methodCallRes: Any = when (apiMethod) {
+            is GetAllProjectModules -> {
+                IDEApis.getAllProjectModules(this.userProject)
+            }
+
+            is GetAllModuleFiles -> {
+                val module = IDEApis.getProjectModuleByName(this.userProject, apiMethod.moduleName) ?: throw IllegalArgumentException("No such module")
+                IDEApis.getAllModuleFiles(module)
+            }
+            else -> "Method cannot be called"
+        }
+
+        return methodCallRes.toString()
+    }
 }
 
-
-interface IDEApiMethod {
-    fun call(): String
-}
-
-val apiNameToApiMethodClass: Map<String, KClass<out IDEApiMethod>> = mapOf(
-    "GetAllProjectModules" to GetAllProjectModules::class,
-    "GetAllProjectFiles" to GetAllProjectFiles::class,
-    "GetAllModuleFiles" to GetAllModuleFiles::class,
-    "GetAllProjectKtMethods" to GetAllProjectKtMethods::class,
-    "GetProjectFileByName" to GetProjectFileByName::class,
-)
-
-data class GetAllProjectModules(val project: Project) : IDEApiMethod {
-    override fun call(): String =
-        IDEApis.getAllProjectModules(this.project).toString()
-}
-
-data class GetAllProjectFiles(val project: Project) : IDEApiMethod {
-    override fun call(): String =
-        IDEApis.getAllProjectFiles(this.project).toString()
-}
-
-data class GetAllModuleFiles(val module: Module) : IDEApiMethod {
-    override fun call(): String =
-        IDEApis.getAllModuleFiles(this.module).toString()
-}
-
-data class GetAllProjectKtMethods(val project: Project) : IDEApiMethod {
-    override fun call(): String =
-        IDEApis.getAllProjectKtMethods(this.project).toString()
-}
-
-data class GetProjectFileByName(val project: Project, val fileName: String) : IDEApiMethod {
-    override fun call(): String =
-        IDEApis.getProjectFileByName(this.project, this.fileName).toString()
-}
+interface IDEApiMethod
+object GetAllProjectModules : IDEApiMethod
+data class GetAllModuleFiles(val moduleName: String) : IDEApiMethod

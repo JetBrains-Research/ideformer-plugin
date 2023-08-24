@@ -23,6 +23,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
 
         // TODO: change to JTextArea
         private val userInputField = JTextField(30)
+        private val ideApiExecutor = IdeApiExecutor(ProjectManager.getInstance().openProjects.first())
 
         init {
             contentPanel.apply {
@@ -31,19 +32,38 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
-            startDialog()
+            startDialogue()
         }
 
-        private fun startDialog() {
+        private fun startDialogue() {
+
+
             userInputField.addActionListener {
-                chatArea.append("User: ${userInputField.text}\n")
-                val modelResponse = LLMSimulator.processUserQuery(
-                    userInputField.text,
-                    ProjectManager.getInstance().openProjects.first()
-                )
-                chatArea.append("Assistant: ${modelResponse}\n")
+                val userQuery = userInputField.text
+                chatArea.append("User: $userQuery\n")
+
+                val modelResponse = modelAndIDEInteraction(userQuery)
+                chatArea.append("Assistant: $modelResponse\n")
+
                 userInputField.text = ""
             }
+        }
+
+        fun modelAndIDEInteraction(userQuery: String): String {
+            val interactionChain = StringBuilder()
+
+            var prevStepInfo = userQuery
+            while (true) {
+                val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
+                interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
+
+                val apiCallRes = ideApiExecutor.executeApiMethod(modelAPIMethodQuery)
+                interactionChain.append("[API Call Res]: $apiCallRes\n")
+
+                prevStepInfo = apiCallRes
+            }
+
+            return interactionChain.toString()
         }
 
     }
