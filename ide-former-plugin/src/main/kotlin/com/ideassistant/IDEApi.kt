@@ -55,7 +55,8 @@ class IdeApiExecutor(private var userProject: Project) {
                 // TODO: in the future, when the current location (state) will be saved,
                 //  search only in the curr dir/module, not with a global search
                 val ktFile = IDEApis.getKtFileByName(this.userProject, apiMethod.ktFileName)
-                IDEApis.getKtFileKtMethods(ktFile)
+                val ktMethods = IDEApis.getKtFileKtMethods(ktFile)
+                ktMethods.map { it.name }
             }
 
             else -> "Method cannot be called"
