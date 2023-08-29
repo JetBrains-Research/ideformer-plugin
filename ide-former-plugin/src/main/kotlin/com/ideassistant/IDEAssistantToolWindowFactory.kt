@@ -1,5 +1,6 @@
 package com.ideassistant
 
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -11,6 +12,10 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.JTextField
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import kotlinx.coroutines.runBlocking
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
     private class IDEAssistantToolWindow {
@@ -24,6 +29,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         // TODO: change to JTextArea
         private val userInputField = JTextField(30)
         private val ideApiExecutor = IdeApiExecutor(getUserProject())
+        private val interactionClient = HttpClient(CIO)
 
         private fun getUserProject(): Project = ProjectManager.getInstance().openProjects.first()
 
@@ -38,24 +44,27 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         }
 
         private fun startDialogue() {
-
-
             userInputField.addActionListener {
                 val userQuery = userInputField.text
-                chatArea.append("User: $userQuery\n")
+                val modelResponse = runBlocking {
+                    modelAndIDEInteraction(userQuery)
+                }
 
-                val modelResponse = modelAndIDEInteraction(userQuery)
-                chatArea.append("Assistant: $modelResponse\n")
-
-                userInputField.text = ""
+                invokeLater {
+                    chatArea.append("User: $userQuery\n")
+                    chatArea.append("Assistant: $modelResponse\n")
+                    userInputField.text = ""
+                }
             }
         }
 
-        fun modelAndIDEInteraction(userQuery: String): String {
+        suspend fun modelAndIDEInteraction(userQuery: String): String {
             val interactionChain = StringBuilder()
 
             var prevStepInfo = userQuery
             while (true) {
+                // TODO: make a real http request and then extract a model query from the http response
+                val modelHttpResponse = interactionClient.get("https://ktor.io/")
                 val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
                 interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
 
