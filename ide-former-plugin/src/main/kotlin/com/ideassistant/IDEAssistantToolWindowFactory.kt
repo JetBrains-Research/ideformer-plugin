@@ -1,24 +1,17 @@
 package com.ideassistant
 
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import javax.swing.JTextField
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
+import javax.swing.*
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
-    private class IDEAssistantToolWindow {
+    private class IDEAssistantToolWindow(userProject: Project) {
         val contentPanel = JPanel()
         private val chatArea = JTextArea(10, 50).apply {
             lineWrap = true
@@ -28,10 +21,9 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
 
         // TODO: change to JTextArea
         private val userInputField = JTextField(30)
-        private val ideApiExecutor = IdeApiExecutor(getUserProject())
-        private val interactionClient = HttpClient(CIO)
 
-        private fun getUserProject(): Project = ProjectManager.getInstance().openProjects.first()
+        // TODO: move to the IDE server or the separate service (?)
+        private val ideApiExecutor = IdeApiExecutor(userProject)
 
         init {
             contentPanel.apply {
@@ -40,6 +32,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
+            userProject.service<ProjectService>().start()
             startDialogue()
         }
 
@@ -58,20 +51,19 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
             }
         }
 
-        suspend fun modelAndIDEInteraction(userQuery: String): String {
+        // TODO: move from ToolWindow to service/ server part
+        fun modelAndIDEInteraction(userQuery: String): String {
             val interactionChain = StringBuilder()
 
             var prevStepInfo = userQuery
             while (true) {
                 // TODO: make a real http request and then extract a model query from the http response
-                val modelHttpResponse = interactionClient.get("https://ktor.io/")
                 val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
                 interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
 
                 val apiCallRes = ideApiExecutor.executeApiMethod(modelAPIMethodQuery)
                 interactionChain.append("[API Call Res]: $apiCallRes\n")
 
-                ideApiExecutor.updateProject(getUserProject())
                 prevStepInfo = apiCallRes
             }
 
@@ -81,7 +73,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
     }
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val ideToolWindow = IDEAssistantToolWindow()
+        val ideToolWindow = IDEAssistantToolWindow(project)
         val contentFactory = ContentFactory.getInstance()
         val content = contentFactory.createContent(ideToolWindow.contentPanel, "", false)
         toolWindow.contentManager.addContent(content)
