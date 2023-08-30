@@ -1,5 +1,6 @@
 package com.ideassistant
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.FileTypeIndex
@@ -35,11 +36,13 @@ object IDEApis {
 
 }
 
-class IdeApiExecutor(private var userProject: Project) {
-    fun updateProject(updatedProject: Project) {
-        userProject = updatedProject
-    }
+interface IDEApiMethod
+object GetAllProjectModules : IDEApiMethod
+data class GetAllModuleFiles(val moduleName: String) : IDEApiMethod
+data class GetAllKtFileKtMethods(val ktFileName: String) : IDEApiMethod
 
+@Service(Service.Level.PROJECT)
+class IDEApiExecutorService(private val userProject: Project) {
     fun executeApiMethod(apiMethod: IDEApiMethod): String {
         val methodCallRes: Any = when (apiMethod) {
             is GetAllProjectModules -> {
@@ -65,8 +68,3 @@ class IdeApiExecutor(private var userProject: Project) {
         return methodCallRes.toString()
     }
 }
-
-interface IDEApiMethod
-object GetAllProjectModules : IDEApiMethod
-data class GetAllModuleFiles(val moduleName: String) : IDEApiMethod
-data class GetAllKtFileKtMethods(val ktFileName: String) : IDEApiMethod

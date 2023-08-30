@@ -31,13 +31,13 @@ class IDEServer {
 }
 
 @Service(Service.Level.PROJECT)
-class ProjectService(val project: Project) {
-    private val ktorServer = IDEServer()
+class IDEServerService(private val project: Project) {
+    private val ideServer = IDEServer()
 
     fun start() {
         object : Task.Backgroundable(project, "IDE server start") {
             override fun run(indicator: ProgressIndicator) {
-                ktorServer.startServer()
+                ideServer.startServer()
             }
         }.queue()
     }

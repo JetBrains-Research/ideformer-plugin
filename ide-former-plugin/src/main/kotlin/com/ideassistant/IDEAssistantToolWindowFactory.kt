@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import javax.swing.*
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
-    private class IDEAssistantToolWindow(userProject: Project) {
+    private class IDEAssistantToolWindow(private val userProject: Project) {
         val contentPanel = JPanel()
         private val chatArea = JTextArea(10, 50).apply {
             lineWrap = true
@@ -22,9 +22,6 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         // TODO: change to JTextArea
         private val userInputField = JTextField(30)
 
-        // TODO: move to the IDE server or the separate service (?)
-        private val ideApiExecutor = IdeApiExecutor(userProject)
-
         init {
             contentPanel.apply {
                 add(JLabel("User input:"))
@@ -32,7 +29,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
-            userProject.service<ProjectService>().start()
+            userProject.service<IDEServerService>().start()
             startDialogue()
         }
 
@@ -54,6 +51,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         // TODO: move from ToolWindow to service/ server part
         fun modelAndIDEInteraction(userQuery: String): String {
             val interactionChain = StringBuilder()
+            val ideApiExecutorService = userProject.service<IDEApiExecutorService>()
 
             var prevStepInfo = userQuery
             while (true) {
@@ -61,7 +59,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
                 interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
 
-                val apiCallRes = ideApiExecutor.executeApiMethod(modelAPIMethodQuery)
+                val apiCallRes = ideApiExecutorService.executeApiMethod(modelAPIMethodQuery)
                 interactionChain.append("[API Call Res]: $apiCallRes\n")
 
                 prevStepInfo = apiCallRes
