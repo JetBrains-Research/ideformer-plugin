@@ -1,1 +1,1 @@
-rootProject.name = "IDEformer-plugin"
+rootProject.name = "IDE Assistant"

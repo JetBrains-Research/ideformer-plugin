@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
-import kotlinx.coroutines.runBlocking
 import javax.swing.*
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
@@ -29,16 +28,14 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
-            userProject.service<IDEServerService>().start()
+            userProject.service<IDEServerService>().startServer()
             startDialogue()
         }
 
         private fun startDialogue() {
             userInputField.addActionListener {
                 val userQuery = userInputField.text
-                val modelResponse = runBlocking {
-                    modelAndIDEInteraction(userQuery)
-                }
+                val modelResponse = userProject.service<IDEServerService>().processUserQuery(userQuery)
 
                 invokeLater {
                     chatArea.append("User: $userQuery\n")
@@ -47,27 +44,6 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 }
             }
         }
-
-        // TODO: move from ToolWindow to service/ server part
-        fun modelAndIDEInteraction(userQuery: String): String {
-            val interactionChain = StringBuilder()
-            val ideApiExecutorService = userProject.service<IDEApiExecutorService>()
-
-            var prevStepInfo = userQuery
-            while (true) {
-                // TODO: make a real http request and then extract a model query from the http response
-                val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
-                interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
-
-                val apiCallRes = ideApiExecutorService.executeApiMethod(modelAPIMethodQuery)
-                interactionChain.append("[API Call Res]: $apiCallRes\n")
-
-                prevStepInfo = apiCallRes
-            }
-
-            return interactionChain.toString()
-        }
-
     }
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
