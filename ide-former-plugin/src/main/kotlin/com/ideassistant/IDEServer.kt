@@ -53,37 +53,13 @@ class IDEServer {
                     val apiMethod = GetAllModuleFiles(fileName)
                     call.respondText(getAPIMethodRes(apiMethod))
                 }
+
+                // TODO: add post method to get final model response
             }
         }.start(wait = false)
 
         // TODO: add logging
         println("Server is started")
-    }
-
-    fun configureRouting(application: Application) {
-        application.routing {
-            get("/") {
-                call.respondText("Hello World!")
-            }
-        }
-    }
-
-    fun startServerClientInteraction(userQuery: String): String {
-        val interactionChain = StringBuilder()
-        val ideApiExecutorService = userProject.service<IDEApiExecutorService>()
-
-        var prevStepInfo = userQuery
-        while (true) {
-            val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
-            interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
-
-            val apiCallRes = ideApiExecutorService.executeApiMethod(modelAPIMethodQuery)
-            interactionChain.append("[API Call Res]: $apiCallRes\n")
-
-            prevStepInfo = apiCallRes
-        }
-
-        return interactionChain.toString()
     }
 }
 
@@ -98,6 +74,4 @@ class IDEServerService(private val project: Project) {
             }
         }.queue()
     }
-
-    fun processUserQuery(userQuery: String) = ideServer.startServerClientInteraction(userQuery)
 }

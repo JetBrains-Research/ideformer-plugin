@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
+import kotlinx.coroutines.runBlocking
 import javax.swing.*
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
@@ -35,7 +36,9 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
         private fun startDialogue() {
             userInputField.addActionListener {
                 val userQuery = userInputField.text
-                val modelResponse = userProject.service<IDEServerService>().processUserQuery(userQuery)
+                val modelResponse = runBlocking {
+                    service<UserQueryTransmitterService>().serverClientInteractionStub(userQuery, userProject)
+                }
 
                 invokeLater {
                     chatArea.append("User: $userQuery\n")
