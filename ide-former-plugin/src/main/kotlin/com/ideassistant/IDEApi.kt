@@ -40,9 +40,12 @@ interface IDEApiMethod
 object GetAllProjectModules : IDEApiMethod
 data class GetAllModuleFiles(val moduleName: String) : IDEApiMethod
 data class GetAllKtFileKtMethods(val ktFileName: String) : IDEApiMethod
+data class SaveModelFinalAns(val modelFinalAns: String) : IDEApiMethod
 
 @Service(Service.Level.PROJECT)
 class IDEApiExecutorService(private val userProject: Project) {
+    private val apiCallList: MutableList<IDEApiMethod> = mutableListOf()
+
     fun executeApiMethod(apiMethod: IDEApiMethod): String {
         val methodCallRes: Any = when (apiMethod) {
             is GetAllProjectModules -> {
@@ -62,9 +65,14 @@ class IDEApiExecutorService(private val userProject: Project) {
                 ktMethods.map { it.name }
             }
 
+            is SaveModelFinalAns -> {
+                // TODO: to save model final ans somewhere + display it on the ToolWindow
+            }
+
             else -> "Method cannot be called"
         }
 
+        apiCallList.add(apiMethod)
         return methodCallRes.toString()
     }
 }
