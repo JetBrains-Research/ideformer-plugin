@@ -27,7 +27,7 @@ class IDEServer {
         embeddedServer(Netty, port = port, host = host) {
             routing {
                 get("/") {
-                    call.respondText("Hello World!")
+                    call.respondText("IDE server")
                 }
 
                 get("/project-modules") {
@@ -46,7 +46,7 @@ class IDEServer {
                 }
 
                 get("/file-kt-methods/{file}") {
-                    val fileName = call.parameters["file"] ?: return@get call.respondText (
+                    val fileName = call.parameters["file"] ?: return@get call.respondText(
                         "Missing file",
                         status = HttpStatusCode.BadRequest
                     )

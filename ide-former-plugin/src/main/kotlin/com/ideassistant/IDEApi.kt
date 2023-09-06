@@ -1,16 +1,16 @@
 package com.ideassistant
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.util.PsiTreeUtil
 
 object IDEApis {
     fun getAllProjectModules(project: Project): List<Module> = ModuleManager.getInstance(project).modules.toList()
@@ -19,7 +19,7 @@ object IDEApis {
         FileTypeIndex.getFiles(KotlinFileType.INSTANCE, module.moduleScope).toList()
 
     // TODO: better to search only by full equality of module names.
-    //  'Contains' was added as a temporary solution to make queries in ScenarioGenerator work for everyone.
+    //  'Contains' was added as a temporary solution for model and IDE interaction example
     fun getProjectModuleByNameContaining(project: Project, moduleName: String): Module =
         getAllProjectModules(project).first { it.name == moduleName || it.name.contains(moduleName) }
 
@@ -49,18 +49,18 @@ class IDEApiExecutorService(private val userProject: Project) {
     fun executeApiMethod(apiMethod: IDEApiMethod): String {
         val methodCallRes: Any = when (apiMethod) {
             is GetAllProjectModules -> {
-                IDEApis.getAllProjectModules(this.userProject)
+                IDEApis.getAllProjectModules(userProject)
             }
 
             is GetAllModuleFiles -> {
-                val module = IDEApis.getProjectModuleByNameContaining(this.userProject, apiMethod.moduleName)
+                val module = IDEApis.getProjectModuleByNameContaining(userProject, apiMethod.moduleName)
                 IDEApis.getAllModuleFiles(module)
             }
 
             is GetAllKtFileKtMethods -> {
                 // TODO: in the future, when the current location (state) will be saved,
                 //  search only in the curr dir/module, not with a global search
-                val ktFile = IDEApis.getKtFileByName(this.userProject, apiMethod.ktFileName)
+                val ktFile = IDEApis.getKtFileByName(userProject, apiMethod.ktFileName)
                 val ktMethods = IDEApis.getKtFileKtMethods(ktFile)
                 ktMethods.map { it.name }
             }

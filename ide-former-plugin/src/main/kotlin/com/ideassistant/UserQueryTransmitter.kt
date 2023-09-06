@@ -8,6 +8,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 
 class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/post") {
+    // TODO: the method will be used to interact with the model instead of a stub
     suspend fun sendUserQueryToModel(userQuery: String) {
         val client = HttpClient(CIO)
         val response = client.post(modelServerUrl) {
