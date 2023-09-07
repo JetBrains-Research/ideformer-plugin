@@ -37,7 +37,7 @@ fun Application.module(userProject: Project) {
 fun Application.configureRouting(userProject: Project) {
     routing {
         get("/") {
-            call.respondText("IDE server")
+            call.respondText(IDEServerConstants.ROOT_PAGE_TEXT)
         }
 
         get("/project-modules") {
@@ -48,7 +48,7 @@ fun Application.configureRouting(userProject: Project) {
 
         get("/module-files/{module}") {
             val moduleName = call.parameters["module"] ?: return@get call.respondText(
-                "Missing module",
+                text = IDEServerConstants.MISSING_MODULE,
                 status = HttpStatusCode.BadRequest
             )
 
@@ -59,7 +59,7 @@ fun Application.configureRouting(userProject: Project) {
 
         get("/file-kt-methods/{file}") {
             val fileName = call.parameters["file"] ?: return@get call.respondText(
-                "Missing file",
+                text = IDEServerConstants.MISSING_FILENAME,
                 status = HttpStatusCode.BadRequest
             )
 
@@ -75,6 +75,12 @@ fun Application.configureRouting(userProject: Project) {
             ideStateKeeper.saveApiCall(apiMethod)
         }
     }
+}
+
+object IDEServerConstants {
+    const val ROOT_PAGE_TEXT = "IDE server"
+    const val MISSING_MODULE = "Missing module"
+    const val MISSING_FILENAME = "Missing file name"
 }
 
 @Service(Service.Level.PROJECT)
