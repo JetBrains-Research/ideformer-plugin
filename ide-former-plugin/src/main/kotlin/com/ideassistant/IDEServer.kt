@@ -1,7 +1,6 @@
 package com.ideassistant
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
@@ -13,16 +12,14 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class IDEServer {
-    private val host = "localhost"
-    private val port = 8082
+class IDEServer(
+    private val host: String = "localhost",
+    private val port: Int = 8082
+) {
     private lateinit var userProject: Project
 
     fun startServer(userProject: Project) {
         this.userProject = userProject
-
-        fun getAPIMethodRes(apiMethod: IDEApiMethod): String =
-            userProject.service<IDEApiExecutorService>().executeApiMethod(apiMethod)
 
         embeddedServer(Netty, port = port, host = host) {
             routing {
@@ -31,8 +28,9 @@ class IDEServer {
                 }
 
                 get("/project-modules") {
-                    val apiMethod = GetAllProjectModules
-                    call.respondText(getAPIMethodRes(apiMethod))
+                    val apiMethod = GetAllProjectModules(userProject)
+                    call.respondText(apiMethod.execute())
+                    ideStateKeeper.saveApiCall(apiMethod)
                 }
 
                 get("/module-files/{module}") {
@@ -41,8 +39,9 @@ class IDEServer {
                         status = HttpStatusCode.BadRequest
                     )
 
-                    val apiMethod = GetAllModuleFiles(moduleName)
-                    call.respondText(getAPIMethodRes(apiMethod))
+                    val apiMethod = GetAllModuleFiles(userProject, moduleName)
+                    call.respondText(apiMethod.execute())
+                    ideStateKeeper.saveApiCall(apiMethod)
                 }
 
                 get("/file-kt-methods/{file}") {
@@ -51,14 +50,16 @@ class IDEServer {
                         status = HttpStatusCode.BadRequest
                     )
 
-                    val apiMethod = GetAllModuleFiles(fileName)
-                    call.respondText(getAPIMethodRes(apiMethod))
+                    val apiMethod = GetAllModuleFiles(userProject, fileName)
+                    call.respondText(apiMethod.execute())
+                    ideStateKeeper.saveApiCall(apiMethod)
                 }
 
                 post("/post-final-ans") {
                     val modelFinalAns = call.receiveText()
                     val apiMethod = SaveModelFinalAns(modelFinalAns)
-                    call.respondText(getAPIMethodRes(apiMethod))
+                    call.respondText(apiMethod.execute())
+                    ideStateKeeper.saveApiCall(apiMethod)
                 }
             }
         }.start(wait = false)

@@ -37,7 +37,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
             userInputField.addActionListener {
                 val userQuery = userInputField.text
                 val modelResponse = runBlocking {
-                    service<UserQueryTransmitterService>().serverClientInteractionStub(userQuery, userProject)
+                    service<UserQueryTransmitterService>().serverClientInteractionStub(userProject)
                 }
 
                 invokeLater {

@@ -1,13 +1,15 @@
 package com.ideassistant
 
-object LLMSimulator {
-    private object KtMethodsScenarioGenerator {
+import com.intellij.openapi.project.Project
+
+class LLMSimulator(userProject: Project) {
+    private class KtMethodsScenarioGenerator(userProject: Project) {
         private var queryNum = 0
 
-        private val queryList = listOf(
-            GetAllProjectModules,
-            GetAllModuleFiles("main"),
-            GetAllKtFileKtMethods("Main.kt"),
+        private val queryList: List<IDEApiMethod?> = listOf(
+            GetAllProjectModules(userProject),
+            GetAllModuleFiles(userProject, "main"),
+            GetAllKtFileKtMethods(userProject, "Main.kt"),
             null
         )
 
@@ -18,7 +20,7 @@ object LLMSimulator {
         }
     }
 
-    // TODO: when a model appears here instead of a temporary scenario, it will need the prev step information
-    @Suppress("UNUSED_PARAMETER")
-    fun getAPIQuery(prevStepInfo: String): IDEApiMethod? = KtMethodsScenarioGenerator.generateNextQuery()
+    private val scenarioGenerator = KtMethodsScenarioGenerator(userProject)
+
+    fun getAPIQuery(): IDEApiMethod? = scenarioGenerator.generateNextQuery()
 }

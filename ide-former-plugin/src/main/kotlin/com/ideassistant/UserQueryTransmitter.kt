@@ -1,7 +1,6 @@
 package com.ideassistant
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -20,19 +19,16 @@ class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/
         client.close()
     }
 
-    fun serverClientInteractionStub(userQuery: String, userProject: Project): String {
+    fun serverClientInteractionStub(userProject: Project): String {
+        val llmSimulator = LLMSimulator(userProject)
         val interactionChain = StringBuilder()
-        val ideApiExecutorService = userProject.service<IDEApiExecutorService>()
 
-        var prevStepInfo = userQuery
         while (true) {
-            val modelAPIMethodQuery: IDEApiMethod = LLMSimulator.getAPIQuery(prevStepInfo) ?: break
+            val modelAPIMethodQuery: IDEApiMethod = llmSimulator.getAPIQuery() ?: break
             interactionChain.append("[API Call Info]: $modelAPIMethodQuery\n")
 
-            val apiCallRes = ideApiExecutorService.executeApiMethod(modelAPIMethodQuery)
+            val apiCallRes = modelAPIMethodQuery.execute()
             interactionChain.append("[API Call Res]: $apiCallRes\n")
-
-            prevStepInfo = apiCallRes
         }
 
         return interactionChain.toString()
@@ -47,6 +43,6 @@ class UserQueryTransmitterService {
         transmitter.sendUserQueryToModel(userQuery)
     }
 
-    fun serverClientInteractionStub(userQuery: String, userProject: Project): String =
-        transmitter.serverClientInteractionStub(userQuery, userProject)
+    fun serverClientInteractionStub(userProject: Project): String =
+        transmitter.serverClientInteractionStub(userProject)
 }
