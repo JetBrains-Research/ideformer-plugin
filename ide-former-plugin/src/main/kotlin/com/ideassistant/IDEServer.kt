@@ -22,50 +22,58 @@ class IDEServer(
         this.userProject = userProject
 
         embeddedServer(Netty, port = port, host = host) {
-            routing {
-                get("/") {
-                    call.respondText("IDE server")
-                }
-
-                get("/project-modules") {
-                    val apiMethod = GetAllProjectModules(userProject)
-                    call.respondText(apiMethod.execute())
-                    ideStateKeeper.saveApiCall(apiMethod)
-                }
-
-                get("/module-files/{module}") {
-                    val moduleName = call.parameters["module"] ?: return@get call.respondText(
-                        "Missing module",
-                        status = HttpStatusCode.BadRequest
-                    )
-
-                    val apiMethod = GetAllModuleFiles(userProject, moduleName)
-                    call.respondText(apiMethod.execute())
-                    ideStateKeeper.saveApiCall(apiMethod)
-                }
-
-                get("/file-kt-methods/{file}") {
-                    val fileName = call.parameters["file"] ?: return@get call.respondText(
-                        "Missing file",
-                        status = HttpStatusCode.BadRequest
-                    )
-
-                    val apiMethod = GetAllModuleFiles(userProject, fileName)
-                    call.respondText(apiMethod.execute())
-                    ideStateKeeper.saveApiCall(apiMethod)
-                }
-
-                post("/post-final-ans") {
-                    val modelFinalAns = call.receiveText()
-                    val apiMethod = SaveModelFinalAns(modelFinalAns)
-                    call.respondText(apiMethod.execute())
-                    ideStateKeeper.saveApiCall(apiMethod)
-                }
-            }
+            module(userProject)
         }.start(wait = false)
 
         // TODO: add logging
         println("Server is started")
+    }
+}
+
+fun Application.module(userProject: Project) {
+    configureRouting(userProject)
+}
+
+fun Application.configureRouting(userProject: Project) {
+    routing {
+        get("/") {
+            call.respondText("IDE server")
+        }
+
+        get("/project-modules") {
+            val apiMethod = GetAllProjectModules(userProject)
+            call.respondText(apiMethod.execute())
+            ideStateKeeper.saveApiCall(apiMethod)
+        }
+
+        get("/module-files/{module}") {
+            val moduleName = call.parameters["module"] ?: return@get call.respondText(
+                "Missing module",
+                status = HttpStatusCode.BadRequest
+            )
+
+            val apiMethod = GetAllModuleFiles(userProject, moduleName)
+            call.respondText(apiMethod.execute())
+            ideStateKeeper.saveApiCall(apiMethod)
+        }
+
+        get("/file-kt-methods/{file}") {
+            val fileName = call.parameters["file"] ?: return@get call.respondText(
+                "Missing file",
+                status = HttpStatusCode.BadRequest
+            )
+
+            val apiMethod = GetAllModuleFiles(userProject, fileName)
+            call.respondText(apiMethod.execute())
+            ideStateKeeper.saveApiCall(apiMethod)
+        }
+
+        post("/post-final-ans") {
+            val modelFinalAns = call.receiveText()
+            val apiMethod = SaveModelFinalAns(modelFinalAns)
+            call.respondText(apiMethod.execute())
+            ideStateKeeper.saveApiCall(apiMethod)
+        }
     }
 }
 
