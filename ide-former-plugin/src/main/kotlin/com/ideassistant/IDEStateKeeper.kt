@@ -3,10 +3,10 @@ package com.ideassistant
 import java.util.*
 
 class IDEStateKeeper {
-    private val apiCallStack: Stack<Reversable> = Stack<Reversable>()
+    private val apiCallStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
 
     fun saveApiCall(apiCall: IDEApiMethod) {
-        if (apiCall is Reversable) {
+        if (apiCall is ReversibleApiMethod) {
             apiCallStack.push(apiCall)
         }
     }

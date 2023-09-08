@@ -15,7 +15,7 @@ interface IDEApiMethod {
     fun execute(): String
 }
 
-interface Reversable {
+interface ReversibleApiMethod {
     fun reverse()
 }
 
