@@ -16,13 +16,11 @@ class IDEServer(
     private val host: String = "localhost",
     private val port: Int = 8082
 ) {
-    private lateinit var userProject: Project
-
     fun startServer(userProject: Project) {
-        this.userProject = userProject
+        ideStateKeeper.initProject(userProject)
 
         embeddedServer(Netty, port = port, host = host) {
-            module(userProject)
+            module()
         }.start(wait = false)
 
         // TODO: add logging
@@ -30,18 +28,18 @@ class IDEServer(
     }
 }
 
-fun Application.module(userProject: Project) {
-    configureRouting(userProject)
+fun Application.module() {
+    configureRouting()
 }
 
-fun Application.configureRouting(userProject: Project) {
+fun Application.configureRouting() {
     routing {
         get("/") {
             call.respondText(IDEServerConstants.ROOT_PAGE_TEXT)
         }
 
         get("/project-modules") {
-            val apiMethod = GetAllProjectModules(userProject)
+            val apiMethod = GetAllProjectModules()
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveApiCall(apiMethod)
         }
@@ -52,7 +50,7 @@ fun Application.configureRouting(userProject: Project) {
                 status = HttpStatusCode.BadRequest
             )
 
-            val apiMethod = GetAllModuleFiles(userProject, moduleName)
+            val apiMethod = GetAllModuleFiles(moduleName)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveApiCall(apiMethod)
         }
@@ -63,7 +61,7 @@ fun Application.configureRouting(userProject: Project) {
                 status = HttpStatusCode.BadRequest
             )
 
-            val apiMethod = GetAllModuleFiles(userProject, fileName)
+            val apiMethod = GetAllModuleFiles(fileName)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveApiCall(apiMethod)
         }
@@ -77,7 +75,7 @@ fun Application.configureRouting(userProject: Project) {
 
         post("/change-dir") {
             val targetDir = call.receiveText()
-            val apiMethod = ChangeDirectory(userProject, targetDir)
+            val apiMethod = ChangeDirectory(targetDir)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveApiCall(apiMethod)
         }

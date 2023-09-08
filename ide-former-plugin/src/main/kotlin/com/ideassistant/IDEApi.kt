@@ -21,22 +21,23 @@ interface ReversibleApiMethod {
     fun reverse()
 }
 
-class GetAllProjectModules(private val project: Project) : IDEApiMethod {
+class GetAllProjectModules : IDEApiMethod {
     companion object {
         fun getAllProjectModules(project: Project): List<Module> =
             ModuleManager.getInstance(project).modules.toList()
     }
 
-    override fun execute(): String = getAllProjectModules(project).toString()
+    override fun execute(): String =
+        getAllProjectModules(ideStateKeeper.userProject).toString()
 }
 
-class GetAllModuleFiles(private val project: Project, moduleName: String) : IDEApiMethod {
+class GetAllModuleFiles(moduleName: String) : IDEApiMethod {
     private val module = getProjectModuleByNameContaining(moduleName)
 
     // TODO: better to search only by full equality of module names.
     //  'Contains' was added as a temporary solution for model and IDE interaction example
     private fun getProjectModuleByNameContaining(moduleName: String): Module {
-        val projectModules = GetAllProjectModules.getAllProjectModules(project)
+        val projectModules = GetAllProjectModules.getAllProjectModules(ideStateKeeper.userProject)
         return projectModules.first { it.name == moduleName || it.name.contains(moduleName) }
     }
 
@@ -48,16 +49,16 @@ class GetAllModuleFiles(private val project: Project, moduleName: String) : IDEA
     override fun execute(): String = getAllModuleFiles(module).toString()
 }
 
-class GetAllKtFileKtMethods(private val project: Project, ktFileName: String) : IDEApiMethod {
+class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
     private val ktFile = getKtFileByName(ktFileName)
 
-    // TODO: search only in a dir
+    // TODO: search only in a current dir
     private fun getKtFileByName(ktFileName: String): KtFile {
-        val projectModules = GetAllProjectModules.getAllProjectModules(project)
+        val projectModules = GetAllProjectModules.getAllProjectModules(ideStateKeeper.userProject)
         return projectModules
             .flatMap { GetAllModuleFiles.getAllModuleFiles(it) }
             .filter { it.name.contains(ktFileName) }
-            .map { PsiManager.getInstance(project).findFile(it) }
+            .map { PsiManager.getInstance(ideStateKeeper.userProject).findFile(it) }
             .filterIsInstance<KtFile>()
             .first()
     }
@@ -72,10 +73,10 @@ class GetAllKtFileKtMethods(private val project: Project, ktFileName: String) : 
         .toString()
 }
 
-class ChangeDirectory(private val project: Project, private val targetDirectory: String) : IDEApiMethod, ReversibleApiMethod {
+class ChangeDirectory(private val targetDirectory: String) : IDEApiMethod, ReversibleApiMethod {
     private var prevDirectory: String? = ideStateKeeper.curDirectory
     override fun execute(): String {
-        val targetDirPath = Paths.get("${project.basePath}/$targetDirectory")
+        val targetDirPath = Paths.get("${ideStateKeeper.userProject.basePath}/$targetDirectory")
         if (Files.exists(targetDirPath)) {
             ideStateKeeper.curDirectory = targetDirectory
             return "Directory was changed: new dir is '$targetDirectory'"
