@@ -10,6 +10,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import java.nio.file.Files
+import java.nio.file.Paths
 
 interface IDEApiMethod {
     fun execute(): String
@@ -68,6 +70,25 @@ class GetAllKtFileKtMethods(private val project: Project, ktFileName: String) : 
     override fun execute(): String = getKtFileKtMethods(ktFile)
         .map { it.name }
         .toString()
+}
+
+class ChangeDirectory(private val project: Project, private val targetDirectory: String) : IDEApiMethod, ReversibleApiMethod {
+    private var prevDirectory: String? = ideStateKeeper.curDirectory
+    override fun execute(): String {
+        val targetDirPath = Paths.get("${project.basePath}/$targetDirectory")
+        if (Files.exists(targetDirPath)) {
+            ideStateKeeper.curDirectory = targetDirectory
+            return "Directory was changed: new dir is '$targetDirectory'"
+        }
+        return "No such directory in a project: $targetDirectory"
+    }
+
+    override fun reverse() {
+        prevDirectory?.let {
+            ideStateKeeper.curDirectory = it
+            prevDirectory = null
+        }
+    }
 }
 
 class SaveModelFinalAns(private val modelFinalAns: String) : IDEApiMethod {

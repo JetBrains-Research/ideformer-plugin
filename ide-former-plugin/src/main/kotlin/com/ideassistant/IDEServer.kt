@@ -74,6 +74,13 @@ fun Application.configureRouting(userProject: Project) {
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveApiCall(apiMethod)
         }
+
+        post("/change-dir") {
+            val targetDir = call.receiveText()
+            val apiMethod = ChangeDirectory(userProject, targetDir)
+            call.respondText(apiMethod.execute())
+            ideStateKeeper.saveApiCall(apiMethod)
+        }
     }
 }
 
