@@ -12,8 +12,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import java.nio.file.Files
-import java.nio.file.Paths
 
 interface IDEApiMethod {
     fun execute(): String
@@ -87,21 +85,19 @@ class ListDirectories(private val psiDirectory: PsiDirectory) : IDEApiMethod {
     override fun execute(): String = getListDirectories(psiDirectory).toString()
 }
 
-class ChangeDirectory(private val targetDirectory: String) : IDEApiMethod, ReversibleApiMethod {
-    private var prevDirectory: String? = ideStateKeeper.curDirectory
+class ChangeDirectory(private val targetDirName: String) : IDEApiMethod, ReversibleApiMethod {
+    private var prevDir: PsiDirectory? = ideStateKeeper.curDirectory
     override fun execute(): String {
-        val targetDirPath = Paths.get("${ideStateKeeper.userProject.basePath}/$targetDirectory")
-        if (Files.exists(targetDirPath)) {
-            ideStateKeeper.curDirectory = targetDirectory
-            return "Directory was changed: new dir is '$targetDirectory'"
-        }
-        return "No such directory in a project: $targetDirectory"
+        val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
+            ?: return "No such directory in a project: $targetDirName"
+        ideStateKeeper.curDirectory = targetDir
+        return "Directory was changed: new dir is '${targetDir.name}'"
     }
 
     override fun reverse() {
-        prevDirectory?.let {
+        prevDir?.let {
             ideStateKeeper.curDirectory = it
-            prevDirectory = null
+            prevDir = null
         }
     }
 }
