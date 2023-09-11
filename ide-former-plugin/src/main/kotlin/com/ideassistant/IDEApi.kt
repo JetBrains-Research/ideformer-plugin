@@ -3,12 +3,9 @@ package com.ideassistant
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
@@ -29,27 +26,6 @@ class GetAllProjectModules : IDEApiMethod {
     override fun execute(): String =
         getAllProjectModules(ideStateKeeper.userProject).toString()
 }
-
-class GetAllModuleFiles(moduleName: String) : IDEApiMethod {
-    private val module = getProjectModuleByNameContaining(moduleName)
-
-    // TODO: better to search only by full equality of module names.
-    //  'Contains' was added as a temporary solution for model and IDE interaction example
-    private fun getProjectModuleByNameContaining(moduleName: String): Module {
-        val projectModules = GetAllProjectModules.getAllProjectModules(ideStateKeeper.userProject)
-        return projectModules.first { it.name == moduleName || it.name.contains(moduleName) }
-    }
-
-    companion object {
-        fun getAllModuleFiles(module: Module): List<VirtualFile> =
-            FileTypeIndex.getFiles(KotlinFileType.INSTANCE, module.moduleScope).toList()
-    }
-
-    override fun execute(): String = getAllModuleFiles(module).toString()
-}
-
-class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
-    private val ktFile = getKtFileByName(ktFileName)
 
 class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
     private fun getKtFileByName(ktFileName: String): KtFile =

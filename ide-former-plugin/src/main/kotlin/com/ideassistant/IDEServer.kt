@@ -43,23 +43,13 @@ fun Application.configureRouting() {
             call.respondText(apiMethod.execute())
         }
 
-        get("/module-files/{module}") {
-            val moduleName = call.parameters["module"] ?: return@get call.respondText(
-                text = IDEServerConstants.MISSING_MODULE,
-                status = HttpStatusCode.BadRequest
-            )
-
-            val apiMethod = GetAllModuleFiles(moduleName)
-            call.respondText(apiMethod.execute())
-        }
-
         get("/file-kt-methods/{file}") {
             val fileName = call.parameters["file"] ?: return@get call.respondText(
                 text = IDEServerConstants.MISSING_FILENAME,
                 status = HttpStatusCode.BadRequest
             )
 
-            val apiMethod = GetAllModuleFiles(fileName)
+            val apiMethod = GetAllKtFileKtMethods(fileName)
             call.respondText(apiMethod.execute())
         }
 
@@ -81,7 +71,6 @@ fun Application.configureRouting() {
 
 object IDEServerConstants {
     const val ROOT_PAGE_TEXT = "IDE server"
-    const val MISSING_MODULE = "Missing module"
     const val MISSING_FILENAME = "Missing file name"
 }
 

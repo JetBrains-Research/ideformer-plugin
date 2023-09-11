@@ -11,13 +11,6 @@ class LLMSimulator {
         }
     }
 
-    private val ktMethodsScenarioQueries: List<IDEApiMethod?> = listOf(
-        GetAllProjectModules(),
-        GetAllModuleFiles("main"),
-        GetAllKtFileKtMethods("Main.kt"),
-        null
-    )
-
     private val lsCdScenarioQueries: List<IDEApiMethod?> = listOf(
         ListDirectories(),
         ChangeDirectory("src"),
@@ -28,7 +21,7 @@ class LLMSimulator {
         null
     )
 
-    private val lsCdScenariosScenarioGenerator = ScenarioGenerator(lsCdScenarioQueries)
+    private val lsCdScenarioGenerator = ScenarioGenerator(lsCdScenarioQueries)
 
-    fun getAPIQuery(): IDEApiMethod? = lsCdScenariosScenarioGenerator.generateNextQuery()
+    fun getAPIQuery(): IDEApiMethod? = lsCdScenarioGenerator.generateNextQuery()
 }
