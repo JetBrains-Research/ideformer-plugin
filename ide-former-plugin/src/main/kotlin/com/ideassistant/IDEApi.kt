@@ -4,6 +4,8 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.util.PsiTreeUtil
@@ -71,6 +73,18 @@ class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
     override fun execute(): String = getKtFileKtMethods(ktFile)
         .map { it.name }
         .toString()
+}
+
+class ListDirectories(private val psiDirectory: PsiDirectory) : IDEApiMethod {
+    companion object {
+        fun getListDirectories(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
+            val files = psiDirectory.files.map { it as PsiFileSystemItem }
+            val dirs = psiDirectory.subdirectories.map { it as PsiFileSystemItem }
+            return files.plus(dirs)
+        }
+    }
+
+    override fun execute(): String = getListDirectories(psiDirectory).toString()
 }
 
 class ChangeDirectory(private val targetDirectory: String) : IDEApiMethod, ReversibleApiMethod {
