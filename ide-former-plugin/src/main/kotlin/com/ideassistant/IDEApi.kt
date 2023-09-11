@@ -39,11 +39,13 @@ class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
             PsiTreeUtil.findChildrenOfType(ktFile, KtNamedFunction::class.java).toList()
     }
 
-    override fun execute(): String {
+    override fun execute(): String = try {
         val ktFile = getKtFileByName(ktFileName)
-        return getKtFileKtMethods(ktFile)
+        getKtFileKtMethods(ktFile)
             .map { it.name }
             .toString()
+    } catch (e: Exception) {
+        e.message!!
     }
 }
 
@@ -56,26 +58,31 @@ class ListDirectories(private val dirName: String = "") : IDEApiMethod {
         }
     }
 
-    override fun execute(): String {
+    override fun execute(): String = try {
         val psiDirectory = when (dirName) {
             "" -> ideStateKeeper.curDirectory
             else -> ideStateKeeper.curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
         }
-        return getListDirectories(psiDirectory)
+        getListDirectories(psiDirectory)
             .map { it.name }
             .toString()
+    } catch (e: Exception) {
+        e.message!!
     }
 }
 
 class ChangeDirectory(private val targetDirName: String) : IDEApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
-    override fun execute(): String {
-        prevDir = ideStateKeeper.curDirectory
-        // a non-recursive search
+    override fun execute(): String = try {
+        // non-recursive search
         val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
-            ?: return "No such directory in a project: $targetDirName"
+            ?: throw Exception("No such directory in a project: $targetDirName")
+
+        prevDir = ideStateKeeper.curDirectory
         ideStateKeeper.curDirectory = targetDir
-        return "Directory was changed: new dir is '${targetDir.name}'"
+        "Directory was changed: new dir is '${targetDir.name}'"
+    } catch (e: Exception) {
+        e.message!!
     }
 
     override fun reverse() {

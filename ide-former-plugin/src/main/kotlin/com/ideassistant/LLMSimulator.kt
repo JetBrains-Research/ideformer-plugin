@@ -18,6 +18,7 @@ class LLMSimulator {
         ChangeDirectory("main"),
         ListDirectories(),
         ChangeDirectory("kotlin"),
+        ChangeDirectory("someNotExistingDir"),
         null
     )
 
