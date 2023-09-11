@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.KotlinFileType
@@ -52,26 +51,24 @@ class GetAllModuleFiles(moduleName: String) : IDEApiMethod {
 class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
     private val ktFile = getKtFileByName(ktFileName)
 
-    // TODO: search only in a current dir
-    private fun getKtFileByName(ktFileName: String): KtFile {
-        val projectModules = GetAllProjectModules.getAllProjectModules(ideStateKeeper.userProject)
-        return projectModules
-            .asSequence()
-            .flatMap { GetAllModuleFiles.getAllModuleFiles(it) }
-            .filter { it.name.contains(ktFileName) }
-            .map { PsiManager.getInstance(ideStateKeeper.userProject).findFile(it) }
+class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
+    private fun getKtFileByName(ktFileName: String): KtFile =
+        ideStateKeeper.curDirectory.files
             .filterIsInstance<KtFile>()
-            .first()
-    }
+            .firstOrNull { it.name == ktFileName }
+            ?: throw Exception("No such file in the current directory")
 
     companion object {
         fun getKtFileKtMethods(ktFile: KtFile): List<KtNamedFunction> =
             PsiTreeUtil.findChildrenOfType(ktFile, KtNamedFunction::class.java).toList()
     }
 
-    override fun execute(): String = getKtFileKtMethods(ktFile)
-        .map { it.name }
-        .toString()
+    override fun execute(): String {
+        val ktFile = getKtFileByName(ktFileName)
+        return getKtFileKtMethods(ktFile)
+            .map { it.name }
+            .toString()
+    }
 }
 
 class ListDirectories(private val dirName: String = "") : IDEApiMethod {
