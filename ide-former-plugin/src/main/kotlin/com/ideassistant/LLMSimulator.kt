@@ -19,11 +19,11 @@ class LLMSimulator {
     )
 
     private val lsCdScenarioQueries: List<IDEApiMethod?> = listOf(
-        ListDirectories(""),
+        ListDirectories(),
         ChangeDirectory("src"),
-        ListDirectories(""),
+        ListDirectories(),
         ChangeDirectory("main"),
-        ListDirectories(""),
+        ListDirectories(),
         ChangeDirectory("kotlin"),
         null
     )

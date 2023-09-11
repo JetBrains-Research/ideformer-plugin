@@ -74,7 +74,7 @@ class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
         .toString()
 }
 
-class ListDirectories(private val dirName: String) : IDEApiMethod {
+class ListDirectories(private val dirName: String = "") : IDEApiMethod {
     companion object {
         fun getListDirectories(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
             val files = psiDirectory.files.map { it as PsiFileSystemItem }
