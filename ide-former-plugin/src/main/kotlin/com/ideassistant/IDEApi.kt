@@ -92,8 +92,12 @@ class ChangeDirectory(private val targetDirectory: String) : IDEApiMethod, Rever
     }
 }
 
-class SaveModelFinalAns(private val modelFinalAns: String) : IDEApiMethod {
+class SaveModelFinalAns(private val modelFinalAns: String) : IDEApiMethod, ReversibleApiMethod {
     override fun execute(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun reverse() {
         TODO("Not yet implemented")
     }
 }

@@ -41,7 +41,6 @@ fun Application.configureRouting() {
         get("/project-modules") {
             val apiMethod = GetAllProjectModules()
             call.respondText(apiMethod.execute())
-            ideStateKeeper.saveApiCall(apiMethod)
         }
 
         get("/module-files/{module}") {
@@ -52,7 +51,6 @@ fun Application.configureRouting() {
 
             val apiMethod = GetAllModuleFiles(moduleName)
             call.respondText(apiMethod.execute())
-            ideStateKeeper.saveApiCall(apiMethod)
         }
 
         get("/file-kt-methods/{file}") {
@@ -63,21 +61,20 @@ fun Application.configureRouting() {
 
             val apiMethod = GetAllModuleFiles(fileName)
             call.respondText(apiMethod.execute())
-            ideStateKeeper.saveApiCall(apiMethod)
         }
 
         post("/post-final-ans") {
             val modelFinalAns = call.receiveText()
             val apiMethod = SaveModelFinalAns(modelFinalAns)
             call.respondText(apiMethod.execute())
-            ideStateKeeper.saveApiCall(apiMethod)
+            ideStateKeeper.saveReversibleApiCall(apiMethod)
         }
 
         post("/change-dir") {
             val targetDir = call.receiveText()
             val apiMethod = ChangeDirectory(targetDir)
             call.respondText(apiMethod.execute())
-            ideStateKeeper.saveApiCall(apiMethod)
+            ideStateKeeper.saveReversibleApiCall(apiMethod)
         }
     }
 }

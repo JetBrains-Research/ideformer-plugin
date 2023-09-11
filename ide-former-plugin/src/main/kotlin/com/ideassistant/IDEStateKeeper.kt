@@ -14,11 +14,7 @@ class IDEStateKeeper {
         this.curDirectory = userProject.projectFilePath ?: ""
     }
 
-    fun saveApiCall(apiCall: IDEApiMethod) {
-        if (apiCall is ReversibleApiMethod) {
-            apiCallStack.push(apiCall)
-        }
-    }
+    fun saveReversibleApiCall(apiCall: ReversibleApiMethod) = apiCallStack.addElement(apiCall)
 
     fun undoLastApiCall() {
         if (apiCallStack.empty()) {
