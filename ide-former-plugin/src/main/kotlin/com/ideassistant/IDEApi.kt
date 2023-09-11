@@ -56,6 +56,7 @@ class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
     private fun getKtFileByName(ktFileName: String): KtFile {
         val projectModules = GetAllProjectModules.getAllProjectModules(ideStateKeeper.userProject)
         return projectModules
+            .asSequence()
             .flatMap { GetAllModuleFiles.getAllModuleFiles(it) }
             .filter { it.name.contains(ktFileName) }
             .map { PsiManager.getInstance(ideStateKeeper.userProject).findFile(it) }
@@ -88,6 +89,7 @@ class ListDirectories(private val psiDirectory: PsiDirectory) : IDEApiMethod {
 class ChangeDirectory(private val targetDirName: String) : IDEApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = ideStateKeeper.curDirectory
     override fun execute(): String {
+        // a non-recursive search
         val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
             ?: return "No such directory in a project: $targetDirName"
         ideStateKeeper.curDirectory = targetDir

@@ -1,15 +1,8 @@
 package com.ideassistant
 
 class LLMSimulator {
-    private class KtMethodsScenarioGenerator {
+    private class ScenarioGenerator(private val queryList: List<IDEApiMethod?>) {
         private var queryNum = 0
-
-        private val queryList: List<IDEApiMethod?> = listOf(
-            GetAllProjectModules(),
-            GetAllModuleFiles("main"),
-            GetAllKtFileKtMethods("Main.kt"),
-            null
-        )
 
         fun generateNextQuery(): IDEApiMethod? {
             val nextQuery = queryList[queryNum++]
@@ -18,7 +11,20 @@ class LLMSimulator {
         }
     }
 
-    private val scenarioGenerator = KtMethodsScenarioGenerator()
+    private val ktMethodsScenarioQueries: List<IDEApiMethod?> = listOf(
+        GetAllProjectModules(),
+        GetAllModuleFiles("main"),
+        GetAllKtFileKtMethods("Main.kt"),
+        null
+    )
 
-    fun getAPIQuery(): IDEApiMethod? = scenarioGenerator.generateNextQuery()
+    private val lsCdScenarioQueries: List<IDEApiMethod?> = listOf(
+        ListDirectories(ideStateKeeper.curDirectory),
+        ChangeDirectory("src"),
+        null
+    )
+
+    private val lsCdScenariosScenarioGenerator = ScenarioGenerator(lsCdScenarioQueries)
+
+    fun getAPIQuery(): IDEApiMethod? = lsCdScenariosScenarioGenerator.generateNextQuery()
 }
