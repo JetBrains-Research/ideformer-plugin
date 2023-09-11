@@ -1,7 +1,6 @@
 package com.ideassistant
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.project.Project
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -19,8 +18,8 @@ class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/
         client.close()
     }
 
-    fun serverClientInteractionStub(userProject: Project): String {
-        val llmSimulator = LLMSimulator(userProject)
+    fun serverClientInteractionStub(): String {
+        val llmSimulator = LLMSimulator()
         val interactionChain = StringBuilder()
 
         while (true) {
@@ -43,6 +42,6 @@ class UserQueryTransmitterService {
         transmitter.sendUserQueryToModel(userQuery)
     }
 
-    fun serverClientInteractionStub(userProject: Project): String =
-        transmitter.serverClientInteractionStub(userProject)
+    fun serverClientInteractionStub(): String =
+        transmitter.serverClientInteractionStub()
 }

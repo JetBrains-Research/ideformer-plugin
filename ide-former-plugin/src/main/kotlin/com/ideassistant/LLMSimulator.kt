@@ -1,15 +1,13 @@
 package com.ideassistant
 
-import com.intellij.openapi.project.Project
-
-class LLMSimulator(userProject: Project) {
-    private class KtMethodsScenarioGenerator(userProject: Project) {
+class LLMSimulator {
+    private class KtMethodsScenarioGenerator {
         private var queryNum = 0
 
         private val queryList: List<IDEApiMethod?> = listOf(
-            GetAllProjectModules(userProject),
-            GetAllModuleFiles(userProject, "main"),
-            GetAllKtFileKtMethods(userProject, "Main.kt"),
+            GetAllProjectModules(),
+            GetAllModuleFiles("main"),
+            GetAllKtFileKtMethods("Main.kt"),
             null
         )
 
@@ -20,7 +18,7 @@ class LLMSimulator(userProject: Project) {
         }
     }
 
-    private val scenarioGenerator = KtMethodsScenarioGenerator(userProject)
+    private val scenarioGenerator = KtMethodsScenarioGenerator()
 
     fun getAPIQuery(): IDEApiMethod? = scenarioGenerator.generateNextQuery()
 }
