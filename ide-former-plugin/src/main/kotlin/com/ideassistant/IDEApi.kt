@@ -74,7 +74,7 @@ class GetAllKtFileKtMethods(ktFileName: String) : IDEApiMethod {
         .toString()
 }
 
-class ListDirectories(private val psiDirectory: PsiDirectory) : IDEApiMethod {
+class ListDirectories(private val dirName: String) : IDEApiMethod {
     companion object {
         fun getListDirectories(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
             val files = psiDirectory.files.map { it as PsiFileSystemItem }
@@ -83,12 +83,21 @@ class ListDirectories(private val psiDirectory: PsiDirectory) : IDEApiMethod {
         }
     }
 
-    override fun execute(): String = getListDirectories(psiDirectory).toString()
+    override fun execute(): String {
+        val psiDirectory = when (dirName) {
+            "" -> ideStateKeeper.curDirectory
+            else -> ideStateKeeper.curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
+        }
+        return getListDirectories(psiDirectory)
+            .map { it.name }
+            .toString()
+    }
 }
 
 class ChangeDirectory(private val targetDirName: String) : IDEApiMethod, ReversibleApiMethod {
-    private var prevDir: PsiDirectory? = ideStateKeeper.curDirectory
+    private var prevDir: PsiDirectory? = null
     override fun execute(): String {
+        prevDir = ideStateKeeper.curDirectory
         // a non-recursive search
         val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
             ?: return "No such directory in a project: $targetDirName"
