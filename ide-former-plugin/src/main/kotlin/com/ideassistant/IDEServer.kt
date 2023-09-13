@@ -53,16 +53,22 @@ fun Application.configureRouting() {
             call.respondText(apiMethod.execute())
         }
 
-        post("/post-final-ans") {
-            val modelFinalAns = call.receiveText()
-            val apiMethod = SaveModelFinalAns(modelFinalAns)
+        post("/list-dir-contents/{dirName?}") {
+            val dirName = call.parameters["dirName"] ?: "."
+            val apiMethod = ListDirectoryContents(dirName)
+            call.respondText(apiMethod.execute())
+        }
+
+        post("/change-dir/{targetDirName?}") {
+            val targetDirName = call.parameters["targetDirName"] ?: "."
+            val apiMethod = ChangeDirectory(targetDirName)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
         }
 
-        post("/change-dir") {
-            val targetDir = call.receiveText()
-            val apiMethod = ChangeDirectory(targetDir)
+        post("/post-final-ans") {
+            val modelFinalAns = call.receiveText()
+            val apiMethod = SaveModelFinalAns(modelFinalAns)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
         }

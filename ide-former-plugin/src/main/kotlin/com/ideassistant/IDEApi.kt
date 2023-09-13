@@ -49,9 +49,9 @@ class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
     }
 }
 
-class ListDirectories(private val dirName: String = "") : IDEApiMethod {
+class ListDirectoryContents(private val dirName: String = ".") : IDEApiMethod {
     companion object {
-        fun getListDirectories(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
+        fun getListDirectoryContents(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
             val files = psiDirectory.files.map { it as PsiFileSystemItem }
             val dirs = psiDirectory.subdirectories.map { it as PsiFileSystemItem }
             return files.plus(dirs)
@@ -60,10 +60,10 @@ class ListDirectories(private val dirName: String = "") : IDEApiMethod {
 
     override fun execute(): String = try {
         val psiDirectory = when (dirName) {
-            "" -> ideStateKeeper.curDirectory
+            "." -> ideStateKeeper.curDirectory
             else -> ideStateKeeper.curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
         }
-        getListDirectories(psiDirectory)
+        getListDirectoryContents(psiDirectory)
             .map { it.name }
             .toString()
     } catch (e: Exception) {
@@ -71,18 +71,24 @@ class ListDirectories(private val dirName: String = "") : IDEApiMethod {
     }
 }
 
-class ChangeDirectory(private val targetDirName: String) : IDEApiMethod, ReversibleApiMethod {
+class ChangeDirectory(private val targetDirName: String = ".") : IDEApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
-    override fun execute(): String = try {
-        // non-recursive search
-        val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
-            ?: throw Exception("No such directory in a project: $targetDirName")
+    override fun execute(): String {
+        if (targetDirName == ".") {
+            return "The directory remains the same."
+        }
 
-        prevDir = ideStateKeeper.curDirectory
-        ideStateKeeper.curDirectory = targetDir
-        "Directory was changed: new dir is '${targetDir.name}'"
-    } catch (e: Exception) {
-        e.message!!
+        return try {
+            // non-recursive search
+            val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
+                ?: throw Exception("No such directory in a project: $targetDirName")
+
+            prevDir = ideStateKeeper.curDirectory
+            ideStateKeeper.curDirectory = targetDir
+            "Directory was changed: new dir is '${targetDir.name}'"
+        } catch (e: Exception) {
+            e.message!!
+        }
     }
 
     override fun reverse() {
