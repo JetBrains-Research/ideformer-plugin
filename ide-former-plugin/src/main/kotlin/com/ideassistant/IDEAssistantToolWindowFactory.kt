@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import javax.swing.*
 
 class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
-    private class IDEAssistantToolWindow(userProject: Project) {
+    private class IDEAssistantToolWindow(private val userProject: Project) {
         val contentPanel = JPanel()
         private val chatArea = JTextArea(10, 50).apply {
             lineWrap = true
@@ -37,7 +37,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
             userInputField.addActionListener {
                 val userQuery = userInputField.text
                 val modelResponse = runBlocking {
-                    service<UserQueryTransmitterService>().serverClientInteractionStub()
+                    service<UserQueryTransmitterService>().serverClientInteractionStub(userProject)
                 }
 
                 invokeLater {

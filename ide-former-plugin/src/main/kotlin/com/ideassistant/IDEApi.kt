@@ -17,19 +17,22 @@ interface ReversibleApiMethod {
     fun reverse()
 }
 
-class GetAllProjectModules : IDEApiMethod {
+class GetAllProjectModules(private val project: Project) : IDEApiMethod {
     companion object {
         fun getAllProjectModules(project: Project): List<Module> =
             ModuleManager.getInstance(project).modules.toList()
     }
 
     override fun execute(): String =
-        getAllProjectModules(ideStateKeeper.userProject).toString()
+        getAllProjectModules(project).toString()
 }
 
-class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
+class GetAllKtFileKtMethods(
+    private val curDirectory: PsiDirectory,
+    private val ktFileName: String
+) : IDEApiMethod {
     private fun getKtFileByName(ktFileName: String): KtFile =
-        ideStateKeeper.curDirectory.files
+        curDirectory.files
             .filterIsInstance<KtFile>()
             .firstOrNull { it.name == ktFileName }
             ?: throw Exception("No such file in the current directory")
@@ -49,7 +52,10 @@ class GetAllKtFileKtMethods(private val ktFileName: String) : IDEApiMethod {
     }
 }
 
-class ListDirectoryContents(private val dirName: String = ".") : IDEApiMethod {
+class ListDirectoryContents(
+    private val curDirectory: PsiDirectory,
+    private val dirName: String = "."
+) : IDEApiMethod {
     companion object {
         fun getListDirectoryContents(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
             val files = psiDirectory.files.map { it as PsiFileSystemItem }
@@ -60,8 +66,8 @@ class ListDirectoryContents(private val dirName: String = ".") : IDEApiMethod {
 
     override fun execute(): String = try {
         val psiDirectory = when (dirName) {
-            "." -> ideStateKeeper.curDirectory
-            else -> ideStateKeeper.curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
+            "." -> curDirectory
+            else -> curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
         }
         getListDirectoryContents(psiDirectory)
             .map { it.name }
@@ -71,7 +77,10 @@ class ListDirectoryContents(private val dirName: String = ".") : IDEApiMethod {
     }
 }
 
-class ChangeDirectory(private val targetDirName: String = ".") : IDEApiMethod, ReversibleApiMethod {
+class ChangeDirectory(
+    private val ideStateKeeper: IDEStateKeeper,
+    private val targetDirName: String = "."
+) : IDEApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
     override fun execute(): String {
         if (targetDirName == ".") {

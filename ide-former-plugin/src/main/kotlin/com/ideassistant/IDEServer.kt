@@ -16,11 +16,13 @@ class IDEServer(
     private val host: String = "localhost",
     private val port: Int = 8082
 ) {
+    private lateinit var ideStateKeeper: IDEStateKeeper
+
     fun startServer(userProject: Project) {
-        ideStateKeeper.initProject(userProject)
+        ideStateKeeper = IDEStateKeeper(userProject)
 
         embeddedServer(Netty, port = port, host = host) {
-            module()
+            module(ideStateKeeper)
         }.start(wait = false)
 
         // TODO: add logging
@@ -28,18 +30,18 @@ class IDEServer(
     }
 }
 
-fun Application.module() {
-    configureRouting()
+fun Application.module(ideStateKeeper: IDEStateKeeper) {
+    configureRouting(ideStateKeeper)
 }
 
-fun Application.configureRouting() {
+fun Application.configureRouting(ideStateKeeper: IDEStateKeeper) {
     routing {
         get("/") {
             call.respondText(IDEServerConstants.ROOT_PAGE_TEXT)
         }
 
         get("/project-modules") {
-            val apiMethod = GetAllProjectModules()
+            val apiMethod = GetAllProjectModules(ideStateKeeper.userProject)
             call.respondText(apiMethod.execute())
         }
 
@@ -49,19 +51,19 @@ fun Application.configureRouting() {
                 status = HttpStatusCode.BadRequest
             )
 
-            val apiMethod = GetAllKtFileKtMethods(fileName)
+            val apiMethod = GetAllKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             call.respondText(apiMethod.execute())
         }
 
         post("/list-dir-contents/{dirName?}") {
             val dirName = call.parameters["dirName"] ?: "."
-            val apiMethod = ListDirectoryContents(dirName)
+            val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
             call.respondText(apiMethod.execute())
         }
 
         post("/change-dir/{targetDirName?}") {
             val targetDirName = call.parameters["targetDirName"] ?: "."
-            val apiMethod = ChangeDirectory(targetDirName)
+            val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
             call.respondText(apiMethod.execute())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
         }

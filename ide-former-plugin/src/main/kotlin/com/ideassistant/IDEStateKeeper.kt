@@ -9,11 +9,9 @@ import java.util.*
 
 class IDEStateKeeper {
     private val apiCallStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
-    lateinit var userProject: Project
     lateinit var curDirectory: PsiDirectory
 
-    fun initProject(userProject: Project) {
-        this.userProject = userProject
+    init {
         // TODO: to think about null project path processing
         val projectBaseDir = userProject.guessProjectDir()
         ApplicationManager.getApplication().runReadAction {
@@ -34,5 +32,3 @@ class IDEStateKeeper {
         apiCallStack.pop()
     }
 }
-
-val ideStateKeeper = IDEStateKeeper()

@@ -1,6 +1,10 @@
 package com.ideassistant
 
-class LLMSimulator {
+import com.intellij.openapi.project.Project
+
+class LLMSimulator(userProject: Project) {
+    private val ideStateKeeper: IDEStateKeeper = IDEStateKeeper(userProject)
+
     private class ScenarioGenerator(private val queryList: List<IDEApiMethod?>) {
         private var queryNum = 0
 
@@ -12,13 +16,13 @@ class LLMSimulator {
     }
 
     private val lsCdScenarioQueries: List<IDEApiMethod?> = listOf(
-        ListDirectoryContents(),
-        ChangeDirectory("src"),
-        ListDirectoryContents(),
-        ChangeDirectory("main"),
-        ListDirectoryContents(),
-        ChangeDirectory("kotlin"),
-        ChangeDirectory("someNotExistingDir"),
+        ListDirectoryContents(ideStateKeeper.curDirectory),
+        ChangeDirectory(ideStateKeeper, "src"),
+        ListDirectoryContents(ideStateKeeper.curDirectory),
+        ChangeDirectory(ideStateKeeper, "main"),
+        ListDirectoryContents(ideStateKeeper.curDirectory),
+        ChangeDirectory(ideStateKeeper, "kotlin"),
+        ChangeDirectory(ideStateKeeper, "someNotExistingDir"),
         null
     )
 
