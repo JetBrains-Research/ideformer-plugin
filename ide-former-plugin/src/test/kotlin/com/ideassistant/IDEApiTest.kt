@@ -65,7 +65,17 @@ class IDEApiTest : BasePlatformTestCase() {
         cdSecondChanging.reverse()
         assertEquals("dir1", ideStateKeeper.curDirectory.name)
 
-        // TODO: to add test for a subsubdir changing
+        // second reverse does nothing
+        cdSecondChanging.reverse()
+        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+
+        cdSubDir.reverse()
+        assertEquals("src", ideStateKeeper.curDirectory.name)
+
+        val cdDirSeveralLevelsBelow = ChangeDirectory(ideStateKeeper, "dir2/subdir/subsubdir")
+        cdDirSeveralLevelsBelow.execute()
+        assertEquals("subsubdir", ideStateKeeper.curDirectory.name)
+
         // TODO: to add test for a non-existing dir
     }
 }
