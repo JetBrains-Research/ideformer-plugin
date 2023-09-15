@@ -1,10 +1,11 @@
-package com.ideassistant
+package com.ideAssistant.api
 
+import com.ideAssistant.server.IdeStateKeeper
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-@TestDataPath("\$CONTENT_ROOT/testData/testProject")
-class IDEApiTest : BasePlatformTestCase() {
+@TestDataPath("/testData/testProject")
+class IdeApiTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String = "src/test/testData/testProject"
 
     override fun setUp() {
@@ -34,7 +35,7 @@ class IDEApiTest : BasePlatformTestCase() {
     }
 
     fun testListDirectoryContents() {
-        val ideStateKeeper = IDEStateKeeper(project)
+        val ideStateKeeper = IdeStateKeeper(project)
 
         val lsCurDir = ListDirectoryContents(ideStateKeeper.curDirectory)
         lsCurDir.execute()
@@ -52,7 +53,7 @@ class IDEApiTest : BasePlatformTestCase() {
     }
 
     fun testChangeDirectory() {
-        val ideStateKeeper = IDEStateKeeper(project)
+        val ideStateKeeper = IdeStateKeeper(project)
 
         val cdSubDir = ChangeDirectory(ideStateKeeper, "dir1")
         cdSubDir.execute()

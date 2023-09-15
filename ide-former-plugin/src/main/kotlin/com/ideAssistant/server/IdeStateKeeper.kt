@@ -1,5 +1,6 @@
-package com.ideassistant
+package com.ideAssistant.server
 
+import com.ideAssistant.api.ReversibleApiMethod
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
@@ -7,7 +8,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import java.util.*
 
-class IDEStateKeeper(val userProject: Project) {
+class IdeStateKeeper(val userProject: Project) {
     private val apiCallStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
     lateinit var curDirectory: PsiDirectory
 

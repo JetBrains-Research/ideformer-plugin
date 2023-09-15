@@ -1,5 +1,7 @@
-package com.ideassistant
+package com.ideAssistant.ui
 
+import com.ideAssistant.server.IdeServerService
+import com.ideAssistant.transmitter.UserQueryTransmitterService
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
@@ -10,7 +12,7 @@ import com.intellij.ui.content.ContentFactory
 import kotlinx.coroutines.runBlocking
 import javax.swing.*
 
-class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
+class IdeAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
     private class IDEAssistantToolWindow(private val userProject: Project) {
         val contentPanel = JPanel()
         private val chatArea = JTextArea(10, 50).apply {
@@ -29,7 +31,7 @@ class IDEAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
-            userProject.service<IDEServerService>().startServer()
+            userProject.service<IdeServerService>().startServer()
             startDialogue()
         }
 

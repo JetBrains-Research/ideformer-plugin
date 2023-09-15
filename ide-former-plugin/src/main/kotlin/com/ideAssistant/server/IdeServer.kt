@@ -1,5 +1,6 @@
-package com.ideassistant
+package com.ideAssistant.server
 
+import com.ideAssistant.api.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
@@ -12,14 +13,14 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class IDEServer(
+class IdeServer(
     private val host: String = "localhost",
     private val port: Int = 8082
 ) {
-    private lateinit var ideStateKeeper: IDEStateKeeper
+    private lateinit var ideStateKeeper: IdeStateKeeper
 
     fun startServer(userProject: Project) {
-        ideStateKeeper = IDEStateKeeper(userProject)
+        ideStateKeeper = IdeStateKeeper(userProject)
 
         embeddedServer(Netty, port = port, host = host) {
             module(ideStateKeeper)
@@ -30,29 +31,29 @@ class IDEServer(
     }
 }
 
-fun Application.module(ideStateKeeper: IDEStateKeeper) {
+fun Application.module(ideStateKeeper: IdeStateKeeper) {
     configureRouting(ideStateKeeper)
 }
 
-fun Application.configureRouting(ideStateKeeper: IDEStateKeeper) {
+fun Application.configureRouting(ideStateKeeper: IdeStateKeeper) {
     routing {
         get("/") {
-            call.respondText(IDEServerConstants.ROOT_PAGE_TEXT)
+            call.respondText(IdeServerConstants.ROOT_PAGE_TEXT)
         }
 
         get("/project-modules") {
-            val apiMethod = GetAllProjectModules(ideStateKeeper.userProject)
+            val apiMethod = GetProjectModules(ideStateKeeper.userProject)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
         }
 
         get("/file-kt-methods/{file}") {
             val fileName = call.parameters["file"] ?: return@get call.respondText(
-                text = IDEServerConstants.MISSING_FILENAME,
+                text = IdeServerConstants.MISSING_FILENAME,
                 status = HttpStatusCode.BadRequest
             )
 
-            val apiMethod = GetAllKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
+            val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
         }
@@ -85,14 +86,14 @@ fun Application.configureRouting(ideStateKeeper: IDEStateKeeper) {
     }
 }
 
-object IDEServerConstants {
+object IdeServerConstants {
     const val ROOT_PAGE_TEXT = "IDE server"
     const val MISSING_FILENAME = "Missing file name"
 }
 
 @Service(Service.Level.PROJECT)
-class IDEServerService(private val project: Project) {
-    private val ideServer = IDEServer()
+class IdeServerService(private val project: Project) {
+    private val ideServer = IdeServer()
 
     fun startServer() {
         object : Task.Backgroundable(project, "IDE server start") {

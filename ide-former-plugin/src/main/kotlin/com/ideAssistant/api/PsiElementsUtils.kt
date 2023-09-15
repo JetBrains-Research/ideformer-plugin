@@ -1,4 +1,4 @@
-package com.ideassistant
+package com.ideAssistant.api
 
 import com.intellij.psi.PsiDirectory
 

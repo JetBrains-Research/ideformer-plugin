@@ -1,5 +1,6 @@
-package com.ideassistant
+package com.ideAssistant.api
 
+import com.ideAssistant.server.IdeStateKeeper
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -9,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
-interface IDEApiMethod {
+interface IdeApiMethod {
     fun execute()
     fun getExecutionRes(): String
 }
@@ -18,25 +19,25 @@ interface ReversibleApiMethod {
     fun reverse()
 }
 
-class GetAllProjectModules(private val project: Project) : IDEApiMethod {
+class GetProjectModules(private val project: Project) : IdeApiMethod {
     private lateinit var projectModules: List<Module>
 
     companion object {
-        fun getAllProjectModules(project: Project): List<Module> =
+        fun getProjectModules(project: Project): List<Module> =
             ModuleManager.getInstance(project).modules.toList()
     }
 
     override fun execute() {
-        projectModules = getAllProjectModules(project)
+        projectModules = getProjectModules(project)
     }
 
     override fun getExecutionRes(): String = projectModules.toString()
 }
 
-class GetAllKtFileKtMethods(
+class GetKtFileKtMethods(
     private val curDirectory: PsiDirectory,
     private val ktFileName: String
-) : IDEApiMethod {
+) : IdeApiMethod {
     private lateinit var fileKtMethods: List<KtNamedFunction>
 
     private fun getKtFileByName(ktFileName: String): KtFile =
@@ -62,7 +63,7 @@ class GetAllKtFileKtMethods(
 class ListDirectoryContents(
     private val curDirectory: PsiDirectory,
     private val dirName: String = "."
-) : IDEApiMethod {
+) : IdeApiMethod {
     private lateinit var dirContents: List<PsiFileSystemItem>
 
     companion object {
@@ -87,9 +88,9 @@ class ListDirectoryContents(
 }
 
 class ChangeDirectory(
-    private val ideStateKeeper: IDEStateKeeper,
+    private val ideStateKeeper: IdeStateKeeper,
     private val targetDirName: String = "."
-) : IDEApiMethod, ReversibleApiMethod {
+) : IdeApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
 
     override fun execute() {
@@ -118,7 +119,7 @@ class ChangeDirectory(
     }
 }
 
-class SaveModelFinalAns(private val modelFinalAns: String) : IDEApiMethod, ReversibleApiMethod {
+class SaveModelFinalAns(private val modelFinalAns: String) : IdeApiMethod, ReversibleApiMethod {
     override fun execute() {
         TODO("Not yet implemented")
     }

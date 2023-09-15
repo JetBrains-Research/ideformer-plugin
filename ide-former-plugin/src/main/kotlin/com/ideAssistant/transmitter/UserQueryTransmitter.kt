@@ -1,5 +1,7 @@
-package com.ideassistant
+package com.ideAssistant.transmitter
 
+import com.ideAssistant.api.IdeApiMethod
+import com.ideAssistant.model.LLMSimulator
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import io.ktor.client.*
@@ -24,7 +26,7 @@ class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/
         val interactionChain = StringBuilder()
 
         while (true) {
-            val modelAPIMethodQuery: IDEApiMethod = llmSimulator.getAPIQuery() ?: break
+            val modelAPIMethodQuery: IdeApiMethod = llmSimulator.getAPIQuery() ?: break
             interactionChain.append("[API Call Info]:\n$modelAPIMethodQuery\n")
 
             modelAPIMethodQuery.execute()
