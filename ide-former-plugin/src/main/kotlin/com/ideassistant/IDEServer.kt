@@ -42,7 +42,8 @@ fun Application.configureRouting(ideStateKeeper: IDEStateKeeper) {
 
         get("/project-modules") {
             val apiMethod = GetAllProjectModules(ideStateKeeper.userProject)
-            call.respondText(apiMethod.execute())
+            apiMethod.execute()
+            call.respondText(apiMethod.getExecutionRes())
         }
 
         get("/file-kt-methods/{file}") {
@@ -52,26 +53,33 @@ fun Application.configureRouting(ideStateKeeper: IDEStateKeeper) {
             )
 
             val apiMethod = GetAllKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
-            call.respondText(apiMethod.execute())
+            apiMethod.execute()
+            call.respondText(apiMethod.getExecutionRes())
         }
 
         post("/list-dir-contents/{dirName?}") {
             val dirName = call.parameters["dirName"] ?: "."
+
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
-            call.respondText(apiMethod.execute())
+            apiMethod.execute()
+            call.respondText(apiMethod.getExecutionRes())
         }
 
         post("/change-dir/{targetDirName?}") {
             val targetDirName = call.parameters["targetDirName"] ?: "."
+
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
-            call.respondText(apiMethod.execute())
+            apiMethod.execute()
+            call.respondText(apiMethod.getExecutionRes())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
         }
 
         post("/post-final-ans") {
             val modelFinalAns = call.receiveText()
+
             val apiMethod = SaveModelFinalAns(modelFinalAns)
-            call.respondText(apiMethod.execute())
+            apiMethod.execute()
+            call.respondText(apiMethod.getExecutionRes())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
         }
     }

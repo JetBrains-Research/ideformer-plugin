@@ -7,7 +7,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import java.util.*
 
-class IDEStateKeeper {
+class IDEStateKeeper(val userProject: Project) {
     private val apiCallStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
     lateinit var curDirectory: PsiDirectory
 

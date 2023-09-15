@@ -10,7 +10,8 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 interface IDEApiMethod {
-    fun execute(): String
+    fun execute()
+    fun getExecutionRes(): String
 }
 
 interface ReversibleApiMethod {
@@ -18,19 +19,26 @@ interface ReversibleApiMethod {
 }
 
 class GetAllProjectModules(private val project: Project) : IDEApiMethod {
+    private lateinit var projectModules: List<Module>
+
     companion object {
         fun getAllProjectModules(project: Project): List<Module> =
             ModuleManager.getInstance(project).modules.toList()
     }
 
-    override fun execute(): String =
-        getAllProjectModules(project).toString()
+    override fun execute() {
+        projectModules = getAllProjectModules(project)
+    }
+
+    override fun getExecutionRes(): String = projectModules.toString()
 }
 
 class GetAllKtFileKtMethods(
     private val curDirectory: PsiDirectory,
     private val ktFileName: String
 ) : IDEApiMethod {
+    private lateinit var fileKtMethods: List<KtNamedFunction>
+
     private fun getKtFileByName(ktFileName: String): KtFile =
         curDirectory.files
             .filterIsInstance<KtFile>()
@@ -42,20 +50,21 @@ class GetAllKtFileKtMethods(
             PsiTreeUtil.findChildrenOfType(ktFile, KtNamedFunction::class.java).toList()
     }
 
-    override fun execute(): String = try {
+    override fun execute() {
         val ktFile = getKtFileByName(ktFileName)
-        getKtFileKtMethods(ktFile)
-            .map { it.name }
-            .toString()
-    } catch (e: Exception) {
-        e.message!!
+        fileKtMethods = getKtFileKtMethods(ktFile)
     }
+
+    internal fun getMethodsNames() = fileKtMethods.map { it.name }
+    override fun getExecutionRes(): String = getMethodsNames().toString()
 }
 
 class ListDirectoryContents(
     private val curDirectory: PsiDirectory,
     private val dirName: String = "."
 ) : IDEApiMethod {
+    private lateinit var dirContents: List<PsiFileSystemItem>
+
     companion object {
         fun getListDirectoryContents(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
             val files = psiDirectory.files.map { it as PsiFileSystemItem }
@@ -64,17 +73,18 @@ class ListDirectoryContents(
         }
     }
 
-    override fun execute(): String = try {
+    override fun execute() {
+        // TODO: обработать исключение
         val psiDirectory = when (dirName) {
             "." -> curDirectory
             else -> curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
         }
-        getListDirectoryContents(psiDirectory)
-            .map { it.name }
-            .toString()
-    } catch (e: Exception) {
-        e.message!!
+        dirContents = getListDirectoryContents(psiDirectory)
     }
+
+    internal fun getDirContentsNames() = dirContents.map { it.name }
+
+    override fun getExecutionRes(): String = getDirContentsNames().toString()
 }
 
 class ChangeDirectory(
@@ -82,23 +92,25 @@ class ChangeDirectory(
     private val targetDirName: String = "."
 ) : IDEApiMethod, ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
-    override fun execute(): String {
+
+    override fun execute() {
         if (targetDirName == ".") {
-            return "The directory remains the same."
+            return
         }
 
-        return try {
-            // non-recursive search
-            val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
-                ?: throw Exception("No such directory in a project: $targetDirName")
+        // non-recursive search
+        val targetDir = ideStateKeeper.curDirectory.findSubdirectory(targetDirName)
+            ?: throw Exception("No such directory in a project: $targetDirName.")
 
-            prevDir = ideStateKeeper.curDirectory
-            ideStateKeeper.curDirectory = targetDir
-            "Directory was changed: new dir is '${targetDir.name}'"
-        } catch (e: Exception) {
-            e.message!!
-        }
+        prevDir = ideStateKeeper.curDirectory
+        ideStateKeeper.curDirectory = targetDir
     }
+
+    override fun getExecutionRes(): String =
+        when (targetDirName) {
+            "." -> "Working directory remains the same."
+            else -> "Working directory was changed to $targetDirName."
+        }
 
     override fun reverse() {
         prevDir?.let {
@@ -109,7 +121,11 @@ class ChangeDirectory(
 }
 
 class SaveModelFinalAns(private val modelFinalAns: String) : IDEApiMethod, ReversibleApiMethod {
-    override fun execute(): String {
+    override fun execute() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getExecutionRes(): String {
         TODO("Not yet implemented")
     }
 

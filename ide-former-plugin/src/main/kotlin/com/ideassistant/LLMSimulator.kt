@@ -22,7 +22,7 @@ class LLMSimulator(userProject: Project) {
         ChangeDirectory(ideStateKeeper, "main"),
         ListDirectoryContents(ideStateKeeper.curDirectory),
         ChangeDirectory(ideStateKeeper, "kotlin"),
-        ChangeDirectory(ideStateKeeper, "someNotExistingDir"),
+        // ChangeDirectory(ideStateKeeper, "someNotExistingDir"),
         null
     )
 

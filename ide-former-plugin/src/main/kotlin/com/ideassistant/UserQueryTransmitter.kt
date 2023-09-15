@@ -27,7 +27,8 @@ class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/
             val modelAPIMethodQuery: IDEApiMethod = llmSimulator.getAPIQuery() ?: break
             interactionChain.append("[API Call Info]:\n$modelAPIMethodQuery\n")
 
-            val apiCallRes = modelAPIMethodQuery.execute()
+            modelAPIMethodQuery.execute()
+            val apiCallRes = modelAPIMethodQuery.getExecutionRes()
             interactionChain.append("[API Call Res]:\n$apiCallRes\n")
         }
 
