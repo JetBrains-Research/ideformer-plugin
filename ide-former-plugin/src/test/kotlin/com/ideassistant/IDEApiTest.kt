@@ -43,5 +43,26 @@ class IDEApiTest : BasePlatformTestCase() {
         val lsSubDir = ListDirectoryContents(ideStateKeeper.curDirectory, "dir1")
         lsSubDir.execute()
         assertEquals(setOf("someKtFile2.kt",  "subdir"), lsSubDir.getDirContentsNames().toSet())
+
+        // TODO: to add test for a subsubdir
+        // TODO: to add test for a non-existing dir
+    }
+
+    fun testChangeDirectory() {
+        val ideStateKeeper = IDEStateKeeper(project)
+
+        val cdSubDir = ChangeDirectory(ideStateKeeper, "dir1")
+        cdSubDir.execute()
+        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+
+        val cdSecondChanging = ChangeDirectory(ideStateKeeper, "subdir")
+        cdSecondChanging.execute()
+        assertEquals("subdir", ideStateKeeper.curDirectory.name)
+
+        cdSecondChanging.reverse()
+        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+
+        // TODO: to add test for a subsubdir changing
+        // TODO: to add test for a non-existing dir
     }
 }
