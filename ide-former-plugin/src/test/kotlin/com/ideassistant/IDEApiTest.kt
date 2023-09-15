@@ -7,6 +7,12 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 class IDEApiTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String = "src/test/testData/testProject"
 
+    override fun setUp() {
+        super.setUp()
+        configureTestProject()
+    }
+
+
     /*
     Test project structure:
 
@@ -28,7 +34,6 @@ class IDEApiTest : BasePlatformTestCase() {
     }
 
     fun testListDirectoryContents() {
-        configureTestProject()
         val ideStateKeeper = IDEStateKeeper(project)
 
         val lsCurDir = ListDirectoryContents(ideStateKeeper.curDirectory)
