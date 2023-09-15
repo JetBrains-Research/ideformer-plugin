@@ -44,7 +44,10 @@ class IDEApiTest : BasePlatformTestCase() {
         lsSubDir.execute()
         assertEquals(setOf("someKtFile2.kt",  "subdir"), lsSubDir.getDirContentsNames().toSet())
 
-        // TODO: to add test for a subsubdir
+        val lsDirSeveralLevelsBelow = ListDirectoryContents(ideStateKeeper.curDirectory, "dir2/subdir/subsubdir")
+        lsDirSeveralLevelsBelow.execute()
+        assertEquals(setOf("someTextFile.txt"), lsDirSeveralLevelsBelow.getDirContentsNames().toSet())
+
         // TODO: to add test for a non-existing dir
     }
 

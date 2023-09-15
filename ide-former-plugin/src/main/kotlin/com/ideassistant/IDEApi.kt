@@ -77,7 +77,7 @@ class ListDirectoryContents(
         // TODO: обработать исключение
         val psiDirectory = when (dirName) {
             "." -> curDirectory
-            else -> curDirectory.findSubdirectory(dirName) ?: throw Exception("No such subdirectory")
+            else -> PsiElementsUtils.findSubdirectory(curDirectory, dirName) ?: throw Exception("No such subdirectory")
         }
         dirContents = getListDirectoryContents(psiDirectory)
     }
