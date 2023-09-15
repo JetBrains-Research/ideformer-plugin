@@ -3,4 +3,4 @@ fun main() {
 }
 
 val num = 0
-fun incNum() = num++
+fun increaseNum(): Int = return ++num

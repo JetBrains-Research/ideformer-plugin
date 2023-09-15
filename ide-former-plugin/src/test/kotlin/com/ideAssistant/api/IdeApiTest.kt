@@ -79,4 +79,22 @@ class IdeApiTest : BasePlatformTestCase() {
 
         // TODO: to add test for a non-existing dir
     }
+
+    fun testGetKtFileKtMethods() {
+        val ideStateKeeper = IdeStateKeeper(project)
+
+        var cd = ChangeDirectory(ideStateKeeper, "dir1")
+        cd.execute()
+
+        var ktFileMethods = GetKtFileKtMethods(ideStateKeeper.curDirectory, "someKtFile2.kt")
+        ktFileMethods.execute()
+        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getMethodsNames().toSet())
+
+        cd = ChangeDirectory(ideStateKeeper, "subdir")
+        cd.execute()
+
+        ktFileMethods = GetKtFileKtMethods(ideStateKeeper.curDirectory, "someKtFile1.kt")
+        ktFileMethods.execute()
+        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getMethodsNames().toSet())
+    }
 }
