@@ -8,7 +8,7 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.9.10"
+    kotlin("jvm") version "1.8.10"
     // Gradle IntelliJ Plugin
     id("org.jetbrains.intellij") version "1.15.0"
     // Gradle Changelog Plugin
@@ -27,6 +27,34 @@ allprojects {
         plugin("kotlin")
         plugin("org.jetbrains.intellij")
         plugin("io.ktor.plugin")
+    }
+
+    repositories {
+        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
+        mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/ki/maven")
+    }
+
+    // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+    intellij {
+        pluginName.set(properties("pluginName"))
+        version.set(properties("platformVersion"))
+        type.set(properties("platformType"))
+
+        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
+        plugins.set(properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) })
+    }
+
+    tasks {
+        withType<JavaCompile> {
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
+        }
+        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
+            kotlinOptions.jvmTarget = "17"
+        }
+        withType<org.jetbrains.intellij.tasks.BuildSearchableOptionsTask>().forEach { it.enabled = false }
     }
 }
 
@@ -119,35 +147,5 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels.set(properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) })
-    }
-}
-
-allprojects {
-    repositories {
-        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
-        mavenCentral()
-        maven("https://packages.jetbrains.team/maven/p/ki/maven")
-    }
-
-    // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-    intellij {
-        pluginName.set(properties("pluginName"))
-        version.set(properties("platformVersion"))
-        type.set(properties("platformType"))
-
-        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-        plugins.set(properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) })
-    }
-
-    tasks {
-        withType<JavaCompile> {
-            sourceCompatibility = "17"
-            targetCompatibility = "17"
-        }
-        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
-            kotlinOptions.jvmTarget = "17"
-        }
-        withType<org.jetbrains.intellij.tasks.BuildSearchableOptionsTask>().forEach { it.enabled = false }
     }
 }
