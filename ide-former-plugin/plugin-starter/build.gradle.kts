@@ -32,12 +32,12 @@ abstract class IOCliTask : org.jetbrains.intellij.tasks.RunIdeTask() {
 }
 
 tasks {
-    register<IOCliTask>("runDemoPluginCLI") {
+    register<IOCliTask>("runIdeAssistantPlugin") {
         dependsOn("buildPlugin")
         args = listOfNotNull(
             runner,
-            input?.let { it },
-            output?.let { it }
+            input,
+            output
         )
     }
 }
