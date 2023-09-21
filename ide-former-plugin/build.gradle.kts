@@ -124,7 +124,9 @@ tasks {
 
 allprojects {
     repositories {
+        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
         mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/ki/maven")
     }
 
     // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
