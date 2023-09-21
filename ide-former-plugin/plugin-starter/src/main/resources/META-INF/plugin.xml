@@ -9,8 +9,7 @@
     <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-        <toolWindow id="IDE Assistant" anchor="right" factoryClass="com.ideAssistant.ui.IdeAssistantToolWindowFactory"/>
+        <appStarter implementation="com.ideAssistant.PluginRunner"/>
     </extensions>
 
 </idea-plugin>
