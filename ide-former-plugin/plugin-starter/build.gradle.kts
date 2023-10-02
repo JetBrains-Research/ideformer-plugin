@@ -3,7 +3,6 @@ version = rootProject.version
 
 dependencies {
     implementation("com.github.ajalt:clikt:2.8.0")
-    implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.research:plugin-utilities-core:1.0")
     implementation(project(":ide-assistant"))
 }
@@ -36,8 +35,8 @@ tasks {
         dependsOn("buildPlugin")
         args = listOfNotNull(
             runner,
-            input,
-            output
+            input?.let { it },
+            output?.let { it }
         )
     }
 }
