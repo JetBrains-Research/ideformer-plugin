@@ -21,7 +21,6 @@ object IdeServerStarter : ApplicationStarter {
 
 class IdeServerStarterCli : CliktCommand() {
     private val input by argument(help = "Path to the project").file(mustExist = true, canBeFile = false)
-    private val output by argument(help = "Output directory").file(canBeFile = true)
 
     override fun run() {
         println("Hello from the server starter")
