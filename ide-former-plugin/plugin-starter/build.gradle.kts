@@ -4,7 +4,6 @@ version = rootProject.version
 dependencies {
     implementation("com.github.ajalt:clikt:2.8.0")
     implementation("org.jetbrains.research:plugin-utilities-core:2.0.6")
-    implementation(project(":ide-assistant"))
 }
 
 abstract class IOCliTask : org.jetbrains.intellij.tasks.RunIdeTask() {
