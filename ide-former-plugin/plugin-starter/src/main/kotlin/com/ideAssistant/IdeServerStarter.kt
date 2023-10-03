@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import com.intellij.openapi.application.ApplicationStarter
+import org.jetbrains.research.pluginUtilities.openRepository.getKotlinJavaRepositoryOpener
 import kotlin.system.exitProcess
 
 object IdeServerStarter : ApplicationStarter {
@@ -23,7 +24,9 @@ class IdeServerStarterCli : CliktCommand() {
     private val input by argument(help = "Path to the project").file(mustExist = true, canBeFile = false)
 
     override fun run() {
-        println("Hello from the server starter")
+        val repositoryOpener = getKotlinJavaRepositoryOpener()
+
+        println("IDE server is started")
         exitProcess(0)
     }
 }
