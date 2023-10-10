@@ -13,7 +13,7 @@ abstract class IOCliTask : org.jetbrains.intellij.tasks.RunIdeTask() {
     val runner: String? by project
 
     @get:Input
-    val input: String? by project
+    val pathToProject: String? by project
 
     @get:Input
     val serverHost: String? by project
@@ -39,7 +39,7 @@ tasks {
         dependsOn("buildPlugin")
         args = listOfNotNull(
             runner,
-            input,
+            pathToProject,
             serverHost,
             serverPort
         )

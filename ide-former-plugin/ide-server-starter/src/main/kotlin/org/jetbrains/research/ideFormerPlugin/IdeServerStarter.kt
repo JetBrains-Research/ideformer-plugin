@@ -25,7 +25,7 @@ class IdeServerStarter : ApplicationStarter {
 }
 
 class IdeServerStarterCli : CliktCommand() {
-    private val input by argument(help = "Path to the project").file(mustExist = true, canBeFile = false)
+    private val pathToProject by argument(help = "Path to the project").file(mustExist = true, canBeFile = false)
     private val serverHost: String by argument(help = "Server host")
     private val serverPort: Int by argument(help = "Server port").int()
 
@@ -34,7 +34,7 @@ class IdeServerStarterCli : CliktCommand() {
     override fun run() {
         val projectOpener = ProjectOpener(null, null)
 
-        projectOpener.openAndApply(input.toPath(), resolve = false) { project ->
+        projectOpener.openAndApply(pathToProject.toPath(), resolve = false) { project ->
             project.service<IdeServerService>().startServer(serverHost, serverPort)
             true
         }
