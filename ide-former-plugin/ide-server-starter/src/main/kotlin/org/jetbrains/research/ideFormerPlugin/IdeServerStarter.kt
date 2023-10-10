@@ -8,6 +8,7 @@ import com.intellij.openapi.components.service
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerService
 import org.jetbrains.research.pluginUtilities.openProject.ProjectOpener
 import org.jetbrains.research.pluginUtilities.openProject.openAndApply
+import org.slf4j.LoggerFactory
 import kotlin.system.exitProcess
 
 class IdeServerStarter : ApplicationStarter {
@@ -25,6 +26,7 @@ class IdeServerStarter : ApplicationStarter {
 
 class IdeServerStarterCli : CliktCommand() {
     private val input by argument(help = "Path to the project").file(mustExist = true, canBeFile = false)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun run() {
         val projectOpener = ProjectOpener(null, null)
@@ -34,7 +36,7 @@ class IdeServerStarterCli : CliktCommand() {
             true
         }
 
-        println("IDE server is started")
+        logger.info("IDE server is started")
         exitProcess(0)
     }
 }
