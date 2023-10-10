@@ -109,11 +109,12 @@ object IdeServerConstants {
 
 @Service(Service.Level.PROJECT)
 class IdeServerService(private val project: Project) {
-    private val ideServer = IdeServer()
+    private lateinit var ideServer: IdeServer
 
-    fun startServer() {
+    fun startServer(host: String, port: Int) {
         object : Task.Backgroundable(project, "IDE server start") {
             override fun run(indicator: ProgressIndicator) {
+                ideServer = IdeServer(host, port)
                 ideServer.startServer(project)
             }
         }.queue()
