@@ -31,12 +31,11 @@ class IdeServerStarterCli : CliktCommand() {
     override fun run() {
         val projectOpener = ProjectOpener(null, null)
 
-        projectOpener.openAndApply(input.toPath(), resolve = true) { project ->
+        projectOpener.openAndApply(input.toPath(), resolve = false) { project ->
             project.service<IdeServerService>().startServer()
             true
         }
 
         logger.info("IDE server is started")
-        exitProcess(0)
     }
 }
