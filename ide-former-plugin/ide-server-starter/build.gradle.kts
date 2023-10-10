@@ -4,6 +4,8 @@ version = rootProject.version
 dependencies {
     implementation("com.github.ajalt:clikt:2.8.0")
     implementation("org.jetbrains.research:plugin-utilities-core:2.0.6")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation(project(":ide-server"))
 }
 
 abstract class IOCliTask : org.jetbrains.intellij.tasks.RunIdeTask() {
@@ -31,7 +33,7 @@ tasks {
         dependsOn("buildPlugin")
         args = listOfNotNull(
             runner,
-            input?.let { it }
+            input
         )
     }
 }
