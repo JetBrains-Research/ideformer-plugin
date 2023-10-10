@@ -15,6 +15,12 @@ abstract class IOCliTask : org.jetbrains.intellij.tasks.RunIdeTask() {
     @get:Input
     val input: String? by project
 
+    @get:Input
+    val serverHost: String? by project
+
+    @get:Input
+    val serverPort: String? by project
+
     init {
         jvmArgs = listOf(
             "-Djava.awt.headless=true",
@@ -33,7 +39,9 @@ tasks {
         dependsOn("buildPlugin")
         args = listOfNotNull(
             runner,
-            input
+            input,
+            serverHost,
+            serverPort
         )
     }
 }
