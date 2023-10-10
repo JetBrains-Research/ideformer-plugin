@@ -4,8 +4,10 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import com.intellij.openapi.application.ApplicationStarter
-import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.components.service
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerService
 import org.jetbrains.research.pluginUtilities.openProject.ProjectOpener
+import org.jetbrains.research.pluginUtilities.openProject.openAndApply
 import kotlin.system.exitProcess
 
 class IdeServerStarter : ApplicationStarter {
@@ -26,9 +28,11 @@ class IdeServerStarterCli : CliktCommand() {
 
     override fun run() {
         val projectOpener = ProjectOpener(null, null)
-        projectOpener.open(input.toPath(), Disposer.newDisposable(), false)
 
-        // TODO: to add server starting
+        projectOpener.openAndApply(input.toPath(), resolve = true) { project ->
+            project.service<IdeServerService>().startServer()
+            true
+        }
 
         println("IDE server is started")
         exitProcess(0)
