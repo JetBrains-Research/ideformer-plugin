@@ -28,7 +28,7 @@ class IdeServer(
 
         embeddedServer(Netty, port = port, host = host) {
             module(ideStateKeeper, logger)
-        }.start(wait = false)
+        }.start(wait = true)
 
         logger.info("Server is started")
     }
