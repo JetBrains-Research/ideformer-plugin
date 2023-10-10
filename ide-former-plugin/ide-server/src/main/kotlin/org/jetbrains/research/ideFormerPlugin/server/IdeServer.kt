@@ -13,76 +13,91 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class IdeServer(
     private val host: String = "localhost",
     private val port: Int = 8082
 ) {
     private lateinit var ideStateKeeper: IdeStateKeeper
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun startServer(userProject: Project) {
         ideStateKeeper = IdeStateKeeper(userProject)
 
         embeddedServer(Netty, port = port, host = host) {
-            module(ideStateKeeper)
+            module(ideStateKeeper, logger)
         }.start(wait = false)
 
-        // TODO: add logging
-        println("Server is started")
+        logger.info("Server is started")
     }
 }
 
-fun Application.module(ideStateKeeper: IdeStateKeeper) {
-    configureRouting(ideStateKeeper)
+fun Application.module(ideStateKeeper: IdeStateKeeper, logger: Logger) {
+    configureRouting(ideStateKeeper, logger)
 }
 
-fun Application.configureRouting(ideStateKeeper: IdeStateKeeper) {
+fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger) {
     routing {
         get("/") {
+            logger.info("Server GET root page request is called")
             call.respondText(IdeServerConstants.ROOT_PAGE_TEXT)
+            logger.info("Server GET root page request is processed")
         }
 
         get("/project-modules") {
+            logger.info("Server GET project modules request is called")
             val apiMethod = GetProjectModules(ideStateKeeper.userProject)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
+            logger.info("Server GET project modules request is processed")
         }
 
-        get("/file-kt-methods/{file}") {
-            val fileName = call.parameters["file"] ?: return@get call.respondText(
+        get("/file-kt-methods/{fileName}") {
+            val fileName = call.parameters["fileName"] ?: return@get call.respondText(
                 text = IdeServerConstants.MISSING_FILENAME,
                 status = HttpStatusCode.BadRequest
             )
+            logger.info("Server GET file kt methods request for file $fileName is called")
 
             val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
+            logger.info("Server GET file kt methods request for file $fileName is processed")
+
         }
 
         get("/list-dir-contents/{dirName?}") {
             val dirName = call.parameters["dirName"] ?: "."
+            logger.info("Server GET ls request for dir $dirName is called")
 
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
+            logger.info("Server GET ls request for dir $dirName is processed")
         }
 
         get("/change-dir/{targetDirName?}") {
             val targetDirName = call.parameters["targetDirName"] ?: "."
+            logger.info("Server GET cd result request for dir $targetDirName is called")
 
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
+            logger.info("Server GET cd result request for dir $targetDirName is processed")
         }
 
         post("/post-final-ans") {
+            logger.info("Server POST final ans request is called")
             val modelFinalAns = call.receiveText()
 
             val apiMethod = SaveModelFinalAns(modelFinalAns)
             apiMethod.execute()
             call.respondText(apiMethod.getExecutionRes())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
+            logger.info("Server POST final ans request is processed")
         }
     }
 }
