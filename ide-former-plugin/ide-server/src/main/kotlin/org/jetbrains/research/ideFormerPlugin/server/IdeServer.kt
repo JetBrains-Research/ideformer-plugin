@@ -59,7 +59,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper) {
             call.respondText(apiMethod.getExecutionRes())
         }
 
-        post("/list-dir-contents/{dirName?}") {
+        get("/list-dir-contents/{dirName?}") {
             val dirName = call.parameters["dirName"] ?: "."
 
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
@@ -67,7 +67,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper) {
             call.respondText(apiMethod.getExecutionRes())
         }
 
-        post("/change-dir/{targetDirName?}") {
+        get("/change-dir/{targetDirName?}") {
             val targetDirName = call.parameters["targetDirName"] ?: "."
 
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
