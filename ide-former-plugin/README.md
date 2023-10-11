@@ -8,4 +8,4 @@ Ide-former plugin
 
 ### Run plugin in a headless mode
 
-Run `./runPluginStarter.sh <absolute path to the project>` command from the root of the project.
+Run `./runPluginStarter.sh <absolute path to the project> <server host> <server port>` command from the root of the project.
