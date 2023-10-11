@@ -7,4 +7,4 @@ if uname -s | grep -iq cygwin ; then
     PWD=$(cygpath -w "$PWD")
 fi
 
-"$DIR/gradlew" -p "$DIR" runIdeAssistantPlugin -Prunner=ide-server -Pinput="$1"
+"$DIR/gradlew" -p "$DIR" runIdeAssistantPlugin -Prunner=ide-server -PpathToProject="$1" -PserverHost="$2" -PserverPort="$3"
