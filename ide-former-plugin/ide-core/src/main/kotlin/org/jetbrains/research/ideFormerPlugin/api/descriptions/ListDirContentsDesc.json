@@ -1,0 +1,16 @@
+{
+  "name": "List Directory Contents",
+  "url": "/list-dir-contents",
+  "description": "Gets the content of a directory. By default it returns the content of the current directory.",
+  "method": "GET",
+  "required_parameters": [],
+  "optional_parameters": [
+    {
+      "name": "dirName",
+      "type": "STRING",
+      "description": "Address of a directory to list",
+      "regex": "TODO",
+      "default": "."
+    }
+  ]
+}

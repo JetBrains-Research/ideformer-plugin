@@ -1,0 +1,16 @@
+{
+  "name": "Change Directory",
+  "url": "/change-dir",
+  "description": "Changes the current working directory to a new one.",
+  "method": "GET",
+  "required_parameters": [],
+  "optional_parameters": [
+    {
+      "name": "targetDirName",
+      "type": "STRING",
+      "description": "The address of the directory that will become the working directory. Path should be relative to the current working directory or be the full path.",
+      "regex": "TODO",
+      "default": "."
+    }
+  ]
+}
