@@ -35,10 +35,9 @@ class IdeServerStarterCli : CliktCommand() {
         val projectOpener = ProjectOpener(null, null)
 
         projectOpener.openAndApply(pathToProject.toPath(), resolve = false) { project ->
+            logger.info("Project is opened")
             project.service<IdeServerService>().startServer(serverHost, serverPort)
             true
         }
-
-        logger.info("IDE server is started")
     }
 }

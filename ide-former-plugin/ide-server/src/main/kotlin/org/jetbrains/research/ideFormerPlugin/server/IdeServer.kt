@@ -26,11 +26,10 @@ class IdeServer(
     fun startServer(userProject: Project) {
         ideStateKeeper = IdeStateKeeper(userProject)
 
+        logger.info("Starting server")
         embeddedServer(Netty, port = port, host = host) {
             module(ideStateKeeper, logger)
         }.start(wait = true)
-
-        logger.info("Server is started")
     }
 }
 
