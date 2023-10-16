@@ -45,6 +45,21 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET root page request is processed")
         }
 
+        get("/ide-api-list") {
+            logger.info("Server GET IDE API list request is called")
+
+            val apiDescriptions =
+                IdeServer::class.java.classLoader.getResourceAsStream("ideApiDescriptions/ideApiDescriptions.json")!!
+                    .bufferedReader().readText()
+            if (apiDescriptions.isNotEmpty()) {
+                call.respondText(apiDescriptions)
+            } else {
+                call.respondText(IdeServerConstants.NO_API_AVAILABLE)
+            }
+
+            logger.info("Server GET IDE API list request is processed")
+        }
+
         get("/project-modules") {
             logger.info("Server GET project modules request is called")
             val apiMethod = GetProjectModules(ideStateKeeper.userProject)
@@ -102,6 +117,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 }
 
 object IdeServerConstants {
+    const val NO_API_AVAILABLE = "No IDE API available"
     const val ROOT_PAGE_TEXT = "IDE server"
     const val MISSING_FILENAME = "Missing file name"
 }

@@ -1,8 +1,0 @@
-{
-  "name": "Get Project Modules",
-  "url": "/project-modules",
-  "description": "Gets all modules of the project.",
-  "method": "GET",
-  "required_parameters": [],
-  "optional_parameters": []
-}
