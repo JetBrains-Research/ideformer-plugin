@@ -1,5 +1,6 @@
 package org.jetbrains.research.ideFormerPlugin.server
 
+import com.google.gson.Gson
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
@@ -33,17 +34,21 @@ class IdeServer(
     }
 }
 
+data class ServerAnswer(val serverAnswer: String)
+
 fun Application.module(ideStateKeeper: IdeStateKeeper, logger: Logger) {
     configureRouting(ideStateKeeper, logger)
 }
 
 fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger) {
     install(IgnoreTrailingSlash)
+    val gson = Gson()
 
     routing {
         get("/") {
             logger.info("Server GET root page request is called")
-            call.respondText(IdeServerConstants.ROOT_PAGE_TEXT)
+            val serverAnswer = ServerAnswer(IdeServerConstants.ROOT_PAGE_TEXT)
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET root page request is processed")
         }
 
@@ -53,12 +58,10 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiDescriptions =
                 IdeServer::class.java.classLoader.getResourceAsStream("ideApiDescriptions/ideApiDescriptions.json")!!
                     .bufferedReader().readText()
-            if (apiDescriptions.isNotEmpty()) {
-                call.respondText(apiDescriptions)
-            } else {
-                call.respondText(IdeServerConstants.NO_API_AVAILABLE)
-            }
+            apiDescriptions.ifEmpty { IdeServerConstants.NO_API_AVAILABLE }
 
+            val serverAnswer = ServerAnswer(apiDescriptions)
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET IDE API list request is processed")
         }
 
@@ -66,7 +69,9 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET project modules request is called")
             val apiMethod = GetProjectModules(ideStateKeeper.userProject)
             apiMethod.execute()
-            call.respondText(apiMethod.getExecutionRes())
+
+            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET project modules request is processed")
         }
 
@@ -79,7 +84,9 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
-            call.respondText(apiMethod.getExecutionRes())
+
+            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET file kt methods request for file $fileName is processed")
 
         }
@@ -90,7 +97,9 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
             apiMethod.execute()
-            call.respondText(apiMethod.getExecutionRes())
+
+            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET ls request for dir $dirName is processed")
         }
 
@@ -100,8 +109,11 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
             apiMethod.execute()
-            call.respondText(apiMethod.getExecutionRes())
+            // TODO: add logging
             ideStateKeeper.saveReversibleApiCall(apiMethod)
+
+            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET cd result request for dir $targetDirName is processed")
         }
 
@@ -111,8 +123,10 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             val apiMethod = SaveModelFinalAns(modelFinalAns)
             apiMethod.execute()
-            call.respondText(apiMethod.getExecutionRes())
             ideStateKeeper.saveReversibleApiCall(apiMethod)
+
+            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            call.respondText(gson.toJson(serverAnswer))
             logger.info("Server POST final ans request is processed")
         }
     }
