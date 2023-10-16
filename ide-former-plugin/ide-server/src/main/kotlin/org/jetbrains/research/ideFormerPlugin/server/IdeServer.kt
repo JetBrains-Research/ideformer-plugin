@@ -118,6 +118,20 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET cd result request for dir '$targetDirName' is processed")
         }
 
+        get("/revert-api-calls/{apiCallsCount?}") {
+            val apiCallsCount = call.parameters["apiCallsCount"] ?: 1
+            if (apiCallsCount !is Int || apiCallsCount.toInt() <= 0) return@get call.respondText(
+                text = IdeServerConstants.INCORRECT_API_CALLS_CNT,
+                status = HttpStatusCode.BadRequest
+            )
+            logger.info("Server GET revert $apiCallsCount api calls request is called")
+
+            val revertedApiCallsCount = ideStateKeeper.undoApiCalls(apiCallsCount)
+            val serverAnswer = ServerAnswer("Last $revertedApiCallsCount api calls were reverted")
+            call.respondText(gson.toJson(serverAnswer))
+            logger.info("Server GET revert $apiCallsCount api calls request is processed")
+        }
+
         post("/post-final-ans") {
             logger.info("Server POST final model ans request is called")
             val modelFinalAns = call.receiveText()
@@ -139,6 +153,7 @@ object IdeServerConstants {
     const val NO_API_AVAILABLE = "No IDE API available"
     const val ROOT_PAGE_TEXT = "IDE server"
     const val MISSING_FILENAME = "Missing file name"
+    const val INCORRECT_API_CALLS_CNT = "apiCallsCount parameter should be a positive integer"
 }
 
 @Service(Service.Level.PROJECT)

@@ -23,15 +23,16 @@ class IdeStateKeeper(val userProject: Project) {
 
     fun saveReversibleApiCall(apiCall: ReversibleApiMethod) = apiCallStack.addElement(apiCall)
 
-    fun undoApiCalls(apiCallsCount: Int) {
-        repeat(apiCallsCount) {
+    fun undoApiCalls(apiCallsCount: Int): Int {
+        for (i in 1..apiCallsCount) {
             if (apiCallStack.empty()) {
-                return
+                return i
             }
 
             val lastApiCall = apiCallStack.peek()
             lastApiCall.reverse()
             apiCallStack.pop()
         }
+        return apiCallsCount
     }
 }
