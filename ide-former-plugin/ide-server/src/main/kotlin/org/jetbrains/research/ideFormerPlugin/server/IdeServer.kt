@@ -38,6 +38,8 @@ fun Application.module(ideStateKeeper: IdeStateKeeper, logger: Logger) {
 }
 
 fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger) {
+    install(IgnoreTrailingSlash)
+
     routing {
         get("/") {
             logger.info("Server GET root page request is called")
