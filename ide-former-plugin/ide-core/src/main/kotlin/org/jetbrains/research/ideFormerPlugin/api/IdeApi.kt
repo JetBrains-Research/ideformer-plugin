@@ -99,7 +99,7 @@ class ChangeDirectory(
         }
 
         val targetDir = PsiElementsUtils.findSubdirectory(ideStateKeeper.curDirectory, targetDirName)
-            ?: throw Exception("No such directory in a project: $targetDirName.")
+            ?: throw Exception("No such directory in a project: '$targetDirName'.")
 
         prevDir = ideStateKeeper.curDirectory
         ideStateKeeper.curDirectory = targetDir
@@ -108,7 +108,7 @@ class ChangeDirectory(
     override fun getExecutionRes(): String =
         when (targetDirName) {
             "." -> "Working directory remains the same."
-            else -> "Working directory was changed to $targetDirName."
+            else -> "Working directory was changed to '$targetDirName'."
         }
 
     override fun reverse() {

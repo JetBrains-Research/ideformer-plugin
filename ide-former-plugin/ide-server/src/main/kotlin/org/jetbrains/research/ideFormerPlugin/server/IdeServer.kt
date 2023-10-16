@@ -53,7 +53,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         }
 
         get("/ide-api-list") {
-            logger.info("Server GET IDE API list request is called")
+            logger.info("Server GET ide api list request is called")
 
             val apiDescriptions =
                 IdeServer::class.java.classLoader.getResourceAsStream("ideApiDescriptions/ideApiDescriptions.json")!!
@@ -62,7 +62,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             val serverAnswer = ServerAnswer(apiDescriptions)
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server GET IDE API list request is processed")
+            logger.info("Server GET ide api list request is processed")
         }
 
         get("/project-modules") {
@@ -80,54 +80,57 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
                 text = IdeServerConstants.MISSING_FILENAME,
                 status = HttpStatusCode.BadRequest
             )
-            logger.info("Server GET file kt methods request for file $fileName is called")
+            logger.info("Server GET file kt methods request for file '$fileName' is called")
 
             val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server GET file kt methods request for file $fileName is processed")
+            logger.info("Server GET file kt methods request for file '$fileName' is processed")
 
         }
 
         get("/list-dir-contents/{dirName?}") {
             val dirName = call.parameters["dirName"] ?: "."
-            logger.info("Server GET ls request for dir $dirName is called")
+            logger.info("Server GET ls request for dir '$dirName' is called")
 
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server GET ls request for dir $dirName is processed")
+            logger.info("Server GET ls request for dir '$dirName' is processed")
         }
 
         get("/change-dir/{targetDirName?}") {
             val targetDirName = call.parameters["targetDirName"] ?: "."
-            logger.info("Server GET cd result request for dir $targetDirName is called")
+            logger.info("Server GET cd result request for dir '$targetDirName' is called")
 
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
             apiMethod.execute()
-            // TODO: add logging
+
             ideStateKeeper.saveReversibleApiCall(apiMethod)
+            logger.info("Save 'Change directory' api call to the api calls stack")
 
             val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server GET cd result request for dir $targetDirName is processed")
+            logger.info("Server GET cd result request for dir '$targetDirName' is processed")
         }
 
         post("/post-final-ans") {
-            logger.info("Server POST final ans request is called")
+            logger.info("Server POST final model ans request is called")
             val modelFinalAns = call.receiveText()
 
             val apiMethod = SaveModelFinalAns(modelFinalAns)
             apiMethod.execute()
+            logger.info("Save 'Save model final ans' api call to the api calls stack")
+
             ideStateKeeper.saveReversibleApiCall(apiMethod)
 
             val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server POST final ans request is processed")
+            logger.info("Server POST final model ans request is processed")
         }
     }
 }
