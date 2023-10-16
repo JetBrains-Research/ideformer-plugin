@@ -7,7 +7,7 @@
     {
       "name": "parameter name",
       "type": "STRING/INT/FLOAT",
-      "regex": "regex obviously (OPTIONAL)",
+      "regex": "regex obviously (DEFAULT REGEX: '[^\"\\{\\}]*?' )",
       "description": "description of the parameter, 5-10 words, I guess"
     }
   ],

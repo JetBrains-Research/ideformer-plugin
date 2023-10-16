@@ -19,7 +19,7 @@
           "name": "dirName",
           "type": "STRING",
           "description": "Address of a directory to list",
-          "regex": "TODO",
+          "regex": "[^\"\\{\\}]*?",
           "default": "."
         }
       ]
@@ -35,7 +35,7 @@
           "name": "targetDirName",
           "type": "STRING",
           "description": "The address of the directory that will become the working directory. Path should be relative to the current working directory or be the full path.",
-          "regex": "TODO",
+          "regex": "[^\"\\{\\}]*?",
           "default": "."
         }
       ]
