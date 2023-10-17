@@ -1,7 +1,7 @@
 {
   "APIs": [
     {
-      "name": "Get Project Modules",
+      "name": "Project Modules",
       "url": "/project-modules",
       "description": "Gets all modules of the project.",
       "method": "GET",
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "name": "Get Kt File Kt Methods",
+      "name": "Kt File Kt Methods",
       "url": "/file-kt-methods",
       "description": "Gets a list of Kotlin named functions’ names of the file with the .kt extension.",
       "method": "GET",
