@@ -30,7 +30,7 @@ class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/
             interactionChain.append("[API Call Info]:\n$modelAPIMethodQuery\n")
 
             modelAPIMethodQuery.execute()
-            val apiCallRes = modelAPIMethodQuery.getExecutionRes()
+            val apiCallRes = modelAPIMethodQuery.executionResult()
             interactionChain.append("[API Call Res]:\n$apiCallRes\n")
         }
 

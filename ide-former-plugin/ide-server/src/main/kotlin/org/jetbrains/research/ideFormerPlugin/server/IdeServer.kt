@@ -70,7 +70,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiMethod = GetProjectModules(ideStateKeeper.userProject)
             apiMethod.execute()
 
-            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET project modules request is processed")
         }
@@ -85,7 +85,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
 
-            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET file kt methods request for file '$fileName' is processed")
 
@@ -98,7 +98,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
             apiMethod.execute()
 
-            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET ls request for dir '$dirName' is processed")
         }
@@ -113,7 +113,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             ideStateKeeper.saveReversibleApiCall(apiMethod)
             logger.info("Save 'Change directory' api call to the api calls stack")
 
-            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET cd result request for dir '$targetDirName' is processed")
         }
@@ -142,7 +142,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
             ideStateKeeper.saveReversibleApiCall(apiMethod)
 
-            val serverAnswer = ServerAnswer(apiMethod.getExecutionRes())
+            val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server POST final model ans request is processed")
         }

@@ -12,7 +12,7 @@ import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 interface IdeApiMethod {
     fun execute()
-    fun getExecutionRes(): String
+    fun executionResult(): String
 }
 
 interface ReversibleApiMethod {
@@ -31,7 +31,7 @@ class GetProjectModules(private val project: Project) : IdeApiMethod {
         projectModules = getProjectModules(project)
     }
 
-    override fun getExecutionRes(): String = projectModules.toString()
+    override fun executionResult(): String = projectModules.toString()
 }
 
 class GetKtFileKtMethods(
@@ -57,7 +57,7 @@ class GetKtFileKtMethods(
     }
 
     internal fun getMethodsNames() = fileKtMethods.map { it.name }
-    override fun getExecutionRes(): String = getMethodsNames().toString()
+    override fun executionResult(): String = getMethodsNames().toString()
 }
 
 class ListDirectoryContents(
@@ -84,7 +84,7 @@ class ListDirectoryContents(
 
     internal fun getDirContentsNames() = dirContents.map { it.name }
 
-    override fun getExecutionRes(): String = getDirContentsNames().toString()
+    override fun executionResult(): String = getDirContentsNames().toString()
 }
 
 class ChangeDirectory(
@@ -105,7 +105,7 @@ class ChangeDirectory(
         ideStateKeeper.curDirectory = targetDir
     }
 
-    override fun getExecutionRes(): String =
+    override fun executionResult(): String =
         when (targetDirName) {
             "." -> "Working directory remains the same."
             else -> "Working directory was changed to '$targetDirName'."
@@ -124,7 +124,7 @@ class SaveModelFinalAns(private val modelFinalAns: String) : IdeApiMethod, Rever
         TODO("Not yet implemented")
     }
 
-    override fun getExecutionRes(): String {
+    override fun executionResult(): String {
         TODO("Not yet implemented")
     }
 
