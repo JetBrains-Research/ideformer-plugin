@@ -19,7 +19,7 @@ interface ReversibleApiMethod {
     fun reverse()
 }
 
-class GetProjectModules(private val project: Project) : IdeApiMethod {
+class ProjectModules(private val project: Project) : IdeApiMethod {
     private lateinit var projectModules: List<Module>
 
     companion object {
@@ -34,7 +34,7 @@ class GetProjectModules(private val project: Project) : IdeApiMethod {
     override fun executionResult(): String = projectModules.toString()
 }
 
-class GetKtFileKtMethods(
+class KtFileKtMethods(
     private val curDirectory: PsiDirectory,
     private val ktFileName: String
 ) : IdeApiMethod {

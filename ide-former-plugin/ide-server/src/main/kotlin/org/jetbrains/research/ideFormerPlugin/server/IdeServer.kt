@@ -67,7 +67,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
         get("/project-modules") {
             logger.info("Server GET project modules request is called")
-            val apiMethod = GetProjectModules(ideStateKeeper.userProject)
+            val apiMethod = ProjectModules(ideStateKeeper.userProject)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
@@ -82,7 +82,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             )
             logger.info("Server GET file kt methods request for file '$fileName' is called")
 
-            val apiMethod = GetKtFileKtMethods(ideStateKeeper.curDirectory, fileName)
+            val apiMethod = KtFileKtMethods(ideStateKeeper.curDirectory, fileName)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
