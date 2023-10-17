@@ -21,14 +21,10 @@ interface ReversibleApiMethod : IdeApiMethod {
 
 class ProjectModules(private val project: Project) : IdeApiMethod {
     private lateinit var projectModules: List<Module>
-
-    companion object {
-        fun getProjectModules(project: Project): List<Module> =
-            ModuleManager.getInstance(project).modules.toList()
-    }
+    private fun Project.modules(): List<Module> = ModuleManager.getInstance(this).modules.toList()
 
     override fun execute() {
-        projectModules = getProjectModules(project)
+        projectModules = project.modules()
     }
 
     override fun executionResult(): String = projectModules.toString()
