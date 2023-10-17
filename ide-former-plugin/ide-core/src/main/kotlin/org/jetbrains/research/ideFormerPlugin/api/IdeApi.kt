@@ -15,7 +15,7 @@ interface IdeApiMethod {
     fun executionResult(): String
 }
 
-interface ReversibleApiMethod {
+interface ReversibleApiMethod : IdeApiMethod {
     fun reverse()
 }
 
@@ -90,7 +90,7 @@ class ListDirectoryContents(
 class ChangeDirectory(
     private val ideStateKeeper: IdeStateKeeper,
     private val targetDirName: String = "."
-) : IdeApiMethod, ReversibleApiMethod {
+) : ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
 
     override fun execute() {
@@ -119,7 +119,7 @@ class ChangeDirectory(
     }
 }
 
-class SaveModelFinalAns(private val modelFinalAns: String) : IdeApiMethod, ReversibleApiMethod {
+class SaveModelFinalAns(private val modelFinalAns: String) : ReversibleApiMethod {
     override fun execute() {
         TODO("Not yet implemented")
     }
