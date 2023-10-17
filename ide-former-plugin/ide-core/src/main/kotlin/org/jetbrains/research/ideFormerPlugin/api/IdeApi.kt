@@ -77,7 +77,7 @@ class ListDirectoryContents(
     override fun execute() {
         val psiDirectory = when (dirName) {
             "." -> curDirectory
-            else -> PsiElementsUtils.findSubdirectory(curDirectory, dirName) ?: throw Exception("No such subdirectory")
+            else -> curDirectory.findSubdirectoryRecursively(dirName) ?: throw Exception("No such subdirectory")
         }
         dirContents = getListDirectoryContents(psiDirectory)
     }
@@ -98,7 +98,7 @@ class ChangeDirectory(
             return
         }
 
-        val targetDir = PsiElementsUtils.findSubdirectory(ideStateKeeper.curDirectory, targetDirName)
+        val targetDir = ideStateKeeper.curDirectory.findSubdirectoryRecursively(targetDirName)
             ?: throw Exception("No such directory in a project: '$targetDirName'.")
 
         prevDir = ideStateKeeper.curDirectory
