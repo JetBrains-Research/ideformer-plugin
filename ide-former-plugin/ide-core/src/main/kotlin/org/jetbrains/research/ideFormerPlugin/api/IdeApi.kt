@@ -42,14 +42,12 @@ class KtFileKtMethods(
             .firstOrNull { it.name == ktFileName }
             ?: throw Exception("No such file in the current directory")
 
-    companion object {
-        fun getKtFileKtMethods(ktFile: KtFile): List<KtNamedFunction> =
-            PsiTreeUtil.findChildrenOfType(ktFile, KtNamedFunction::class.java).toList()
-    }
+    private fun KtFile.ktNamedFunctions(): List<KtNamedFunction> =
+        PsiTreeUtil.findChildrenOfType(this, KtNamedFunction::class.java).toList()
 
     override fun execute() {
         val ktFile = getKtFileByName(ktFileName)
-        fileKtMethods = getKtFileKtMethods(ktFile)
+        fileKtMethods = ktFile.ktNamedFunctions()
     }
 
     internal fun getMethodsNames() = fileKtMethods.map { it.name }
