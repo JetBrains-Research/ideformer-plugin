@@ -126,7 +126,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             )
             logger.info("Server GET revert $apiCallsCount api calls request is called")
 
-            val revertedApiCallsCount = ideStateKeeper.undoApiMethods(apiCallsCount)
+            val revertedApiCallsCount = ideStateKeeper.reverseLastApiMethods(apiCallsCount)
             val serverAnswer = ServerAnswer("Last $revertedApiCallsCount api calls were reverted")
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET revert $apiCallsCount api calls request is processed")
