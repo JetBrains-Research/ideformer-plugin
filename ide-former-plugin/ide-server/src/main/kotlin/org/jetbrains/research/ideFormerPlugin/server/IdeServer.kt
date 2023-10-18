@@ -110,7 +110,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
             apiMethod.execute()
 
-            ideStateKeeper.saveReversibleApiCall(apiMethod)
+            ideStateKeeper.saveReversibleApiMethod(apiMethod)
             logger.info("Save 'Change directory' api call to the api calls stack")
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
@@ -126,7 +126,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             )
             logger.info("Server GET revert $apiCallsCount api calls request is called")
 
-            val revertedApiCallsCount = ideStateKeeper.undoApiCalls(apiCallsCount)
+            val revertedApiCallsCount = ideStateKeeper.undoApiMethods(apiCallsCount)
             val serverAnswer = ServerAnswer("Last $revertedApiCallsCount api calls were reverted")
             call.respondText(gson.toJson(serverAnswer))
             logger.info("Server GET revert $apiCallsCount api calls request is processed")
@@ -140,7 +140,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             apiMethod.execute()
             logger.info("Save 'Save model final ans' api call to the api calls stack")
 
-            ideStateKeeper.saveReversibleApiCall(apiMethod)
+            ideStateKeeper.saveReversibleApiMethod(apiMethod)
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
             call.respondText(gson.toJson(serverAnswer))
