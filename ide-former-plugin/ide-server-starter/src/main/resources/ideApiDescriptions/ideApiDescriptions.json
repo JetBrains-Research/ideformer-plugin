@@ -56,16 +56,16 @@
       "optional_parameters": []
     },
     {
-      "name": "Revert Last Api Calls",
-      "url": "/revert-api-calls",
-      "description": "Reverts the last several api calls that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api calls.",
+      "name": "Reverse Last Api Methods",
+      "url": "/reverse-api-methods",
+      "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
       "method": "GET",
       "required_parameters": [],
       "optional_parameters": [
         {
-          "name": "apiCallsCount",
+          "name": "apiMethodsCount",
           "type": "INT",
-          "description": "A positive integer indicating the number of recent methods that need to be reverted",
+          "description": "A positive integer indicating the number of recent methods that need to be reversed",
           "regex": "^[1-9]\\d*",
           "default": "1"
         }

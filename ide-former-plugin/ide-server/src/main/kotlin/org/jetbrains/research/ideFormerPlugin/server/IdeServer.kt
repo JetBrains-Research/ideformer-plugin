@@ -118,8 +118,9 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET cd result request for dir '$targetDirName' is processed")
         }
 
-        get("/revert-api-calls/{apiCallsCount?}") {
-            val apiCallsCountString = call.parameters["apiCallsCount"] ?: "1"
+        get("/reverse-api-methods/{apiMethodsCount?}") {
+            val apiCallsCountString = call.parameters["apiMethodsCount"] ?: "1"
+
             val apiCallsCount = apiCallsCountString.toIntOrNull() ?: return@get call.respondText(
                 text = IdeServerConstants.NOT_A_NUMBER_API_CALLS_CNT,
                 status = HttpStatusCode.BadRequest
@@ -128,12 +129,13 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
                 text = IdeServerConstants.NEGATIVE_API_CALLS_CNT,
                 status = HttpStatusCode.BadRequest
             )
-            logger.info("Server GET revert $apiCallsCount api calls request is called")
+
+            logger.info("Server GET reverse $apiCallsCount api methods request is called")
 
             val revertedApiCallsCount = ideStateKeeper.reverseLastApiMethods(apiCallsCount)
             val serverAnswer = ServerAnswer("Last $revertedApiCallsCount api calls were reverted")
             call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server GET revert $apiCallsCount api calls request is processed")
+            logger.info("Server GET reverse $apiCallsCount api methods request is processed")
         }
 
         post("/post-final-ans") {
