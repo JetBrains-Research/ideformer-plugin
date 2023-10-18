@@ -37,18 +37,16 @@ class IdeApiTest : BasePlatformTestCase() {
     fun testListDirectoryContents() {
         val ideStateKeeper = IdeStateKeeper(project)
 
-        val lsCurDir = ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
-        lsCurDir.execute()
-        assertEquals(setOf("dir1", "dir2"), lsCurDir.getDirContentsNames().toSet())
-
-        val lsSubDir = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, "dir1")
-        lsSubDir.execute()
-        assertEquals(setOf("someKtFile2.kt",  "subdir"), lsSubDir.getDirContentsNames().toSet())
-
-        val lsDirSeveralLevelsBelow = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, "dir2/subdir/subsubdir")
-        lsDirSeveralLevelsBelow.execute()
-        assertEquals(setOf("someTextFile.txt"), lsDirSeveralLevelsBelow.getDirContentsNames().toSet())
-
+        mapOf(
+            DEFAULT_DIRECTORY_NAME to setOf("dir1", "dir2"),
+            "dir1" to setOf("someKtFile2.kt",  "subdir"),
+            "dir2/subdir/subsubdir" to setOf("someTextFile.txt")
+        ).forEach { (directoryName, expectedResult) ->
+            ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
+                it.execute()
+                assertEquals(expectedResult, it.getDirContentsNames().toSet())
+            }
+        }
         // TODO: to add test for a non-existing dir
     }
 
