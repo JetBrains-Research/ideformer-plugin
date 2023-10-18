@@ -10,16 +10,14 @@ import java.util.*
 
 class IdeStateKeeper(val userProject: Project) {
     private val apiCallStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
-    lateinit var currentProjectDirectory: PsiDirectory
+    var currentProjectDirectory: PsiDirectory = findProjectBaseDirectory()
 
-    init {
-        // TODO: to think about null project path processing
-        val projectBaseDir = userProject.guessProjectDir()
-        ApplicationManager.getApplication().runReadAction {
-            this.currentProjectDirectory = projectBaseDir?.let { PsiManager.getInstance(userProject).findDirectory(it) }
-                ?: throw Exception("No project file path")
+    // TODO: to think about null project path processing
+    private fun findProjectBaseDirectory() = userProject.guessProjectDir()?.let { projectBaseDir ->
+        ApplicationManager.getApplication().runReadAction<PsiDirectory> {
+            PsiManager.getInstance(userProject).findDirectory(projectBaseDir)
         }
-    }
+    } ?: error("No project file path")
 
     fun saveReversibleApiCall(apiCall: ReversibleApiMethod) = apiCallStack.addElement(apiCall)
 
