@@ -40,7 +40,7 @@ class KtFileKtMethods(
         projectDirectory.files
             .filterIsInstance<KtFile>()
             .firstOrNull { it.name == ktFileName }
-            ?: throw Exception("No such file in the current directory")
+            ?: error("No such file in the current directory")
 
     private fun KtFile.ktNamedFunctions(): List<KtNamedFunction> =
         PsiTreeUtil.findChildrenOfType(this, KtNamedFunction::class.java).toList()
@@ -70,7 +70,7 @@ class ListDirectoryContents(
     override fun execute() {
         val searchDirectory = when (searchDirectoryName) {
             DEFAULT_DIRECTORY_NAME -> currentProjectDirectory
-            else -> currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName) ?: throw Exception("No such subdirectory")
+            else -> currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName) ?: error("No such subdirectory")
         }
         searchDirectoryItems = searchDirectory.fileSystemItems()
     }
@@ -92,7 +92,7 @@ class ChangeDirectory(
         }
 
         val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirName)
-            ?: throw Exception("No such directory in a project: '$targetDirName'.")
+            ?: error("No such directory in a project: '$targetDirName'.")
 
         prevDir = ideStateKeeper.currentProjectDirectory
         ideStateKeeper.currentProjectDirectory = targetDir
