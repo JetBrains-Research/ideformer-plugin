@@ -56,12 +56,9 @@ class KtFileKtMethods(
 
 class ListDirectoryContents(
     private val currentProjectDirectory: PsiDirectory,
-    private val searchDirectoryName: String = DEFAULT_DIR_NAME
+    private val searchDirectoryName: String = DEFAULT_DIRECTORY_NAME
 ) : IdeApiMethod {
     private lateinit var searchDirectoryItems: List<PsiFileSystemItem>
-    companion object {
-        private const val DEFAULT_DIR_NAME = "."
-    }
 
     private fun PsiDirectory.fileSystemItems(): List<PsiFileSystemItem> {
         val files = this.files.map { it as PsiFileSystemItem }
@@ -71,7 +68,7 @@ class ListDirectoryContents(
 
     override fun execute() {
         val searchDirectory = when (searchDirectoryName) {
-            DEFAULT_DIR_NAME -> currentProjectDirectory
+            DEFAULT_DIRECTORY_NAME -> currentProjectDirectory
             else -> currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName) ?: throw Exception("No such subdirectory")
         }
         searchDirectoryItems = searchDirectory.fileSystemItems()
@@ -84,12 +81,12 @@ class ListDirectoryContents(
 
 class ChangeDirectory(
     private val ideStateKeeper: IdeStateKeeper,
-    private val targetDirName: String = "."
+    private val targetDirName: String = DEFAULT_DIRECTORY_NAME
 ) : ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
 
     override fun execute() {
-        if (targetDirName == ".") {
+        if (targetDirName == DEFAULT_DIRECTORY_NAME) {
             return
         }
 
@@ -102,7 +99,7 @@ class ChangeDirectory(
 
     override fun executionResult(): String =
         when (targetDirName) {
-            "." -> "Working directory remains the same."
+            DEFAULT_DIRECTORY_NAME -> "Working directory remains the same."
             else -> "Working directory was changed to '$targetDirName'."
         }
 

@@ -9,3 +9,5 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
 
     return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
+
+const val DEFAULT_DIRECTORY_NAME = "."
