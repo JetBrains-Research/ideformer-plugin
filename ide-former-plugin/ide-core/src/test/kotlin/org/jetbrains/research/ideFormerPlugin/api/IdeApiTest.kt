@@ -37,15 +37,15 @@ class IdeApiTest : BasePlatformTestCase() {
     fun testListDirectoryContents() {
         val ideStateKeeper = IdeStateKeeper(project)
 
-        val lsCurDir = ListDirectoryContents(ideStateKeeper.curDirectory)
+        val lsCurDir = ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
         lsCurDir.execute()
         assertEquals(setOf("dir1", "dir2"), lsCurDir.getDirContentsNames().toSet())
 
-        val lsSubDir = ListDirectoryContents(ideStateKeeper.curDirectory, "dir1")
+        val lsSubDir = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, "dir1")
         lsSubDir.execute()
         assertEquals(setOf("someKtFile2.kt",  "subdir"), lsSubDir.getDirContentsNames().toSet())
 
-        val lsDirSeveralLevelsBelow = ListDirectoryContents(ideStateKeeper.curDirectory, "dir2/subdir/subsubdir")
+        val lsDirSeveralLevelsBelow = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, "dir2/subdir/subsubdir")
         lsDirSeveralLevelsBelow.execute()
         assertEquals(setOf("someTextFile.txt"), lsDirSeveralLevelsBelow.getDirContentsNames().toSet())
 
@@ -57,25 +57,25 @@ class IdeApiTest : BasePlatformTestCase() {
 
         val cdSubDir = ChangeDirectory(ideStateKeeper, "dir1")
         cdSubDir.execute()
-        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+        assertEquals("dir1", ideStateKeeper.currentProjectDirectory.name)
 
         val cdSecondChanging = ChangeDirectory(ideStateKeeper, "subdir")
         cdSecondChanging.execute()
-        assertEquals("subdir", ideStateKeeper.curDirectory.name)
+        assertEquals("subdir", ideStateKeeper.currentProjectDirectory.name)
 
         cdSecondChanging.reverse()
-        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+        assertEquals("dir1", ideStateKeeper.currentProjectDirectory.name)
 
         // second reverse does nothing
         cdSecondChanging.reverse()
-        assertEquals("dir1", ideStateKeeper.curDirectory.name)
+        assertEquals("dir1", ideStateKeeper.currentProjectDirectory.name)
 
         cdSubDir.reverse()
-        assertEquals("src", ideStateKeeper.curDirectory.name)
+        assertEquals("src", ideStateKeeper.currentProjectDirectory.name)
 
         val cdDirSeveralLevelsBelow = ChangeDirectory(ideStateKeeper, "dir2/subdir/subsubdir")
         cdDirSeveralLevelsBelow.execute()
-        assertEquals("subsubdir", ideStateKeeper.curDirectory.name)
+        assertEquals("subsubdir", ideStateKeeper.currentProjectDirectory.name)
 
         // TODO: to add test for a non-existing dir
     }
@@ -86,14 +86,14 @@ class IdeApiTest : BasePlatformTestCase() {
         var cd = ChangeDirectory(ideStateKeeper, "dir1")
         cd.execute()
 
-        var ktFileMethods = KtFileKtMethods(ideStateKeeper.curDirectory, "someKtFile2.kt")
+        var ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile2.kt")
         ktFileMethods.execute()
         assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getMethodsNames().toSet())
 
         cd = ChangeDirectory(ideStateKeeper, "subdir")
         cd.execute()
 
-        ktFileMethods = KtFileKtMethods(ideStateKeeper.curDirectory, "someKtFile1.kt")
+        ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile1.kt")
         ktFileMethods.execute()
         assertEquals(setOf("main", "increaseNum"), ktFileMethods.getMethodsNames().toSet())
     }

@@ -31,13 +31,13 @@ class ProjectModules(private val project: Project) : IdeApiMethod {
 }
 
 class KtFileKtMethods(
-    private val curDirectory: PsiDirectory,
+    private val projectDirectory: PsiDirectory,
     private val ktFileName: String
 ) : IdeApiMethod {
     private lateinit var fileKtMethods: List<KtNamedFunction>
 
-    private fun getKtFileByName(ktFileName: String): KtFile =
-        curDirectory.files
+    private fun findKtFileByName(ktFileName: String): KtFile =
+        projectDirectory.files
             .filterIsInstance<KtFile>()
             .firstOrNull { it.name == ktFileName }
             ?: throw Exception("No such file in the current directory")
@@ -46,7 +46,7 @@ class KtFileKtMethods(
         PsiTreeUtil.findChildrenOfType(this, KtNamedFunction::class.java).toList()
 
     override fun execute() {
-        val ktFile = getKtFileByName(ktFileName)
+        val ktFile = findKtFileByName(ktFileName)
         fileKtMethods = ktFile.ktNamedFunctions()
     }
 
@@ -55,8 +55,8 @@ class KtFileKtMethods(
 }
 
 class ListDirectoryContents(
-    private val curDirectory: PsiDirectory,
-    private val dirName: String = "."
+    private val currentProjectDirectory: PsiDirectory,
+    private val directoryName: String = "."
 ) : IdeApiMethod {
     private lateinit var dirContents: List<PsiFileSystemItem>
 
@@ -69,9 +69,9 @@ class ListDirectoryContents(
     }
 
     override fun execute() {
-        val psiDirectory = when (dirName) {
-            "." -> curDirectory
-            else -> curDirectory.findSubdirectoryRecursively(dirName) ?: throw Exception("No such subdirectory")
+        val psiDirectory = when (directoryName) {
+            "." -> currentProjectDirectory
+            else -> currentProjectDirectory.findSubdirectoryRecursively(directoryName) ?: throw Exception("No such subdirectory")
         }
         dirContents = getListDirectoryContents(psiDirectory)
     }
@@ -92,11 +92,11 @@ class ChangeDirectory(
             return
         }
 
-        val targetDir = ideStateKeeper.curDirectory.findSubdirectoryRecursively(targetDirName)
+        val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirName)
             ?: throw Exception("No such directory in a project: '$targetDirName'.")
 
-        prevDir = ideStateKeeper.curDirectory
-        ideStateKeeper.curDirectory = targetDir
+        prevDir = ideStateKeeper.currentProjectDirectory
+        ideStateKeeper.currentProjectDirectory = targetDir
     }
 
     override fun executionResult(): String =
@@ -107,7 +107,7 @@ class ChangeDirectory(
 
     override fun reverse() {
         prevDir?.let {
-            ideStateKeeper.curDirectory = it
+            ideStateKeeper.currentProjectDirectory = it
             prevDir = null
         }
     }

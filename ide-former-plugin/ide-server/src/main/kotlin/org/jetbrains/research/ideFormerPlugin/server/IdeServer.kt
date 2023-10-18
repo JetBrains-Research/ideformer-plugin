@@ -82,7 +82,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             )
             logger.info("Server GET file kt methods request for file '$fileName' is called")
 
-            val apiMethod = KtFileKtMethods(ideStateKeeper.curDirectory, fileName)
+            val apiMethod = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, fileName)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
@@ -95,7 +95,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val dirName = call.parameters["dirName"] ?: "."
             logger.info("Server GET ls request for dir '$dirName' is called")
 
-            val apiMethod = ListDirectoryContents(ideStateKeeper.curDirectory, dirName)
+            val apiMethod = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, dirName)
             apiMethod.execute()
 
             val serverAnswer = ServerAnswer(apiMethod.executionResult())
