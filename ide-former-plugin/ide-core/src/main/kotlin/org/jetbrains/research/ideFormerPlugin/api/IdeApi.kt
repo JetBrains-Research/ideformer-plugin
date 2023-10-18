@@ -56,27 +56,28 @@ class KtFileKtMethods(
 
 class ListDirectoryContents(
     private val currentProjectDirectory: PsiDirectory,
-    private val directoryName: String = "."
+    private val searchDirectoryName: String = DEFAULT_DIR_NAME
 ) : IdeApiMethod {
-    private lateinit var dirContents: List<PsiFileSystemItem>
-
+    private lateinit var searchDirectoryItems: List<PsiFileSystemItem>
     companion object {
-        fun getListDirectoryContents(psiDirectory: PsiDirectory): List<PsiFileSystemItem> {
-            val files = psiDirectory.files.map { it as PsiFileSystemItem }
-            val dirs = psiDirectory.subdirectories.map { it as PsiFileSystemItem }
-            return files.plus(dirs)
-        }
+        private const val DEFAULT_DIR_NAME = "."
+    }
+
+    private fun PsiDirectory.fileSystemItems(): List<PsiFileSystemItem> {
+        val files = this.files.map { it as PsiFileSystemItem }
+        val subdirectories = this.subdirectories.map { it as PsiFileSystemItem }
+        return files.plus(subdirectories)
     }
 
     override fun execute() {
-        val psiDirectory = when (directoryName) {
-            "." -> currentProjectDirectory
-            else -> currentProjectDirectory.findSubdirectoryRecursively(directoryName) ?: throw Exception("No such subdirectory")
+        val searchDirectory = when (searchDirectoryName) {
+            DEFAULT_DIR_NAME -> currentProjectDirectory
+            else -> currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName) ?: throw Exception("No such subdirectory")
         }
-        dirContents = getListDirectoryContents(psiDirectory)
+        searchDirectoryItems = searchDirectory.fileSystemItems()
     }
 
-    internal fun getDirContentsNames() = dirContents.map { it.name }
+    internal fun getDirContentsNames() = searchDirectoryItems.map { it.name }
 
     override fun executionResult(): String = getDirContentsNames().toString()
 }
