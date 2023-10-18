@@ -46,8 +46,9 @@ class KtFileKtMethods(
         PsiTreeUtil.findChildrenOfType(this, KtNamedFunction::class.java).toList()
 
     override fun execute() {
-        val ktFile = findKtFileByName(ktFileName)
-        fileKtMethods = ktFile.ktNamedFunctions()
+        findKtFileByName(ktFileName).also {
+            fileKtMethods = it.ktNamedFunctions()
+        }
     }
 
     internal fun getMethodsNames() = fileKtMethods.map { it.name }
