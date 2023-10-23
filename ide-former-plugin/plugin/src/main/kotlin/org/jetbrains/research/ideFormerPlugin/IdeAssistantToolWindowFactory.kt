@@ -43,8 +43,8 @@ class IdeAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 }
 
                 invokeLater {
-                    chatArea.append("User: $userQuery\n")
-                    chatArea.append("Assistant: $modelResponse\n")
+                    chatArea.append("User: $userQuery${System.lineSeparator()}")
+                    chatArea.append("Assistant: $modelResponse${System.lineSeparator()}")
                     userInputField.text = ""
                 }
             }
