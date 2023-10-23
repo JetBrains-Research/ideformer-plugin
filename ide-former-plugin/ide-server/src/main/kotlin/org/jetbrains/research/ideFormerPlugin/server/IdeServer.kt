@@ -21,11 +21,10 @@ class IdeServer(
     private val host: String = "localhost",
     private val port: Int = 8082
 ) {
-    private lateinit var ideStateKeeper: IdeStateKeeper
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun startServer(userProject: Project) {
-        ideStateKeeper = IdeStateKeeper(userProject)
+        val ideStateKeeper = IdeStateKeeper(userProject)
 
         logger.info("Starting server")
         embeddedServer(Netty, port = port, host = host) {
