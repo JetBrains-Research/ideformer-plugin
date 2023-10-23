@@ -167,7 +167,7 @@ object IdeServerConstants {
 class IdeServerService(private val project: Project) {
     private lateinit var ideServer: IdeServer
 
-    fun startServer(host: String, port: Int) {
+    fun startServer(host: String = "localhost", port: Int = 8082) {
         object : Task.Backgroundable(project, "IDE server start") {
             override fun run(indicator: ProgressIndicator) {
                 ideServer = IdeServer(host, port)

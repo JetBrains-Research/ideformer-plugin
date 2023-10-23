@@ -31,6 +31,7 @@ class IdeAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
                 add(JScrollPane(chatArea))
             }
 
+            // TODO: to think about server host and port
             userProject.service<IdeServerService>().startServer()
             startDialogue()
         }
