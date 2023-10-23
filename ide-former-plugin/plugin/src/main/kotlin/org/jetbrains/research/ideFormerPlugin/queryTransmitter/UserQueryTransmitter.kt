@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
-import org.jetbrains.research.ideFormerPlugin.api.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.modelSimulator.LLMSimulator
 
 class UserQueryTransmitter(private val modelServerUrl: String = "localhost:8081/post") {

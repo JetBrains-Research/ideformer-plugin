@@ -1,9 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.modelSimulator
 
 import com.intellij.openapi.project.Project
-import org.jetbrains.research.ideFormerPlugin.api.ChangeDirectory
-import org.jetbrains.research.ideFormerPlugin.api.IdeApiMethod
-import org.jetbrains.research.ideFormerPlugin.api.ListDirectoryContents
+import org.jetbrains.research.ideFormerPlugin.api.models.ChangeDirectory
+import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 class LLMSimulator(userProject: Project) {

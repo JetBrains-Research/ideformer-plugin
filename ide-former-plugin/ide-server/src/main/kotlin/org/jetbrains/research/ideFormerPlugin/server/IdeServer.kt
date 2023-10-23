@@ -12,7 +12,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.*
+import org.jetbrains.research.ideFormerPlugin.api.models.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

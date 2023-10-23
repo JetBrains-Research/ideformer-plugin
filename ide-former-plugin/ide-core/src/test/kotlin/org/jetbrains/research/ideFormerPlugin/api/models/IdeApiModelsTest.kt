@@ -1,11 +1,12 @@
-package org.jetbrains.research.ideFormerPlugin.api
+package org.jetbrains.research.ideFormerPlugin.api.models
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 @TestDataPath("/testData/testProject")
-class IdeApiTest : BasePlatformTestCase() {
+class IdeApiModelsTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String = "src/test/testData/testProject"
 
     override fun setUp() {

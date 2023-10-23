@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
-import org.jetbrains.research.ideFormerPlugin.api.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
 import java.util.*
 
 class IdeStateKeeper(val userProject: Project) {
