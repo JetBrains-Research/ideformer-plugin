@@ -56,8 +56,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET ide api list request is called")
 
             val apiDescriptions =
-                IdeServer::class.java.getResourceAsStream("/ideDescriptions/ideApiDescriptions.json")!!
-                    .bufferedReader().readText()
+                IdeServer::class.java.getResource("ideApiDescriptions.json")!!.readText()
             apiDescriptions.ifEmpty { IdeServerConstants.NO_API_AVAILABLE }
 
             val serverAnswer = ServerAnswer(apiDescriptions)
