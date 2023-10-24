@@ -12,6 +12,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -33,8 +34,6 @@ class IdeServer(
     }
 }
 
-data class ServerAnswer(val serverAnswer: String)
-
 fun Application.module(ideStateKeeper: IdeStateKeeper, logger: Logger) {
     configureRouting(ideStateKeeper, logger)
 }
@@ -46,8 +45,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
     routing {
         get("/") {
             logger.info("Server GET root page request is called")
-            val serverAnswer = ServerAnswer(IdeServerConstants.ROOT_PAGE_TEXT)
-            call.respondText(gson.toJson(serverAnswer))
+            call.respondText(IdeServerConstants.ROOT_PAGE_TEXT)
             logger.info("Server GET root page request is processed")
         }
 
@@ -57,19 +55,19 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val apiDescriptions =
                 IdeServer::class.java.getResource("ideApiDescriptions.json")!!.readText()
             apiDescriptions.ifEmpty { IdeServerConstants.NO_API_AVAILABLE }
+            logger.info("Api descriptions were retrieved")
 
-            val serverAnswer = ServerAnswer(apiDescriptions)
-            call.respondText(gson.toJson(serverAnswer))
+            call.respondText(gson.toJson(apiDescriptions))
             logger.info("Server GET ide api list request is processed")
         }
 
         get("/project-modules") {
             logger.info("Server GET project modules request is called")
-            val apiMethod = ProjectModules(ideStateKeeper.userProject)
-            apiMethod.execute()
 
-            val serverAnswer = ServerAnswer(apiMethod.executionResult())
-            call.respondText(gson.toJson(serverAnswer))
+            val projectModules = ProjectModules(ideStateKeeper.userProject)
+            projectModules.execute()
+
+            call.respondText(gson.toJson(projectModules.getProjectModulesNames()))
             logger.info("Server GET project modules request is processed")
         }
 
@@ -80,11 +78,11 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             )
             logger.info("Server GET file kt methods request for file '$fileName' is called")
 
-            val apiMethod = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, fileName)
-            apiMethod.execute()
+            val ktFileKtMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, fileName)
+            ktFileKtMethods.execute()
+            // TODO: if error was caught here, return string with the error explanation
 
-            val serverAnswer = ServerAnswer(apiMethod.executionResult())
-            call.respondText(gson.toJson(serverAnswer))
+            call.respondText(gson.toJson(ktFileKtMethods.getFileKtMethodsNames()))
             logger.info("Server GET file kt methods request for file '$fileName' is processed")
 
         }
@@ -93,11 +91,12 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val dirName = call.parameters["dirName"] ?: "."
             logger.info("Server GET ls request for dir '$dirName' is called")
 
-            val apiMethod = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, dirName)
-            apiMethod.execute()
+            val listDirectoryContents = ListDirectoryContents(ideStateKeeper.currentProjectDirectory, dirName)
+            listDirectoryContents.execute()
+            // TODO: if error was caught here, return string with the error explanation
 
-            val serverAnswer = ServerAnswer(apiMethod.executionResult())
-            call.respondText(gson.toJson(serverAnswer))
+
+            call.respondText(gson.toJson(listDirectoryContents.getSearchDirectoryItemsNames()))
             logger.info("Server GET ls request for dir '$dirName' is processed")
         }
 
@@ -105,19 +104,25 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             val targetDirName = call.parameters["targetDirName"] ?: "."
             logger.info("Server GET cd result request for dir '$targetDirName' is called")
 
-            val apiMethod = ChangeDirectory(ideStateKeeper, targetDirName)
-            apiMethod.execute()
+            val changeDirectory = ChangeDirectory(ideStateKeeper, targetDirName)
+            changeDirectory.execute()
 
-            ideStateKeeper.saveReversibleApiMethod(apiMethod)
-            logger.info("Save 'Change directory' api call to the api calls stack")
+            // TODO: if there were exception in method execution, do not save this method and add error desc
+            ideStateKeeper.saveReversibleApiMethod(changeDirectory)
+            logger.info("Change directory api method was saved on the api calls stack")
 
-            val serverAnswer = ServerAnswer(apiMethod.executionResult())
-            call.respondText(gson.toJson(serverAnswer))
+            val response = if (targetDirName == DEFAULT_DIRECTORY_NAME) {
+                "Project directory remains the same."
+            } else {
+                "Project directory was successfully changed to $targetDirName."
+            }
+
+            call.respondText(gson.toJson(response))
             logger.info("Server GET cd result request for dir '$targetDirName' is processed")
         }
 
         get("/reverse-api-methods/{apiMethodsCount?}") {
-            val apiCallsCountString = call.parameters["apiMethodsCount"] ?: "1"
+            val apiCallsCountString = call.parameters["apiMethodsCount"] ?: IdeServerConstants.DEFAULT_API_CALLS_CNT
 
             val apiCallsCount = apiCallsCountString.toIntOrNull() ?: return@get call.respondText(
                 text = IdeServerConstants.NOT_A_NUMBER_API_CALLS_CNT,
@@ -131,24 +136,23 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
             logger.info("Server GET reverse $apiCallsCount api methods request is called")
 
             val revertedApiCallsCount = ideStateKeeper.reverseLastApiMethods(apiCallsCount)
-            val serverAnswer = ServerAnswer("Last $revertedApiCallsCount api calls were reverted")
-            call.respondText(gson.toJson(serverAnswer))
+            call.respondText(gson.toJson("Last $revertedApiCallsCount api calls were reverted"))
             logger.info("Server GET reverse $apiCallsCount api methods request is processed")
         }
 
         post("/post-final-ans") {
-            logger.info("Server POST final model ans request is called")
+            logger.info("Server POST final model answer request is called")
             val modelFinalAns = call.receiveText()
 
             val apiMethod = SaveModelFinalAns(modelFinalAns)
             apiMethod.execute()
-            logger.info("Save 'Save model final ans' api call to the api calls stack")
+            logger.info("Save model final ans api call was executed")
 
             ideStateKeeper.saveReversibleApiMethod(apiMethod)
+            logger.info("Save model final ans api call was added to the api methods stack")
 
-            val serverAnswer = ServerAnswer(apiMethod.executionResult())
-            call.respondText(gson.toJson(serverAnswer))
-            logger.info("Server POST final model ans request is processed")
+            call.respondText(gson.toJson("Model ans was successfully saved"))
+            logger.info("Server POST final model answer request is processed")
         }
     }
 }
@@ -159,6 +163,7 @@ object IdeServerConstants {
     const val MISSING_FILENAME = "Missing file name"
     const val NEGATIVE_API_CALLS_CNT = "apiCallsCount parameter should be a positive integer"
     const val NOT_A_NUMBER_API_CALLS_CNT = "apiCallsCount parameter should be a number"
+    const val DEFAULT_API_CALLS_CNT = "1"
 }
 
 @Service(Service.Level.PROJECT)
