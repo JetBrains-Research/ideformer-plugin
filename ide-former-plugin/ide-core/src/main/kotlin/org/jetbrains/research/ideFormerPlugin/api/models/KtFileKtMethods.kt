@@ -26,6 +26,5 @@ class KtFileKtMethods(
         }
     }
 
-    internal fun getMethodsNames() = fileKtMethods.map { it.name }
-    override fun executionResult(): String = getMethodsNames().toString()
+    fun getFileKtMethodsNames() = fileKtMethods.map { it.name }
 }

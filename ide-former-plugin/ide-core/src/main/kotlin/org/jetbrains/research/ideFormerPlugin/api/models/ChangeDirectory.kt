@@ -23,12 +23,6 @@ class ChangeDirectory(
         ideStateKeeper.currentProjectDirectory = targetDir
     }
 
-    override fun executionResult(): String =
-        when (targetDirName) {
-            DEFAULT_DIRECTORY_NAME -> "Working directory remains the same."
-            else -> "Working directory was changed to '$targetDirName'."
-        }
-
     override fun reverse() {
         prevDir?.let {
             ideStateKeeper.currentProjectDirectory = it

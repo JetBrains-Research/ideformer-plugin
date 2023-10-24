@@ -5,10 +5,6 @@ class SaveModelFinalAns(private val modelFinalAns: String) : ReversibleApiMethod
         TODO("Not yet implemented")
     }
 
-    override fun executionResult(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun reverse() {
         TODO("Not yet implemented")
     }

@@ -45,7 +45,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         ).forEach { (directoryName, expectedResult) ->
             ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
                 it.execute()
-                assertEquals(expectedResult, it.getDirContentsNames().toSet())
+                assertEquals(expectedResult, it.getSearchDirectoryItemsNames().toSet())
             }
         }
         // TODO: to add test for a non-existing dir
@@ -87,13 +87,13 @@ class IdeApiModelsTest : BasePlatformTestCase() {
 
         var ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile2.kt")
         ktFileMethods.execute()
-        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getMethodsNames().toSet())
+        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getFileKtMethodsNames().toSet())
 
         cd = ChangeDirectory(ideStateKeeper, "subdir")
         cd.execute()
 
         ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile1.kt")
         ktFileMethods.execute()
-        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getMethodsNames().toSet())
+        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getFileKtMethodsNames().toSet())
     }
 }
