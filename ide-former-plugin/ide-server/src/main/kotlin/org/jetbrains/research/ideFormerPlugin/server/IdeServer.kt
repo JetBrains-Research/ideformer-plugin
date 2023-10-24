@@ -1,9 +1,6 @@
 package org.jetbrains.research.ideFormerPlugin.server
 
 import com.google.gson.Gson
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -164,18 +161,4 @@ object IdeServerConstants {
     const val NEGATIVE_API_CALLS_CNT = "apiCallsCount parameter should be a positive integer"
     const val NOT_A_NUMBER_API_CALLS_CNT = "apiCallsCount parameter should be a number"
     const val DEFAULT_API_CALLS_CNT = "1"
-}
-
-@Service(Service.Level.PROJECT)
-class IdeServerService(private val project: Project) {
-    private lateinit var ideServer: IdeServer
-
-    fun startServer(host: String = "localhost", port: Int = 8082) {
-        object : Task.Backgroundable(project, "IDE server start") {
-            override fun run(indicator: ProgressIndicator) {
-                ideServer = IdeServer(host, port)
-                ideServer.startServer(project)
-            }
-        }.queue()
-    }
 }
