@@ -11,4 +11,6 @@ class ProjectModules(private val project: Project) : IdeApiMethod {
     override fun execute() {
         projectModules = project.modules()
     }
+
+    fun getProjectModulesNames(): List<String> = projectModules.map { it.name }.toList()
 }
