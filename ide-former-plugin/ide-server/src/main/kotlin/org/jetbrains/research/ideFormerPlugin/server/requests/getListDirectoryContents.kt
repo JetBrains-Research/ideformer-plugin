@@ -23,7 +23,7 @@ fun Routing.getListDirectoryContents(logger: Logger, ideStateKeeper: IdeStateKee
         try {
             listDirectoryContents.execute()
         } catch (e: Exception) {
-            logger.info("Error while kt file kt methods api execution: ${e.message}")
+            logger.error("Error while kt file kt methods api execution: ${e.message}")
             return@get call.respondText(
                 jsonConverter.toJson(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
             )

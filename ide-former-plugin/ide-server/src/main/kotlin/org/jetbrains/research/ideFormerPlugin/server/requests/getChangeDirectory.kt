@@ -23,7 +23,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         try {
             changeDirectory.execute()
         } catch (e: Exception) {
-            logger.info("Error while change directory api execution: ${e.message}")
+            logger.error("Error while change directory api execution: ${e.message}")
             return@get call.respondText(
                 jsonConverter.toJson(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
             )
