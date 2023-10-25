@@ -31,4 +31,5 @@ object IdeServerConstants {
     const val NEGATIVE_API_CALLS_CNT = "apiCallsCount parameter should be a positive integer"
     const val NOT_A_NUMBER_API_CALLS_CNT = "apiCallsCount parameter should be a number"
     const val DEFAULT_API_CALLS_CNT = "1"
+    const val API_EXECUTION_UNKNOWN_ERROR = "Unknown error while api method execution"
 }
