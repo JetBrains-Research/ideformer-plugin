@@ -32,6 +32,7 @@ class IdeServerStarterCli : CliktCommand() {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun run() {
+        // TODO: when project resolve will be needed, update the initialization (replace null with something meaningful)
         val projectOpener = ProjectOpener(null, null)
 
         projectOpener.openAndApply(pathToProject.toPath(), resolve = false) { project ->
