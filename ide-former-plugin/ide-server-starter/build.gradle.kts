@@ -2,9 +2,10 @@ group = rootProject.group
 version = rootProject.version
 
 dependencies {
-    implementation("com.github.ajalt:clikt:2.8.0")
-    implementation("org.jetbrains.research:plugin-utilities-core:2.0.6")
-    implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation(rootProject.libs.ajalt.clikt)
+    implementation(rootProject.libs.plugin.utilities.core)
+    implementation(rootProject.libs.slf4j.simple)
+
     implementation(project(":ide-server"))
 }
 

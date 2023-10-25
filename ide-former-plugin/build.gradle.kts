@@ -4,27 +4,21 @@ version = "1.0"
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
-    // Java support
-    id("java")
-    // Kotlin support
-    kotlin("jvm") version "1.9.10"
-    // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.15.0"
-    // Ktor
-    id("io.ktor.plugin") version "2.3.3"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.jetbrains.intellij)
+    alias(libs.plugins.ktor)
 }
 
 allprojects {
     apply {
-        plugin("java")
-        plugin("kotlin")
-        plugin("org.jetbrains.intellij")
-        plugin("io.ktor.plugin")
+        plugin(rootProject.libs.plugins.kotlin.jvm.get().pluginId)
+        plugin(rootProject.libs.plugins.jetbrains.intellij.get().pluginId)
+        plugin(rootProject.libs.plugins.ktor.get().pluginId)
     }
 
     repositories {
-        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
         mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/big-code/bigcode")
         maven("https://packages.jetbrains.team/maven/p/ki/maven")
     }
 
