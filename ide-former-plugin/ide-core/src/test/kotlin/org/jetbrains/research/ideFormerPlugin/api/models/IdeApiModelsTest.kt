@@ -14,7 +14,6 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         configureTestProject()
     }
 
-
     /*
     Test project structure:
 
@@ -28,7 +27,6 @@ class IdeApiModelsTest : BasePlatformTestCase() {
                               |-- subsubdir
                                          |-- someTextFile.txt
      */
-
     private fun configureTestProject() {
         myFixture.copyFileToProject("dir1/subdir/someKtFile1.kt")
         myFixture.copyFileToProject("dir1/someKtFile2.kt")
@@ -40,7 +38,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
 
         mapOf(
             DEFAULT_DIRECTORY_NAME to setOf("dir1", "dir2"),
-            "dir1" to setOf("someKtFile2.kt",  "subdir"),
+            "dir1" to setOf("someKtFile2.kt", "subdir"),
             "dir2/subdir/subsubdir" to setOf("someTextFile.txt")
         ).forEach { (directoryName, expectedResult) ->
             ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
@@ -79,7 +77,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         // TODO: to add test for a non-existing dir
     }
 
-    fun testGetKtFileKtMethods() {
+    fun testKtFileKtMethods() {
         val ideStateKeeper = IdeStateKeeper(project)
 
         var cd = ChangeDirectory(ideStateKeeper, "dir1")
