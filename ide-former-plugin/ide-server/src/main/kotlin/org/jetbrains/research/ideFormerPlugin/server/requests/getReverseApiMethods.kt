@@ -11,21 +11,35 @@ import org.slf4j.Logger
 
 fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/reverse-api-methods/{apiMethodsCount?}") {
-        val apiMethodsCountString = call.parameters["apiMethodsCount"] ?: IdeServerConstants.DEFAULT_API_CALLS_CNT
+        val apiMethodsCountString = call.parameters["apiMethodsCount"]
 
-        val apiMethodsCount = apiMethodsCountString.toIntOrNull() ?: return@get call.respondText(
-            text = IdeServerConstants.NOT_A_NUMBER_API_CALLS_CNT,
-            status = HttpStatusCode.BadRequest
-        )
-        if (apiMethodsCount <= 0) return@get call.respondText(
-            text = IdeServerConstants.NEGATIVE_API_CALLS_CNT,
-            status = HttpStatusCode.BadRequest
-        )
+        val reversedApiCallsCount = if (apiMethodsCountString != null) {
+            val apiMethodsCount = apiMethodsCountString.toIntOrNull() ?: run {
+                logger.error("Not a number api methods count parameter for reverse api method request")
+                call.respondText(
+                    text = jsonConverter.toJson(IdeServerConstants.NOT_A_NUMBER_API_METHODS_CNT),
+                    status = HttpStatusCode.BadRequest
+                )
+                return@get
+            }
 
-        logger.info("Server GET reverse $apiMethodsCount api methods request is called")
+            if (apiMethodsCount <= 0) {
+                logger.error("Negative api methods count parameter for reverse api method")
+                call.respondText(
+                    text = jsonConverter.toJson(IdeServerConstants.NEGATIVE_API_METHODS_CNT),
+                    status = HttpStatusCode.BadRequest
+                )
+                return@get
+            }
 
-        val reversedApiCallsCount = ideStateKeeper.reverseLastApiMethods(apiMethodsCount)
+            logger.info("Server GET reverse $apiMethodsCount api methods request is called")
+            ideStateKeeper.reverseLastApiMethods(apiMethodsCount)
+        } else {
+            logger.info("Server GET reverse api methods request with default method count is called")
+            ideStateKeeper.reverseLastApiMethods()
+        }
+
         call.respondText(jsonConverter.toJson("Last $reversedApiCallsCount api calls were reversed"))
-        logger.info("Server GET reverse $apiMethodsCount api methods request is processed")
+        logger.info("Server GET reverse api methods request is processed")
     }
 }

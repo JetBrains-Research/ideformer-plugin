@@ -28,8 +28,7 @@ object IdeServerConstants {
     const val NO_API_AVAILABLE = "No IDE API available"
     const val ROOT_PAGE_TEXT = "IDE server"
     const val MISSING_FILENAME = "Missing file name"
-    const val NEGATIVE_API_CALLS_CNT = "apiCallsCount parameter should be a positive integer"
-    const val NOT_A_NUMBER_API_CALLS_CNT = "apiCallsCount parameter should be a number"
-    const val DEFAULT_API_CALLS_CNT = "1"
+    const val NEGATIVE_API_METHODS_CNT = "apiCallsCount parameter should be a positive integer"
+    const val NOT_A_NUMBER_API_METHODS_CNT = "apiCallsCount parameter should be a number"
     const val API_EXECUTION_UNKNOWN_ERROR = "Unknown error while api method execution"
 }
