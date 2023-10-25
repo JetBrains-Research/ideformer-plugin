@@ -15,7 +15,11 @@ fun Routing.postFinalAnswer(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val modelFinalAns = call.receiveText()
 
         val apiMethod = SaveModelFinalAns(modelFinalAns)
-        apiMethod.execute()
+        try {
+            apiMethod.execute()
+        } catch (e: Exception) {
+            logger.error("Error while saving final answer api execution: ${e.message}")
+        }
         logger.info("Save model final ans api call was executed")
 
         ideStateKeeper.saveReversibleApiMethod(apiMethod)
