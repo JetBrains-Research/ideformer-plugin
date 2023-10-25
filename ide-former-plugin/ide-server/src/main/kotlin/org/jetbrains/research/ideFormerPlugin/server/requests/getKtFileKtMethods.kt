@@ -19,8 +19,12 @@ fun Routing.getKtFileKtMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         logger.info("Server GET file kt methods request for file '$fileName' is called")
 
         val ktFileKtMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, fileName)
-        ktFileKtMethods.execute()
-        // TODO: if error was caught here, return string with the error explanation
+        try {
+            ktFileKtMethods.execute()
+        } catch (e: Exception) {
+            logger.error("Error while kt file kt methods api execution: ${e.message}")
+            return@get call.respondText(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
+        }
 
         call.respondText(jsonConverter.toJson(ktFileKtMethods.getFileKtMethodsNames()))
         logger.info("Server GET file kt methods request for file '$fileName' is processed")
