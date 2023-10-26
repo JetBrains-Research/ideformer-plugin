@@ -1,11 +1,10 @@
 package org.jetbrains.research.ideFormerPlugin.server.requests
 
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
-import org.jetbrains.research.ideFormerPlugin.server.jsonConverter
+import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
@@ -24,9 +23,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             changeDirectory.execute()
         } catch (e: Exception) {
             logger.error("Error while change directory api execution: ${e.message}")
-            return@get call.respondText(
-                jsonConverter.toJson(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
-            )
+            return@get call.respondJson(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
         }
 
         ideStateKeeper.saveReversibleApiMethod(changeDirectory)
@@ -38,7 +35,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             "Project directory was successfully changed to $targetDirName."
         }
 
-        call.respondText(jsonConverter.toJson(response))
+        call.respondJson(response)
         logger.info("Server GET cd result request for dir '$targetDirName' is processed")
     }
 }

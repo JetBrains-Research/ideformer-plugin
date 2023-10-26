@@ -1,7 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.server
 
 import com.google.gson.Gson
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
@@ -23,6 +25,12 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 }
 
 val jsonConverter = Gson()
+suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusCode = HttpStatusCode.OK) {
+    this.respondText(
+        text = jsonConverter.toJson(responseObject),
+        status = status
+    )
+}
 
 object IdeServerConstants {
     const val NO_API_AVAILABLE = "No IDE API available"

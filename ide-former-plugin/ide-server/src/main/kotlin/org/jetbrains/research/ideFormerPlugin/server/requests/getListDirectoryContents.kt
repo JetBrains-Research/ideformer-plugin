@@ -1,11 +1,10 @@
 package org.jetbrains.research.ideFormerPlugin.server.requests
 
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
-import org.jetbrains.research.ideFormerPlugin.server.jsonConverter
+import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
@@ -24,12 +23,12 @@ fun Routing.getListDirectoryContents(logger: Logger, ideStateKeeper: IdeStateKee
             listDirectoryContents.execute()
         } catch (e: Exception) {
             logger.error("Error while kt file kt methods api execution: ${e.message}")
-            return@get call.respondText(
-                jsonConverter.toJson(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
+            return@get call.respondJson(
+                e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
             )
         }
 
-        call.respondText(jsonConverter.toJson(listDirectoryContents.getSearchDirectoryItemsNames()))
+        call.respondJson(listDirectoryContents.getSearchDirectoryItemsNames())
         logger.info("Server GET ls request for dir '$dirName' is processed")
     }
 }

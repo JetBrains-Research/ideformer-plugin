@@ -2,10 +2,9 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
-import org.jetbrains.research.ideFormerPlugin.server.jsonConverter
+import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
@@ -16,18 +15,18 @@ fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper)
         val reversedApiCallsCount = if (apiMethodsCountString != null) {
             val apiMethodsCount = apiMethodsCountString.toIntOrNull() ?: run {
                 logger.error("Not a number api methods count parameter for reverse api method request")
-                call.respondText(
-                    text = jsonConverter.toJson(IdeServerConstants.NOT_A_NUMBER_API_METHODS_CNT),
-                    status = HttpStatusCode.BadRequest
+                call.respondJson(
+                    IdeServerConstants.NOT_A_NUMBER_API_METHODS_CNT,
+                    HttpStatusCode.BadRequest
                 )
                 return@get
             }
 
             if (apiMethodsCount <= 0) {
                 logger.error("Negative api methods count parameter for reverse api method")
-                call.respondText(
-                    text = jsonConverter.toJson(IdeServerConstants.NEGATIVE_API_METHODS_CNT),
-                    status = HttpStatusCode.BadRequest
+                call.respondJson(
+                    IdeServerConstants.NEGATIVE_API_METHODS_CNT,
+                    HttpStatusCode.BadRequest
                 )
                 return@get
             }
@@ -39,7 +38,7 @@ fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper)
             ideStateKeeper.reverseLastApiMethods()
         }
 
-        call.respondText(jsonConverter.toJson("Last $reversedApiCallsCount api calls were reversed"))
+        call.respondJson("Last $reversedApiCallsCount api calls were reversed")
         logger.info("Server GET reverse api methods request is processed")
     }
 }
