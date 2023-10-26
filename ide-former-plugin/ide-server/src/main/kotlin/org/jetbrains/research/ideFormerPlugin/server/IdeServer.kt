@@ -9,8 +9,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class IdeServer(
-    private val host: String = "localhost",
-    private val port: Int = 8082
+    private val host: String,
+    private val port: Int
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
