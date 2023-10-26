@@ -18,7 +18,9 @@ fun Routing.getProjectModules(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             projectModules.execute()
         } catch (e: Exception) {
             logger.error("Error while project modules api execution: ${e.message}")
-            return@get call.respondText(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
+            return@get call.respondText(
+                jsonConverter.toJson(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
+            )
         }
 
         call.respondText(jsonConverter.toJson(projectModules.getProjectModulesNames()))

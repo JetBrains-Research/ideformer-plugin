@@ -23,7 +23,9 @@ fun Routing.getKtFileKtMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             ktFileKtMethods.execute()
         } catch (e: Exception) {
             logger.error("Error while kt file kt methods api execution: ${e.message}")
-            return@get call.respondText(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
+            return@get call.respondText(
+                jsonConverter.toJson(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
+            )
         }
 
         call.respondText(jsonConverter.toJson(ktFileKtMethods.getFileKtMethodsNames()))
