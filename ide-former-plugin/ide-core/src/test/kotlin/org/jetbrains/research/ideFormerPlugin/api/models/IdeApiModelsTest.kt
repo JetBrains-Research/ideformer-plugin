@@ -33,6 +33,17 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("dir2/subdir/subsubdir/someTextFile.txt")
     }
 
+    private fun checkListDirectoryContentsExecution(
+        ideStateKeeper: IdeStateKeeper,
+        directoryName: String,
+        expectedDirectoryItemsNames: Set<String>
+    ) {
+        ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
+            it.execute()
+            assertEquals(expectedDirectoryItemsNames, it.getSearchDirectoryItemsNames()!!.toSet())
+        }
+    }
+
     fun testListDirectoryContents() {
         val ideStateKeeper = IdeStateKeeper(project)
 
@@ -40,11 +51,8 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             DEFAULT_DIRECTORY_NAME to setOf("dir1", "dir2"),
             "dir1" to setOf("someKtFile2.kt", "subdir"),
             "dir2/subdir/subsubdir" to setOf("someTextFile.txt")
-        ).forEach { (directoryName, expectedResult) ->
-            ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
-                it.execute()
-                assertEquals(expectedResult, it.getSearchDirectoryItemsNames()!!.toSet())
-            }
+        ).forEach { (directoryName, expectedDirectoryItemsNames) ->
+            checkListDirectoryContentsExecution(ideStateKeeper, directoryName, expectedDirectoryItemsNames)
         }
         // TODO: to add test for a non-existing dir
     }
