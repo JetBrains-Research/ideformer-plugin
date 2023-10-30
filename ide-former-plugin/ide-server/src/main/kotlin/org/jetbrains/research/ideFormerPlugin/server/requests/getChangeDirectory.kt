@@ -4,6 +4,8 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.PROJECT_DIR_REMAINS_THE_SAME
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.PROJECT_DIR_WAS_CHANGED_TO
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -30,9 +32,9 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         logger.info("Change directory api method was saved on the api calls stack")
 
         val response = if (targetDirName == null) {
-            "Project directory remains the same."
+            PROJECT_DIR_REMAINS_THE_SAME
         } else {
-            "Project directory was successfully changed to $targetDirName."
+            "$PROJECT_DIR_WAS_CHANGED_TO $targetDirName."
         }
 
         call.respondJson(response)
