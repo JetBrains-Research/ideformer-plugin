@@ -49,16 +49,20 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         // TODO: to add test for a non-existing dir
     }
 
+    private fun checkChangeDirectoryExecution(
+        ideStateKeeper: IdeStateKeeper,
+        targetDirectoryName: String,
+        expectedProjectDirectoryName: String = targetDirectoryName
+    ) = ChangeDirectory(ideStateKeeper, targetDirectoryName).also {
+        it.execute()
+        assertEquals(expectedProjectDirectoryName, ideStateKeeper.currentProjectDirectory.name)
+    }
+
     fun testChangeDirectory() {
         val ideStateKeeper = IdeStateKeeper(project)
 
-        val cdSubDir = ChangeDirectory(ideStateKeeper, "dir1")
-        cdSubDir.execute()
-        assertEquals("dir1", ideStateKeeper.currentProjectDirectory.name)
-
-        val cdSecondChanging = ChangeDirectory(ideStateKeeper, "subdir")
-        cdSecondChanging.execute()
-        assertEquals("subdir", ideStateKeeper.currentProjectDirectory.name)
+        val cdSubDir = checkChangeDirectoryExecution(ideStateKeeper, "dir1")
+        val cdSecondChanging = checkChangeDirectoryExecution(ideStateKeeper, "subdir")
 
         cdSecondChanging.reverse()
         assertEquals("dir1", ideStateKeeper.currentProjectDirectory.name)
@@ -70,10 +74,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         cdSubDir.reverse()
         assertEquals("src", ideStateKeeper.currentProjectDirectory.name)
 
-        val cdDirSeveralLevelsBelow = ChangeDirectory(ideStateKeeper, "dir2/subdir/subsubdir")
-        cdDirSeveralLevelsBelow.execute()
-        assertEquals("subsubdir", ideStateKeeper.currentProjectDirectory.name)
-
+        checkChangeDirectoryExecution(ideStateKeeper, "dir2/subdir/subsubdir", "subsubdir")
         // TODO: to add test for a non-existing dir
     }
 

@@ -7,17 +7,17 @@ import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 class ChangeDirectory(
     private val ideStateKeeper: IdeStateKeeper,
-    private val targetDirName: String = DEFAULT_DIRECTORY_NAME
+    private val targetDirectoryName: String = DEFAULT_DIRECTORY_NAME
 ) : ReversibleApiMethod {
     private var prevDir: PsiDirectory? = null
 
     override fun execute() {
-        if (targetDirName == DEFAULT_DIRECTORY_NAME) {
+        if (targetDirectoryName == DEFAULT_DIRECTORY_NAME) {
             return
         }
 
-        val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirName)
-            ?: error("No such directory in a project: '$targetDirName'.")
+        val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
+            ?: error("No such directory in a project: '$targetDirectoryName'.")
 
         prevDir = ideStateKeeper.currentProjectDirectory
         ideStateKeeper.currentProjectDirectory = targetDir
