@@ -15,11 +15,9 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val targetDirName = call.parameters["targetDirName"]
         logger.info("Server GET cd result request for dir '$targetDirName' is called")
 
-        val changeDirectory = if (targetDirName == null) {
-            ChangeDirectory(ideStateKeeper)
-        } else {
-            ChangeDirectory(ideStateKeeper, targetDirName)
-        }
+        val changeDirectory = targetDirName?.let {
+            ChangeDirectory(ideStateKeeper, it)
+        } ?: ChangeDirectory(ideStateKeeper)
 
         try {
             changeDirectory.execute()
@@ -31,11 +29,9 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         ideStateKeeper.saveReversibleApiMethod(changeDirectory)
         logger.info("Change directory api method was saved on the api calls stack")
 
-        val response = if (targetDirName == null) {
-            PROJECT_DIR_REMAINS_THE_SAME
-        } else {
+        val response = targetDirName?.let {
             "$PROJECT_DIR_WAS_CHANGED_TO $targetDirName."
-        }
+        } ?: PROJECT_DIR_REMAINS_THE_SAME
 
         call.respondJson(response)
         logger.info("Server GET cd result request for dir '$targetDirName' is processed")

@@ -13,11 +13,9 @@ fun Routing.getListDirectoryContents(logger: Logger, ideStateKeeper: IdeStateKee
         val dirName = call.parameters["dirName"]
         logger.info("Server GET ls request for dir '$dirName' is called")
 
-        val listDirectoryContents = if (dirName == null) {
-            ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
-        } else {
-            ListDirectoryContents(ideStateKeeper.currentProjectDirectory, dirName)
-        }
+        val listDirectoryContents = dirName?.let {
+            ListDirectoryContents(ideStateKeeper.currentProjectDirectory, it)
+        } ?: ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
 
         try {
             listDirectoryContents.execute()
