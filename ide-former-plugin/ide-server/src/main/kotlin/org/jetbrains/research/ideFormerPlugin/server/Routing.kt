@@ -24,10 +24,13 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
     }
 }
 
-val jsonConverter = Gson()
+object RoutingUtils {
+    val jsonConverter = Gson()
+}
+
 suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusCode = HttpStatusCode.OK) {
     this.respondText(
-        text = jsonConverter.toJson(responseObject),
+        text = RoutingUtils.jsonConverter.toJson(responseObject),
         status = status
     )
 }
