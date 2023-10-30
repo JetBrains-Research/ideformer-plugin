@@ -1,0 +1,23 @@
+{
+  "name": "api name",
+  "url": "relative url",
+  "description": "text description one-two sentences",
+  "method": "GET/POST",
+  "required_parameters": [
+    {
+      "name": "parameter name",
+      "type": "STRING/INT/FLOAT",
+      "regex": "regex obviously (DEFAULT REGEX: '[^\"\\{\\}]*?' )",
+      "description": "description of the parameter, 5-10 words, I guess"
+    }
+  ],
+  "optional_parameters": [
+    {
+      "name": "parameter name",
+      "type": "STRING/INT/FLOAT",
+      "description": "addres of directory to list",
+      "regex": "regex obviously (OPTIONAL)",
+      "default": "default value"
+    }
+  ]
+}
