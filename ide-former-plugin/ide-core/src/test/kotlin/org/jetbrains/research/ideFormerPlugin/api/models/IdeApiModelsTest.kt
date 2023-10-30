@@ -78,21 +78,32 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         // TODO: to add test for a non-existing dir
     }
 
+    private fun checkKtFileKtMethodsExecution(
+        ideStateKeeper: IdeStateKeeper,
+        ktFileName: String,
+        expectedKtMethodsNames: Set<String>
+    ) {
+        KtFileKtMethods(ideStateKeeper.currentProjectDirectory, ktFileName).also {
+            it.execute()
+            assertEquals(expectedKtMethodsNames, it.getFileKtMethodsNames()!!.toSet())
+        }
+    }
+
     fun testKtFileKtMethods() {
         val ideStateKeeper = IdeStateKeeper(project)
 
-        var cd = ChangeDirectory(ideStateKeeper, "dir1")
-        cd.execute()
+        checkChangeDirectoryExecution(ideStateKeeper, "dir1")
+        checkKtFileKtMethodsExecution(
+            ideStateKeeper,
+            "someKtFile2.kt",
+            setOf("decreaseNum", "printSomePhrase")
+        )
 
-        var ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile2.kt")
-        ktFileMethods.execute()
-        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getFileKtMethodsNames()!!.toSet())
-
-        cd = ChangeDirectory(ideStateKeeper, "subdir")
-        cd.execute()
-
-        ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile1.kt")
-        ktFileMethods.execute()
-        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getFileKtMethodsNames()!!.toSet())
+        checkChangeDirectoryExecution(ideStateKeeper, "subdir")
+        checkKtFileKtMethodsExecution(
+            ideStateKeeper,
+            "someKtFile1.kt",
+            setOf("main", "increaseNum")
+        )
     }
 }
