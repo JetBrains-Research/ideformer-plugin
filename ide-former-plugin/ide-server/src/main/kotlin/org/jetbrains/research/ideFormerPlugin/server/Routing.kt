@@ -5,6 +5,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.pipeline.*
+import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.server.requests.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -33,6 +35,20 @@ suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusC
         text = RoutingUtils.jsonConverter.toJson(responseObject),
         status = status
     )
+}
+
+suspend fun PipelineContext<*, ApplicationCall>.executeAndRespondError(
+    listDirectoryContents: IdeApiMethod,
+    logger: Logger
+): Boolean = try {
+    listDirectoryContents.execute()
+    true
+} catch (e: Exception) {
+    logger.error("Error while api execution: ${e.message}")
+    call.respondJson(
+        e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
+    )
+    false
 }
 
 object IdeServerConstants {

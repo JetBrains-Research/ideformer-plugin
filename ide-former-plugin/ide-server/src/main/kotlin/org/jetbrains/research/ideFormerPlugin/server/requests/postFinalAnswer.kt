@@ -4,7 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.SaveModelFinalAns
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
+import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -15,11 +15,8 @@ fun Routing.postFinalAnswer(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val modelFinalAns = call.receiveText()
 
         val saveModelFinalAns = SaveModelFinalAns(modelFinalAns)
-        try {
-            saveModelFinalAns.execute()
-        } catch (e: Exception) {
-            logger.error("Error while saving final answer api execution: ${e.message}")
-            return@post call.respondJson(e.message ?: API_EXECUTION_UNKNOWN_ERROR)
+        if (!executeAndRespondError(saveModelFinalAns, logger)) {
+            return@post
         }
         logger.info("Save model final ans api call was executed")
 

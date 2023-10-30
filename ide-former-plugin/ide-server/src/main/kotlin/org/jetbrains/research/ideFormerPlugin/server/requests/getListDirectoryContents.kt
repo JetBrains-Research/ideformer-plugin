@@ -3,7 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ListDirectoryContents
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
+import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -17,13 +17,8 @@ fun Routing.getListDirectoryContents(logger: Logger, ideStateKeeper: IdeStateKee
             ListDirectoryContents(ideStateKeeper.currentProjectDirectory, it)
         } ?: ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
 
-        try {
-            listDirectoryContents.execute()
-        } catch (e: Exception) {
-            logger.error("Error while kt file kt methods api execution: ${e.message}")
-            return@get call.respondJson(
-                e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR
-            )
+        if (!executeAndRespondError(listDirectoryContents, logger)) {
+            return@get
         }
 
         call.respondJson(listDirectoryContents.getSearchDirectoryItemsNames()!!)
