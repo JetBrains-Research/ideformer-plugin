@@ -25,7 +25,7 @@ fun Routing.getKtFileKtMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             return@get call.respondJson(e.message ?: IdeServerConstants.API_EXECUTION_UNKNOWN_ERROR)
         }
 
-        call.respondJson(ktFileKtMethods.getFileKtMethodsNames())
+        call.respondJson(ktFileKtMethods.getFileKtMethodsNames()!!)
         logger.info("Server GET file kt methods request for file '$fileName' is processed")
     }
 }

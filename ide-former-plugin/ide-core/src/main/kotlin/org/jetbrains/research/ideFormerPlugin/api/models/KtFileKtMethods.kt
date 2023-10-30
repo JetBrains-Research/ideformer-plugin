@@ -9,7 +9,7 @@ class KtFileKtMethods(
     private val projectDirectory: PsiDirectory,
     private val ktFileName: String
 ) : IdeApiMethod {
-    private lateinit var fileKtMethods: List<KtNamedFunction>
+    private var fileKtMethods: List<KtNamedFunction>? = null
 
     private fun findKtFileByName(ktFileName: String): KtFile =
         projectDirectory.files
@@ -26,5 +26,5 @@ class KtFileKtMethods(
         }
     }
 
-    fun getFileKtMethodsNames() = fileKtMethods.map { it.name }
+    fun getFileKtMethodsNames() = fileKtMethods?.map { it.name }
 }

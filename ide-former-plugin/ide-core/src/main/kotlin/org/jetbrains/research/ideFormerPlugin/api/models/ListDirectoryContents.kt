@@ -9,7 +9,7 @@ class ListDirectoryContents(
     private val currentProjectDirectory: PsiDirectory,
     private val searchDirectoryName: String = DEFAULT_DIRECTORY_NAME
 ) : IdeApiMethod {
-    private lateinit var searchDirectoryItems: List<PsiFileSystemItem>
+    private var searchDirectoryItems: List<PsiFileSystemItem>? = null
 
     private fun PsiDirectory.fileSystemItems(): List<PsiFileSystemItem> {
         val files = this.files.map { it as PsiFileSystemItem }
@@ -26,5 +26,5 @@ class ListDirectoryContents(
         searchDirectoryItems = searchDirectory.fileSystemItems()
     }
 
-    fun getSearchDirectoryItemsNames() = searchDirectoryItems.map { it.name }
+    fun getSearchDirectoryItemsNames() = searchDirectoryItems?.map { it.name }
 }

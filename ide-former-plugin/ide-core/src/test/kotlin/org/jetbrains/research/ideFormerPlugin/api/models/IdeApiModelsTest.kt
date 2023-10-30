@@ -85,13 +85,13 @@ class IdeApiModelsTest : BasePlatformTestCase() {
 
         var ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile2.kt")
         ktFileMethods.execute()
-        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getFileKtMethodsNames().toSet())
+        assertEquals(setOf("decreaseNum", "printSomePhrase"), ktFileMethods.getFileKtMethodsNames()!!.toSet())
 
         cd = ChangeDirectory(ideStateKeeper, "subdir")
         cd.execute()
 
         ktFileMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, "someKtFile1.kt")
         ktFileMethods.execute()
-        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getFileKtMethodsNames().toSet())
+        assertEquals(setOf("main", "increaseNum"), ktFileMethods.getFileKtMethodsNames()!!.toSet())
     }
 }
