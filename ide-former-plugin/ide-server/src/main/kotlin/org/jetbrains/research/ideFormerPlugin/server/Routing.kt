@@ -38,10 +38,10 @@ suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusC
 }
 
 suspend fun PipelineContext<*, ApplicationCall>.executeAndRespondError(
-    listDirectoryContents: IdeApiMethod,
+    ideApiMethod: IdeApiMethod,
     logger: Logger
 ): Boolean = try {
-    listDirectoryContents.execute()
+    ideApiMethod.execute()
     true
 } catch (e: Exception) {
     logger.error("Error while api execution: ${e.message}")
