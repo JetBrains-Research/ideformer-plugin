@@ -112,7 +112,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         checkKtFileKtMethodsExecution(
             ideStateKeeper,
             "someKtFile2.kt",
-            setOf("decreaseNum", "printSomePhrase", "delegatePrinting")
+            setOf("decreaseNum", "printSomePhrase", "delegatePrinting", "SimpleClass", "ComplexClass")
         )
 
         checkChangeDirectoryExecution(ideStateKeeper, "subdir")
