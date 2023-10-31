@@ -3,6 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 @TestDataPath("/testData/testProject")
@@ -112,6 +113,47 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             ideStateKeeper,
             "someKtFile1.kt",
             setOf("main", "increaseNum")
+        )
+    }
+
+    private fun checkFileTextExecution(
+        ideStateKeeper: IdeStateKeeper,
+        fileName: String,
+        expectedFileText: String
+    ) {
+        FileText(ideStateKeeper.currentProjectDirectory, fileName).also {
+            it.execute()
+            assertEquals(expectedFileText, it.getFileText())
+        }
+    }
+
+    fun testFileText() {
+        val ideStateKeeper = IdeStateKeeper(project)
+
+        val cd = checkChangeDirectoryExecution(ideStateKeeper, "dir2/subdir/subsubdir", "subsubdir")
+        checkFileTextExecution(
+            ideStateKeeper,
+            "someTextFile.txt",
+            "some awesome text\n" +
+                    "some another awesome text\n" +
+                    "\n" +
+                    "happy end!"
+        )
+        cd.reverse()
+
+        checkChangeDirectoryExecution(
+            ideStateKeeper,
+            "dir1",
+            "dir1"
+        )
+        checkFileTextExecution(
+            ideStateKeeper,
+            "someKtFile2.kt",
+            "class SomeClass(private val num: Int = 0) {\n" +
+                    "    fun decreaseNum(): Int = return ++num\n" +
+                    "\n" +
+                    "    fun printSomePhrase() = println(\"some phrase\")\n" +
+                    "}"
         )
     }
 }
