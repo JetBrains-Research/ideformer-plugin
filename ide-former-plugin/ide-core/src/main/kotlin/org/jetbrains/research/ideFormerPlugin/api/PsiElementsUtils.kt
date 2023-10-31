@@ -1,6 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.api
 
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
+
+const val DEFAULT_DIRECTORY_NAME = "."
 
 fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDirectory? {
     val nextDirectoryInPath = targetDirectoryPath.substringBefore("/")
@@ -10,4 +13,6 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
     return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
 
-const val DEFAULT_DIRECTORY_NAME = "."
+fun PsiDirectory.findFileByName(fileName: String): PsiFile =
+    this.files.firstOrNull { it.name == fileName }
+        ?: error("No such file in the current directory")
