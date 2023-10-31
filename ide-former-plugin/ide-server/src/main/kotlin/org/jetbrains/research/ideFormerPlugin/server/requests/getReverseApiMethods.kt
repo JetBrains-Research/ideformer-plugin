@@ -38,7 +38,7 @@ fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper)
             ideStateKeeper.reverseLastApiMethods()
         }
 
-        call.respondJson("Last $reversedApiCallsCount api calls were reversed")
+        call.respondJson("Last $reversedApiCallsCount api method(-s) was(were) reversed")
         logger.info("Server GET reverse api methods request is processed")
     }
 }
