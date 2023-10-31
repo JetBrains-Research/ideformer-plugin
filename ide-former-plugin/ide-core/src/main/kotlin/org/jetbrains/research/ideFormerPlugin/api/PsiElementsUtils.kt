@@ -1,7 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.api
 
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
 
 const val DEFAULT_DIRECTORY_NAME = "."
 
@@ -16,3 +18,6 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
 fun PsiDirectory.findFileByName(fileName: String): PsiFile =
     this.files.firstOrNull { it.name == fileName }
         ?: error("No such file in the current directory")
+
+fun PsiFile.getAllClasses(): List<PsiClass> =
+    PsiTreeUtil.getChildrenOfTypeAsList(this, PsiClass::class.java)
