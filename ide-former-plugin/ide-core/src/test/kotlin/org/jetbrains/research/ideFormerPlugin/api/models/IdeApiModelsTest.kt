@@ -42,7 +42,10 @@ class IdeApiModelsTest : BasePlatformTestCase() {
     ) {
         ListDirectoryContents(ideStateKeeper.currentProjectDirectory, directoryName).also {
             it.execute()
-            assertEquals(expectedDirectoryItemsNames, it.getSearchDirectoryItemsNames()!!.toSet())
+            assertEquals(
+                expectedDirectoryItemsNames,
+                it.getSearchDirectoryItemsNames()?.toSet() ?: "Search directory items list is null"
+            )
         }
     }
 
@@ -95,7 +98,10 @@ class IdeApiModelsTest : BasePlatformTestCase() {
     ) {
         KtFileKtMethods(ideStateKeeper.currentProjectDirectory, ktFileName).also {
             it.execute()
-            assertEquals(expectedKtMethodsNames, it.getFileKtMethodsNames()!!.toSet())
+            assertEquals(
+                expectedKtMethodsNames,
+                it.getFileKtMethodsNames()?.toSet() ?: "Kt file methods list is null"
+            )
         }
     }
 
@@ -106,7 +112,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         checkKtFileKtMethodsExecution(
             ideStateKeeper,
             "someKtFile2.kt",
-            setOf("decreaseNum", "printSomePhrase")
+            setOf("decreaseNum", "printSomePhrase", "delegatePrinting")
         )
 
         checkChangeDirectoryExecution(ideStateKeeper, "subdir")
@@ -135,26 +141,31 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         checkFileTextExecution(
             ideStateKeeper,
             "someTextFile.txt",
-            "some awesome text\n" +
-                    "some another awesome text\n" +
-                    "\n" +
-                    "happy end!"
+            """
+                some awesome text
+                some another awesome text
+                
+                happy end!
+            """.trimIndent()
         )
         cd.reverse()
 
         checkChangeDirectoryExecution(
             ideStateKeeper,
-            "dir1",
-            "dir1"
+            "dir1/subdir",
+            "subdir"
         )
         checkFileTextExecution(
             ideStateKeeper,
-            "someKtFile2.kt",
-            "class SomeClass(private val num: Int = 0) {\n" +
-                    "    fun decreaseNum(): Int = return ++num\n" +
-                    "\n" +
-                    "    fun printSomePhrase() = println(\"some phrase\")\n" +
-                    "}"
+            "someKtFile1.kt",
+            """
+                fun main() {
+                    println("Hello Kotlin!")
+                }
+
+                val num = 0
+                fun increaseNum(): Int = return ++num
+            """.trimIndent()
         )
     }
 }
