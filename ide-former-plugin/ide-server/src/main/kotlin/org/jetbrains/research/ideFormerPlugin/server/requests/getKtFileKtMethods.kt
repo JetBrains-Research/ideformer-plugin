@@ -3,7 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.models.KtFileKtMethods
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileKtMethods
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
 import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
