@@ -16,8 +16,7 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
 }
 
 fun PsiDirectory.findFileByName(fileName: String): PsiFile =
-    this.files.firstOrNull { it.name == fileName }
-        ?: error("No such file in the current directory")
+    this.findFile(fileName) ?: error("No such file in the current directory")
 
 fun PsiFile.getAllClasses(): List<PsiClass> =
     PsiTreeUtil.getChildrenOfTypeAsList(this, PsiClass::class.java)
