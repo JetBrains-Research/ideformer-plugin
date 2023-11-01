@@ -2,7 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.models.ChangeDirectory
+import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.PROJECT_DIR_REMAINS_THE_SAME
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.PROJECT_DIR_WAS_CHANGED_TO
 import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError

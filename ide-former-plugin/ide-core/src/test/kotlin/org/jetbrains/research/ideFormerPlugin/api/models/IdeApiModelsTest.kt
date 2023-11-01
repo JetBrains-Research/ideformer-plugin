@@ -5,6 +5,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
+import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
+import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 @TestDataPath("/testData/testProject")
