@@ -7,19 +7,19 @@ import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.research.ideFormerPlugin.api.findFileByName
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
-class KtFileKtMethods(
+class KtFileFunctions(
     projectDirectory: PsiDirectory,
     ktFileName: String
 ) : IdeApiMethod {
     private val ktFile: KtFile = projectDirectory.findFileByName(ktFileName) as KtFile
-    private var fileKtMethods: List<KtFunction>? = null
+    private var fileFunctions: List<KtFunction>? = null
 
-    private fun KtFile.ktNamedFunctions(): List<KtFunction> =
+    private fun KtFile.ktFunctions(): List<KtFunction> =
         PsiTreeUtil.findChildrenOfType(this, KtFunction::class.java).toList()
 
     override fun execute() {
-        fileKtMethods = ktFile.ktNamedFunctions()
+        fileFunctions = ktFile.ktFunctions()
     }
 
-    fun getFileKtMethodsNames() = fileKtMethods?.map { it.name }
+    fun getFileFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
 }
