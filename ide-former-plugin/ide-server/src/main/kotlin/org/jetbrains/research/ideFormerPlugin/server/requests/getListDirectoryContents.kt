@@ -2,7 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.models.ListDirectoryContents
+import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
