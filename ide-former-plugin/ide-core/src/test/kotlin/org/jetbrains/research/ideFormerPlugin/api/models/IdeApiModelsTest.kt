@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileKtMethods
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 @TestDataPath("/testData/testProject")
@@ -96,11 +96,11 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         ktFileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        KtFileKtMethods(ideStateKeeper.currentProjectDirectory, ktFileName).also {
+        KtFileFunctions(ideStateKeeper.currentProjectDirectory, ktFileName).also {
             it.execute()
             assertEquals(
                 expectedKtMethodsNames,
-                it.getFileKtMethodsNames()?.toSet() ?: "Kt file methods list is null"
+                it.getFileFunctionsNames()?.toSet() ?: "Kt file functions names list is null"
             )
         }
     }

@@ -3,7 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileKtMethods
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
 import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
@@ -18,12 +18,12 @@ fun Routing.getKtFileKtMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         )
         logger.info("Server GET file kt methods request for file '$fileName' is called")
 
-        val ktFileKtMethods = KtFileKtMethods(ideStateKeeper.currentProjectDirectory, fileName)
-        if (!executeAndRespondError(ktFileKtMethods, logger)) {
+        val ktFileFunctions = KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+        if (!executeAndRespondError(ktFileFunctions, logger)) {
             return@get
         }
 
-        call.respondJson(ktFileKtMethods.getFileKtMethodsNames()!!)
+        call.respondJson(ktFileFunctions.getFileFunctionsNames()!!)
         logger.info("Server GET file kt methods request for file '$fileName' is processed")
     }
 }
