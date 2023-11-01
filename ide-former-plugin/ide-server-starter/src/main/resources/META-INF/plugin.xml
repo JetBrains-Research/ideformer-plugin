@@ -4,9 +4,10 @@
     <name>IDE Assistant</name>
     <vendor>JetBrains Research</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <appStarter implementation="org.jetbrains.research.ideFormerPlugin.IdeServerStarter"/>
