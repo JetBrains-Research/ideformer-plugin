@@ -4,6 +4,9 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.JavaFileClasses
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.KtFileClasses
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.PyFileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
@@ -168,6 +171,43 @@ class IdeApiModelsTest : BasePlatformTestCase() {
                 val num = 0
                 fun increaseNum(): Int = return ++num
             """.trimIndent()
+        )
+    }
+
+    private fun checkFileClassesExecution(
+        ideStateKeeper: IdeStateKeeper,
+        fileName: String,
+        expectedClassesNames: Set<String>
+    ) {
+        val fileExtension = fileName.takeLastWhile { it == '.' }.lowercase()
+        when (fileExtension) {
+            ".kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(expectedClassesNames, it.getKtClassesNames()!!.toSet())
+            }
+            ".java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(expectedClassesNames, it.getJavaClassesNames()!!.toSet())
+            }
+            ".py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(expectedClassesNames, it.getPyClassesNames()!!.toSet())
+            }
+        }
+    }
+
+    fun testFileClasses() {
+        val ideStateKeeper = IdeStateKeeper(project)
+
+        checkChangeDirectoryExecution(
+            ideStateKeeper,
+            "dir1",
+            "dir1"
+        )
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "someKtFile2.kt",
+            setOf("SimpleClass", "ComplexClass")
         )
     }
 }
