@@ -5,12 +5,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class KtFileClasses(
     projectDirectory: PsiDirectory,
     fileName: String
-) : IdeApiMethod {
+) : FileClasses {
     private val ktFile: KtFile = projectDirectory.findFileByName(fileName) as KtFile
     private var ktClasses: List<KtClass>? = null
 
@@ -21,9 +20,9 @@ class KtFileClasses(
         ktClasses = ktFile.ktClasses()
     }
 
-    fun getKtClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
 
-    fun getKtClassCode(ktClassName: String): String? = ktClasses
-        ?.firstOrNull { it.name == ktClassName }
+    override fun getClassCode(className: String): String? = ktClasses
+        ?.firstOrNull { it.name == className }
         ?.text
 }
