@@ -107,9 +107,9 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        val fileExtension = fileName.takeLastWhile { it == '.' }.lowercase()
+        val fileExtension = fileName.takeLastWhile { it != '.' }.lowercase()
         when (fileExtension) {
-            ".kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 assertEquals(
                     expectedKtMethodsNames,
@@ -117,7 +117,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
                 )
             }
 
-            ".java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 assertEquals(
                     expectedKtMethodsNames,
@@ -125,7 +125,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
                 )
             }
 
-            ".py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 assertEquals(
                     expectedKtMethodsNames,
@@ -135,10 +135,11 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         }
     }
 
-    fun testKtFileKtMethods() {
+    fun testFileMethods() {
         val ideStateKeeper = IdeStateKeeper(project)
 
         checkChangeDirectoryExecution(ideStateKeeper, "dir1")
+
         checkFileMethodsExecution(
             ideStateKeeper,
             "someKtFile2.kt",
@@ -146,8 +147,8 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         )
         checkFileMethodsExecution(
             ideStateKeeper,
-            "SomeClassJava.java",
-            setOf("SomeJavaClass", "setA")
+            "SomeJavaClass.java",
+            setOf("setA")
         )
         checkFileMethodsExecution(
             ideStateKeeper,
@@ -156,6 +157,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         )
 
         checkChangeDirectoryExecution(ideStateKeeper, "subdir")
+
         checkFileMethodsExecution(
             ideStateKeeper,
             "someKtFile1.kt",
@@ -214,21 +216,21 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedClassesNames: Set<String>
     ) {
-        val fileExtension = fileName.takeLastWhile { it == '.' }.lowercase()
+        val fileExtension = fileName.takeLastWhile { it != '.' }.lowercase()
         when (fileExtension) {
-            ".kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getKtClassesNames()!!.toSet())
             }
 
-            ".java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getJavaClassesNames()!!.toSet())
             }
 
-            ".py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
+            "py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
                 // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getPyClassesNames()!!.toSet())
@@ -244,6 +246,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             "dir1",
             "dir1"
         )
+
         checkFileClassesExecution(
             ideStateKeeper,
             "someKtFile2.kt",
