@@ -4,7 +4,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.research.ideFormerPlugin.api.findFileByName
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class KtFileFunctions(

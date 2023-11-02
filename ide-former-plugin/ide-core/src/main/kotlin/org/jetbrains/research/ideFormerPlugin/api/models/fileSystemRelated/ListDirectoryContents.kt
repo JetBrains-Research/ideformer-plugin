@@ -2,8 +2,8 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated
 
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileSystemItem
-import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
-import org.jetbrains.research.ideFormerPlugin.api.findSubdirectoryRecursively
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.findSubdirectoryRecursively
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class ListDirectoryContents(
