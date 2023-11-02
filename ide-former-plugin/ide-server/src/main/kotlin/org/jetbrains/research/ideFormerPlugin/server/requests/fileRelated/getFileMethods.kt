@@ -14,11 +14,14 @@ import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getFileMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
-    get("/file-methods/{fileName}") {
-        val fileName = call.parameters["fileName"] ?: return@get call.respondJson(
-            IdeServerConstants.MISSING_FILENAME,
-            HttpStatusCode.BadRequest
-        )
+    get("/file-methods/{fileName?}") {
+        val fileName = call.parameters["fileName"] ?: run {
+            logger.error("File name was not provided")
+            return@get call.respondJson(
+                IdeServerConstants.MISSING_FILENAME,
+                HttpStatusCode.BadRequest
+            )
+        }
         logger.info("Server GET file methods request for file '$fileName' is called")
 
         val fileExtension = getFileExtension(fileName)
