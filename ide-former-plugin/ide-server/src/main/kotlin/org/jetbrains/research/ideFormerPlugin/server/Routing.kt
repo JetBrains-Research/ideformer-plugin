@@ -10,6 +10,7 @@ import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.server.requests.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileClasses
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileMethods
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileText
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
@@ -22,6 +23,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getMainPage(logger)
         getIdeApiList(logger)
         getProjectModules(logger, ideStateKeeper)
+        getFileText(logger, ideStateKeeper)
         getFileMethods(logger, ideStateKeeper)
         getFileClasses(logger, ideStateKeeper)
         getListDirectoryContents(logger, ideStateKeeper)
