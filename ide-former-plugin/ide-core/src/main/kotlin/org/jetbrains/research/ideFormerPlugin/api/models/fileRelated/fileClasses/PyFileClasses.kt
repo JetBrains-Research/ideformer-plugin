@@ -7,16 +7,16 @@ import com.jetbrains.python.psi.PyFile
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class PyFileClasses(
-    projectDirectory: PsiDirectory,
-    fileName: String
+    private val projectDirectory: PsiDirectory,
+    private val fileName: String
 ) : FileClasses {
-    private val pyFile: PyFile = projectDirectory.findFileByName(fileName) as PyFile
     private var pyClasses: List<PyClass>? = null
 
     private fun PyFile.pyClasses(): List<PyClass> =
         PsiTreeUtil.findChildrenOfType(this, PyClass::class.java).toList()
 
     override fun execute() {
+        val pyFile = projectDirectory.findFileByName(fileName) as PyFile
         pyClasses = pyFile.pyClasses()
     }
 

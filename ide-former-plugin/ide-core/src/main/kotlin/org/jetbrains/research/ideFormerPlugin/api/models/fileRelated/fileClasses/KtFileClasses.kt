@@ -7,16 +7,16 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class KtFileClasses(
-    projectDirectory: PsiDirectory,
-    fileName: String
+    private val projectDirectory: PsiDirectory,
+    private val fileName: String
 ) : FileClasses {
-    private val ktFile: KtFile = projectDirectory.findFileByName(fileName) as KtFile
     private var ktClasses: List<KtClass>? = null
 
     private fun KtFile.ktClasses(): List<KtClass> =
         PsiTreeUtil.findChildrenOfType(this, KtClass::class.java).toList()
 
     override fun execute() {
+        val ktFile = projectDirectory.findFileByName(fileName) as KtFile
         ktClasses = ktFile.ktClasses()
     }
 
