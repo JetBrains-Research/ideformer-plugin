@@ -254,7 +254,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         )
         checkFileClassesExecution(
             ideStateKeeper,
-            "pyFile.kt",
+            "pyFile.py",
             setOf("Dog")
         )
         checkFileClassesExecution(
