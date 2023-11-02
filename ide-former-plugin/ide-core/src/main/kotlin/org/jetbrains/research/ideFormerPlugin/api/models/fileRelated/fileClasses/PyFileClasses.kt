@@ -5,12 +5,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.python.psi.PyClass
 import com.jetbrains.python.psi.PyFile
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class PyFileClasses(
     projectDirectory: PsiDirectory,
     fileName: String
-) : IdeApiMethod {
+) : FileClasses {
     private val pyFile: PyFile = projectDirectory.findFileByName(fileName) as PyFile
     private var pyClasses: List<PyClass>? = null
 
@@ -21,9 +20,9 @@ class PyFileClasses(
         pyClasses = pyFile.pyClasses()
     }
 
-    fun getPyClassesNames(): List<String>? = pyClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String>? = pyClasses?.mapNotNull { it.name }
 
-    fun getPyClassCode(pyClassName: String): String? = pyClasses
-        ?.firstOrNull { it.name == pyClassName }
+    override fun getClassCode(className: String): String? = pyClasses
+        ?.firstOrNull { it.name == className }
         ?.text
 }
