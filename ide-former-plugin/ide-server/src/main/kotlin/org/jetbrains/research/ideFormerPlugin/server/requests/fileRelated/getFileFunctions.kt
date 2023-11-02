@@ -13,7 +13,7 @@ import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
-fun Routing.getFileMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
+fun Routing.getFileFunctions(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/file-methods/{fileName?}") {
         // TODO: extract to the separate function
         val fileName = call.parameters["fileName"] ?: run {
