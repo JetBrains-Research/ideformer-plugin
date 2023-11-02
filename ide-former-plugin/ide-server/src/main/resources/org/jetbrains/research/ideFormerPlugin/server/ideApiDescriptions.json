@@ -55,6 +55,21 @@
     "optional_parameters": []
   },
   {
+    "name": "File Classes",
+    "url": "/file-classes",
+    "description": "Gets a list of names of the requested file classes.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "description": "The name of the file whose classes should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "Reverse Last Api Methods",
     "url": "/reverse-api-methods",
     "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
