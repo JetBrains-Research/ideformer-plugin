@@ -2,15 +2,14 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFuncti
 
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
-import com.jetbrains.python.psi.PyFunction
 import com.jetbrains.python.psi.PyFile
+import com.jetbrains.python.psi.PyFunction
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class PyFileFunctions(
     projectDirectory: PsiDirectory,
     pyFileName: String
-) : IdeApiMethod {
+) : FileFunctions {
     private val pyFile: PyFile = projectDirectory.findFileByName(pyFileName) as PyFile
     private var fileFunctions: List<PyFunction>? = null
 
@@ -21,5 +20,8 @@ class PyFileFunctions(
         fileFunctions = pyFile.pyFunctions()
     }
 
-    fun getFileFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
+    override fun getFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
+    override fun getFunctionCode(functionName: String): String? = fileFunctions
+        ?.firstOrNull { it.name == functionName }
+        ?.text
 }

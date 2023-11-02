@@ -5,12 +5,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class JavaFileFunctions(
     projectDirectory: PsiDirectory,
     ktFileName: String
-) : IdeApiMethod {
+) : FileFunctions {
     private val javaFile: PsiFile = projectDirectory.findFileByName(ktFileName)
     private var fileFunctions: List<PsiMethod>? = null
 
@@ -21,5 +20,8 @@ class JavaFileFunctions(
         fileFunctions = javaFile.javaFunctions()
     }
 
-    fun getFileFunctionsNames(): List<String>? = fileFunctions?.map { it.name }
+    override fun getFunctionsNames(): List<String>? = fileFunctions?.map { it.name }
+    override fun getFunctionCode(functionName: String): String? = fileFunctions
+        ?.firstOrNull { it.name == functionName }
+        ?.text
 }
