@@ -12,15 +12,19 @@ class JavaFileClasses(
     fileName: String
 ) : IdeApiMethod {
     private val javaFile: PsiJavaFile = projectDirectory.findFileByName(fileName) as PsiJavaFile
-    private var fileClasses: List<PsiClass>? = null
+    private var javaClasses: List<PsiClass>? = null
 
     private fun PsiJavaFile.javaClasses(): List<PsiClass> =
         PsiTreeUtil.findChildrenOfType(this, PsiClass::class.java).toList()
 
     override fun execute() {
-        fileClasses = javaFile.javaClasses()
+        javaClasses = javaFile.javaClasses()
     }
 
-    fun getFileClassesNames(): List<String>? =
-        fileClasses?.mapNotNull { it.name }
+    fun getJavaClassesNames(): List<String>? =
+        javaClasses?.mapNotNull { it.name }
+
+    fun getJavaClassCode(javaClassName: String): String? = javaClasses
+        ?.firstOrNull { it.name == javaClassName }
+        ?.text
 }
