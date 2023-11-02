@@ -2,7 +2,8 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.jetbrains.research.ideFormerPlugin.api.DEFAULT_DIRECTORY_NAME
+import com.intellij.util.PathUtil.getFileExtension
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.JavaFileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.KtFileClasses
@@ -107,7 +108,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        val fileExtension = fileName.takeLastWhile { it != '.' }.lowercase()
+        val fileExtension = getFileExtension(fileName)
         when (fileExtension) {
             "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
@@ -216,24 +217,21 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedClassesNames: Set<String>
     ) {
-        val fileExtension = fileName.takeLastWhile { it != '.' }.lowercase()
+        val fileExtension = getFileExtension(fileName)
         when (fileExtension) {
             "kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
-                // TODO: change !! to error handling
-                assertEquals(expectedClassesNames, it.getKtClassesNames()!!.toSet())
+                assertEquals(expectedClassesNames, it.getKtClassesNames()?.toSet() ?: "Kt file classes names list is null")
             }
 
             "java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
-                // TODO: change !! to error handling
-                assertEquals(expectedClassesNames, it.getJavaClassesNames()!!.toSet())
+                assertEquals(expectedClassesNames, it.getJavaClassesNames()?.toSet() ?: "Java file classes names list is null")
             }
 
             "py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
-                // TODO: change !! to error handling
-                assertEquals(expectedClassesNames, it.getPyClassesNames()!!.toSet())
+                assertEquals(expectedClassesNames, it.getPyClassesNames()?.toSet() ?: "Py file classes names list is null")
             }
         }
     }
