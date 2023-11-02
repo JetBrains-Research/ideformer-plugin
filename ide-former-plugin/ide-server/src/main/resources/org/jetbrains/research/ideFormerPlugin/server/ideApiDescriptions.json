@@ -1,6 +1,6 @@
 [
   {
-    "name": "Project Modules",
+    "name": "project_modules",
     "url": "/project-modules",
     "description": "Gets all modules of the project.",
     "method": "GET",
@@ -8,7 +8,7 @@
     "optional_parameters": []
   },
   {
-    "name": "List Directory Contents",
+    "name": "list_directory_contents",
     "url": "/list-dir-contents",
     "description": "Gets the content of a directory. By default it returns the content of the current directory.",
     "method": "GET",
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "name": "Change Directory",
+    "name": "change_directory",
     "url": "/change-dir",
     "description": "Changes the current working directory to a new one.",
     "method": "GET",
@@ -40,7 +40,7 @@
     ]
   },
   {
-    "name": "File Text",
+    "name": "file_text",
     "url": "/file-text",
     "description": "Gets a text of the requested file.",
     "method": "GET",
@@ -55,7 +55,7 @@
     "optional_parameters": []
   },
   {
-    "name": "File Functions",
+    "name": "file_functions",
     "url": "/file-functions",
     "description": "Gets a list of names of the requested file functions.",
     "method": "GET",
@@ -70,7 +70,7 @@
     "optional_parameters": []
   },
   {
-    "name": "File Classes",
+    "name": "file_classes",
     "url": "/file-classes",
     "description": "Gets a list of names of the requested file classes.",
     "method": "GET",
@@ -85,7 +85,7 @@
     "optional_parameters": []
   },
   {
-    "name": "Reverse Last Api Methods",
+    "name": "reverse_last_api_methods",
     "url": "/reverse-api-methods",
     "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
     "method": "GET",
