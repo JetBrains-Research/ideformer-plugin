@@ -1,18 +1,17 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated
 
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class FileText(
-    projectDirectory: PsiDirectory,
-    fileName: String
+    private val projectDirectory: PsiDirectory,
+    private val fileName: String
 ) : IdeApiMethod {
-    private val psiFile: PsiFile = projectDirectory.findFileByName(fileName)
     private var fileText: String? = null
 
     override fun execute() {
+        val psiFile = projectDirectory.findFileByName(fileName)
         fileText = psiFile.text
     }
 
