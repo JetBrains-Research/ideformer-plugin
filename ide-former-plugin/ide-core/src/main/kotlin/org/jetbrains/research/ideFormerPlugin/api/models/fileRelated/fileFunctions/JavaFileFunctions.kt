@@ -7,16 +7,16 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class JavaFileFunctions(
-    projectDirectory: PsiDirectory,
-    ktFileName: String
+    private val projectDirectory: PsiDirectory,
+    private val ktFileName: String
 ) : FileFunctions {
-    private val javaFile: PsiFile = projectDirectory.findFileByName(ktFileName)
     private var fileFunctions: List<PsiMethod>? = null
 
     private fun PsiFile.javaFunctions(): List<PsiMethod> =
         PsiTreeUtil.findChildrenOfType(this, PsiMethod::class.java).toList()
 
     override fun execute() {
+        val javaFile = projectDirectory.findFileByName(ktFileName)
         fileFunctions = javaFile.javaFunctions()
     }
 
