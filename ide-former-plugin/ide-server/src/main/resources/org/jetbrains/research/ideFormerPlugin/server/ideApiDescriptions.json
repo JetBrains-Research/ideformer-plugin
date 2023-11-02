@@ -40,6 +40,21 @@
     ]
   },
   {
+    "name": "File Text",
+    "url": "/file-text",
+    "description": "Gets a text of the requested file.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "description": "The name of the file whose text should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "File Functions",
     "url": "/file-functions",
     "description": "Gets a list of names of the requested file functions.",
