@@ -4,7 +4,9 @@ import com.intellij.util.PathUtil.getFileExtension
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.JavaFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.PyFileFunctions
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
 import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
 import org.jetbrains.research.ideFormerPlugin.server.respondJson
@@ -19,14 +21,27 @@ fun Routing.getFileMethods(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         )
         logger.info("Server GET file methods request for file '$fileName' is called")
 
-        // TODO
         val fileExtension = getFileExtension(fileName)
-        val fileFunctions = KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+        val fileFunctions = when (fileExtension) {
+            "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            "java"  -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            "py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            else -> null
+        }
+
+        if (fileFunctions == null) {
+            logger.error("Incorrect request file extension: $fileExtension")
+            return@get call.respondJson(
+                IdeServerConstants.INCORRECT_REQUESTED_FILE_EXTENSION,
+                HttpStatusCode.BadRequest
+            )
+        }
+
         if (!executeAndRespondError(fileFunctions, logger)) {
             return@get
         }
 
-        call.respondJson(fileFunctions.getFileFunctionsNames()!!)
+        call.respondJson(fileFunctions.getFunctionsNames()!!)
         logger.info("Server GET file methods request for file '$fileName' is processed")
     }
 }
