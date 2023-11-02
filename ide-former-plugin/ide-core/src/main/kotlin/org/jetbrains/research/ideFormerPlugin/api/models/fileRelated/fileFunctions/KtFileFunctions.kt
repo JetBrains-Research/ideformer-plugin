@@ -10,7 +10,7 @@ import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 class KtFileFunctions(
     projectDirectory: PsiDirectory,
     ktFileName: String
-) : IdeApiMethod {
+) : FileFunctions {
     private val ktFile: KtFile = projectDirectory.findFileByName(ktFileName) as KtFile
     private var fileFunctions: List<KtFunction>? = null
 
@@ -21,5 +21,9 @@ class KtFileFunctions(
         fileFunctions = ktFile.ktFunctions()
     }
 
-    fun getFileFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
+    override fun getFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
+    override fun getFunctionCode(functionName: String): String? = fileFunctions
+        ?.firstOrNull { it.name == functionName }
+        ?.text
+
 }
