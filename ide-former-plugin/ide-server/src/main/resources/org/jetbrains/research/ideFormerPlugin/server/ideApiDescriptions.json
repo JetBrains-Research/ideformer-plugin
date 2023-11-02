@@ -40,16 +40,16 @@
     ]
   },
   {
-    "name": "Kt File Kt Methods",
-    "url": "/file-kt-methods",
-    "description": "Gets a list of Kotlin named functions’ names of the file with the .kt extension.",
+    "name": "File Functions",
+    "url": "/file-functions",
+    "description": "Gets a list of names of the requested file functions.",
     "method": "GET",
     "required_parameters": [
       {
         "name": "fileName",
         "type": "STRING",
         "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
-        "description": "The name of the file with the .kt extension."
+        "description": "The name of the file whose functions should be returned."
       }
     ],
     "optional_parameters": []
