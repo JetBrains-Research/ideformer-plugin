@@ -7,10 +7,14 @@ import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.JavaFileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.KtFileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.PyFileClasses
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.JavaFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.PyFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
+
+// TODO: split the test file into several ones
 
 @TestDataPath("/testData/testProject")
 class IdeApiModelsTest : BasePlatformTestCase() {
@@ -98,17 +102,36 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         // TODO: to add test for a non-existing dir
     }
 
-    private fun checkKtFileKtMethodsExecution(
+    private fun checkFileMethodsExecution(
         ideStateKeeper: IdeStateKeeper,
-        ktFileName: String,
+        fileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        KtFileFunctions(ideStateKeeper.currentProjectDirectory, ktFileName).also {
-            it.execute()
-            assertEquals(
-                expectedKtMethodsNames,
-                it.getFileFunctionsNames()?.toSet() ?: "Kt file functions names list is null"
-            )
+        val fileExtension = fileName.takeLastWhile { it == '.' }.lowercase()
+        when (fileExtension) {
+            ".kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(
+                    expectedKtMethodsNames,
+                    it.getFileFunctionsNames()?.toSet() ?: "Kt file functions names list is null"
+                )
+            }
+
+            ".java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(
+                    expectedKtMethodsNames,
+                    it.getFileFunctionsNames()?.toSet() ?: "Java file functions names list is null"
+                )
+            }
+
+            ".py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
+                it.execute()
+                assertEquals(
+                    expectedKtMethodsNames,
+                    it.getFileFunctionsNames()?.toSet() ?: "Py file functions names list is null"
+                )
+            }
         }
     }
 
@@ -116,14 +139,24 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         val ideStateKeeper = IdeStateKeeper(project)
 
         checkChangeDirectoryExecution(ideStateKeeper, "dir1")
-        checkKtFileKtMethodsExecution(
+        checkFileMethodsExecution(
             ideStateKeeper,
             "someKtFile2.kt",
             setOf("decreaseNum", "printSomePhrase", "delegatePrinting", "SimpleClass", "ComplexClass")
         )
+        checkFileMethodsExecution(
+            ideStateKeeper,
+            "SomeClassJava.java",
+            setOf("SomeJavaClass", "setA")
+        )
+        checkFileMethodsExecution(
+            ideStateKeeper,
+            "pyFile.py",
+            setOf("a_b", "__init__", "bark")
+        )
 
         checkChangeDirectoryExecution(ideStateKeeper, "subdir")
-        checkKtFileKtMethodsExecution(
+        checkFileMethodsExecution(
             ideStateKeeper,
             "someKtFile1.kt",
             setOf("main", "increaseNum")
