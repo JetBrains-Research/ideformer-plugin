@@ -37,6 +37,8 @@ class IdeApiModelsTest : BasePlatformTestCase() {
     private fun configureTestProject() {
         myFixture.copyFileToProject("dir1/subdir/someKtFile1.kt")
         myFixture.copyFileToProject("dir1/someKtFile2.kt")
+        myFixture.copyFileToProject("dir1/pyFile.py")
+        myFixture.copyFileToProject("dir1/SomeJavaClass.java")
         myFixture.copyFileToProject("dir2/subdir/subsubdir/someTextFile.txt")
     }
 
@@ -59,7 +61,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
 
         mapOf(
             DEFAULT_DIRECTORY_NAME to setOf("dir1", "dir2"),
-            "dir1" to setOf("someKtFile2.kt", "subdir"),
+            "dir1" to setOf("someKtFile2.kt", "pyFile.py", "SomeJavaClass.java", "subdir"),
             "dir2/subdir/subsubdir" to setOf("someTextFile.txt")
         ).forEach { (directoryName, expectedDirectoryItemsNames) ->
             checkListDirectoryContentsExecution(ideStateKeeper, directoryName, expectedDirectoryItemsNames)
@@ -183,14 +185,19 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         when (fileExtension) {
             ".kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
+                // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getKtClassesNames()!!.toSet())
             }
+
             ".java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
+                // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getJavaClassesNames()!!.toSet())
             }
+
             ".py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
                 it.execute()
+                // TODO: change !! to error handling
                 assertEquals(expectedClassesNames, it.getPyClassesNames()!!.toSet())
             }
         }
@@ -209,5 +216,17 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             "someKtFile2.kt",
             setOf("SimpleClass", "ComplexClass")
         )
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "pyFile.kt",
+            setOf("Dog")
+        )
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "SomeJavaClass.java",
+            setOf("SomeJavaClass")
+        )
+
+        // TODO: add tests for getClassCode method
     }
 }
