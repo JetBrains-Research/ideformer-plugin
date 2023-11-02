@@ -7,16 +7,16 @@ import com.jetbrains.python.psi.PyFunction
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class PyFileFunctions(
-    projectDirectory: PsiDirectory,
-    pyFileName: String
+    private val projectDirectory: PsiDirectory,
+    private val pyFileName: String
 ) : FileFunctions {
-    private val pyFile: PyFile = projectDirectory.findFileByName(pyFileName) as PyFile
     private var fileFunctions: List<PyFunction>? = null
 
     private fun PyFile.pyFunctions(): List<PyFunction> =
         PsiTreeUtil.findChildrenOfType(this, PyFunction::class.java).toList()
 
     override fun execute() {
+        val pyFile = projectDirectory.findFileByName(pyFileName) as PyFile
         fileFunctions = pyFile.pyFunctions()
     }
 

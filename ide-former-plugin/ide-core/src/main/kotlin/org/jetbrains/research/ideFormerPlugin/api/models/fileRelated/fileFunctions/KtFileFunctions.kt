@@ -7,16 +7,16 @@ import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class KtFileFunctions(
-    projectDirectory: PsiDirectory,
-    ktFileName: String
+    private val projectDirectory: PsiDirectory,
+    private val ktFileName: String
 ) : FileFunctions {
-    private val ktFile: KtFile = projectDirectory.findFileByName(ktFileName) as KtFile
     private var fileFunctions: List<KtFunction>? = null
 
     private fun KtFile.ktFunctions(): List<KtFunction> =
         PsiTreeUtil.findChildrenOfType(this, KtFunction::class.java).toList()
 
     override fun execute() {
+        val ktFile = projectDirectory.findFileByName(ktFileName) as KtFile
         fileFunctions = ktFile.ktFunctions()
     }
 
@@ -24,5 +24,4 @@ class KtFileFunctions(
     override fun getFunctionCode(functionName: String): String? = fileFunctions
         ?.firstOrNull { it.name == functionName }
         ?.text
-
 }
