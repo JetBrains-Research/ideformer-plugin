@@ -4,7 +4,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.python.psi.PyClass
 import com.jetbrains.python.psi.PyFile
-import org.jetbrains.research.ideFormerPlugin.api.findFileByName
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class PyFileClasses(

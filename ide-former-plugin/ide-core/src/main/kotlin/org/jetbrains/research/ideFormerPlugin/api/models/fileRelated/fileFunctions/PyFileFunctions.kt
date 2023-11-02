@@ -5,7 +5,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import com.jetbrains.python.psi.PyFunction
 import com.jetbrains.python.psi.PyFile
-import org.jetbrains.research.ideFormerPlugin.api.findFileByName
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class PyFileFunctions(
     projectDirectory: PsiDirectory,

@@ -1,4 +1,4 @@
-package org.jetbrains.research.ideFormerPlugin.api
+package org.jetbrains.research.ideFormerPlugin.api.models.utils
 
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile

@@ -1,4 +1,4 @@
-package org.jetbrains.research.ideFormerPlugin.server.requests
+package org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*

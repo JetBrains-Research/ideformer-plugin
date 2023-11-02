@@ -8,6 +8,9 @@ import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.server.requests.*
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileMethods
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
@@ -18,7 +21,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getMainPage(logger)
         getIdeApiList(logger)
         getProjectModules(logger, ideStateKeeper)
-        getKtFileKtMethods(logger, ideStateKeeper)
+        getFileMethods(logger, ideStateKeeper)
         getListDirectoryContents(logger, ideStateKeeper)
         getChangeDirectory(logger, ideStateKeeper)
         getReverseApiMethods(logger, ideStateKeeper)
