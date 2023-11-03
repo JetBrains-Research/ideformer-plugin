@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 # Install Java
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
+    openjdk-17-jdk \
     && java -version
 
 # Install Git

@@ -1,9 +1,18 @@
-name: Gradle Build
+name: Build & Push
 
-on: [push, pull_request]
-branches:
-  only:
-    - master
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# cancel workflow if there is already one running
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 
 jobs:
   build:
@@ -16,13 +25,11 @@ jobs:
         with:
           java-version: 17
           distribution: liberica
-      - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.4
-      - uses: gradle/gradle-build-action@v2.1.5
-        with:
-          arguments: build --stacktrace
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+        working-directory: ide-former-plugin
 
-# build docker container
+  # build docker container
   docker:
     runs-on: ubuntu-latest
 
@@ -43,9 +50,10 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: ${{ github.ref == 'refs/heads/master' }}
-          platforms: linux/amd64,linux/arm64
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+          platforms: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           tags: ghcr.io/${{ github.repository }}/runner:latest,ghcr.io/${{ github.repository }}/runner:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/runner:latest
 
 
 
