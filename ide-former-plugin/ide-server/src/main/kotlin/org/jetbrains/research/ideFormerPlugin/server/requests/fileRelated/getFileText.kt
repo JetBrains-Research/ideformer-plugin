@@ -22,7 +22,6 @@ fun Routing.getFileText(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         }
         logger.info("Server GET file text request for file '$fileName' is called")
 
-        // TODO: handle exception while execution
         val fileText = FileText(ideStateKeeper.currentProjectDirectory, fileName)
         if (!executeAndRespondError(fileText, logger)) {
             return@get
