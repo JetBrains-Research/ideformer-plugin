@@ -3,7 +3,6 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PathUtil.getFileExtension
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.JavaFileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.KtFileClasses
@@ -13,6 +12,7 @@ import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctio
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.PyFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 // TODO: split the test file into several ones
@@ -108,35 +108,24 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        val fileExtension = getFileExtension(fileName)
-        when (fileExtension) {
-            "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(
-                    expectedKtMethodsNames,
-                    it.getFunctionsNames()?.toSet() ?: "Kt file functions names list is null"
-                )
-            }
+        // TODO: move to utils
+        val fileFunctions = when (val fileExtension = getFileExtension(fileName)) {
+            "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            "java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            "py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
+            else -> error("Unsupported file extension: $fileExtension")
+        }
 
-            "java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(
-                    expectedKtMethodsNames,
-                    it.getFunctionsNames()?.toSet() ?: "Java file functions names list is null"
-                )
-            }
-
-            "py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(
-                    expectedKtMethodsNames,
-                    it.getFunctionsNames()?.toSet() ?: "Py file functions names list is null"
-                )
-            }
+        fileFunctions.also {
+            it.execute()
+            assertEquals(
+                expectedKtMethodsNames,
+                it.getFunctionsNames()?.toSet() ?: "File functions names list is null"
+            )
         }
     }
 
-    fun testFileMethods() {
+    fun testFileFunctions() {
         val ideStateKeeper = IdeStateKeeper(project)
 
         checkChangeDirectoryExecution(ideStateKeeper, "dir1")
@@ -164,6 +153,55 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             "someKtFile1.kt",
             setOf("main", "increaseNum")
         )
+    }
+
+    private fun checkFileClassesExecution(
+        ideStateKeeper: IdeStateKeeper,
+        fileName: String,
+        expectedClassesNames: Set<String>
+    ) {
+        val fileClasses = when (val fileExtension = getFileExtension(fileName)) {
+            "kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
+            "java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
+            "py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
+            else -> error("Unsupported file extension $fileExtension")
+        }
+
+        fileClasses.also {
+            it.execute()
+            assertEquals(
+                expectedClassesNames,
+                it.getClassesNames()?.toSet() ?: "File classes names list is null"
+            )
+        }
+    }
+
+    fun testFileClasses() {
+        val ideStateKeeper = IdeStateKeeper(project)
+
+        checkChangeDirectoryExecution(
+            ideStateKeeper,
+            "dir1",
+            "dir1"
+        )
+
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "someKtFile2.kt",
+            setOf("SimpleClass", "ComplexClass")
+        )
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "pyFile.py",
+            setOf("Dog")
+        )
+        checkFileClassesExecution(
+            ideStateKeeper,
+            "SomeJavaClass.java",
+            setOf("SomeJavaClass")
+        )
+
+        // TODO: add tests for getClassCode method
     }
 
     private fun checkFileTextExecution(
@@ -210,57 +248,5 @@ class IdeApiModelsTest : BasePlatformTestCase() {
                 fun increaseNum(): Int = return ++num
             """.trimIndent()
         )
-    }
-
-    private fun checkFileClassesExecution(
-        ideStateKeeper: IdeStateKeeper,
-        fileName: String,
-        expectedClassesNames: Set<String>
-    ) {
-        val fileExtension = getFileExtension(fileName)
-        when (fileExtension) {
-            "kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(expectedClassesNames, it.getClassesNames()?.toSet() ?: "Kt file classes names list is null")
-            }
-
-            "java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(expectedClassesNames, it.getClassesNames()?.toSet() ?: "Java file classes names list is null")
-            }
-
-            "py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName).also {
-                it.execute()
-                assertEquals(expectedClassesNames, it.getClassesNames()?.toSet() ?: "Py file classes names list is null")
-            }
-        }
-    }
-
-    fun testFileClasses() {
-        val ideStateKeeper = IdeStateKeeper(project)
-
-        checkChangeDirectoryExecution(
-            ideStateKeeper,
-            "dir1",
-            "dir1"
-        )
-
-        checkFileClassesExecution(
-            ideStateKeeper,
-            "someKtFile2.kt",
-            setOf("SimpleClass", "ComplexClass")
-        )
-        checkFileClassesExecution(
-            ideStateKeeper,
-            "pyFile.py",
-            setOf("Dog")
-        )
-        checkFileClassesExecution(
-            ideStateKeeper,
-            "SomeJavaClass.java",
-            setOf("SomeJavaClass")
-        )
-
-        // TODO: add tests for getClassCode method
     }
 }
