@@ -5,8 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 
-const val DEFAULT_DIRECTORY_NAME = "."
-
 fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDirectory? {
     val nextDirectoryInPath = targetDirectoryPath.substringBefore("/")
     val currentDirectory = this.findSubdirectory(nextDirectoryInPath) ?: return null
