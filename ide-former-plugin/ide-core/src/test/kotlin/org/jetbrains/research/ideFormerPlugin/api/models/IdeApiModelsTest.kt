@@ -51,7 +51,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             it.execute()
             assertEquals(
                 expectedDirectoryItemsNames,
-                it.getSearchDirectoryItemsNames()?.toSet() ?: "Search directory items list is null"
+                it.getSearchDirectoryItemsNames()?.toSet() ?: error("Search directory items list is null")
             )
         }
     }
@@ -108,7 +108,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             it.execute()
             assertEquals(
                 expectedKtMethodsNames,
-                it.getFunctionsNames()?.toSet() ?: "File functions names list is null"
+                it.getFunctionsNames()?.toSet() ?: error("File functions names list is null")
             )
         }
     }
@@ -153,7 +153,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
             it.execute()
             assertEquals(
                 expectedClassesNames,
-                it.getClassesNames()?.toSet() ?: "File classes names list is null"
+                it.getClassesNames()?.toSet() ?: error("File classes names list is null")
             )
         }
     }
