@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - main
@@ -40,20 +42,31 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Define Docker tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/simulator
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}},priority=2000
+            type=match,pattern=v(.*),group=1,priority=1800
+            type=ref,event=pr,prefix=pr-,priority=1600
+            type=sha,prefix=sha-,format=short,priority=1400
+            type=sha,prefix=sha-,format=long,priority=1200
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          push: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+          push: true # ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
           platforms: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
-          tags: ghcr.io/${{ github.repository }}/runner:latest,ghcr.io/${{ github.repository }}/runner:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/runner:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
 
 
