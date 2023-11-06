@@ -1,8 +1,9 @@
-package org.jetbrains.research.ideFormerPlugin.api.models
+package org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated
 
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 
 class ProjectModules(private val project: Project) : IdeApiMethod {
     private var projectModules: List<Module>? = null

@@ -8,6 +8,7 @@ import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFil
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileText
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getProjectModules
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
