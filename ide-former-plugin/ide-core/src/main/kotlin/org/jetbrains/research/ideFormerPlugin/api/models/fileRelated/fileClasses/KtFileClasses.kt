@@ -1,8 +1,7 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses
 
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
@@ -12,12 +11,9 @@ class KtFileClasses(
 ) : FileClasses {
     private var ktClasses: List<KtClass>? = null
 
-    private fun PsiFile.ktClasses(): List<KtClass> =
-        PsiTreeUtil.findChildrenOfType(this, KtClass::class.java).toList()
-
     override fun execute() {
         val ktFile = projectDirectory.findFileByName(fileName)
-        ktClasses = ktFile.ktClasses()
+        ktClasses = ktFile.childrenOfType<KtClass>()
     }
 
     override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
