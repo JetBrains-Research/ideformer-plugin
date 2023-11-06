@@ -10,18 +10,18 @@ class JavaFileFunctions(
     private val projectDirectory: PsiDirectory,
     private val javaFileName: String
 ) : FileFunctions {
-    private var fileFunctions: List<PsiMethod>? = null
+    private var javaFunctions: List<PsiMethod>? = null
 
     private fun PsiFile.javaFunctions(): List<PsiMethod> =
         PsiTreeUtil.findChildrenOfType(this, PsiMethod::class.java).toList()
 
     override fun execute() {
         val javaFile = projectDirectory.findFileByName(javaFileName)
-        fileFunctions = javaFile.javaFunctions()
+        javaFunctions = javaFile.javaFunctions()
     }
 
-    override fun getFunctionsNames(): List<String>? = fileFunctions?.map { it.name }
-    override fun getFunctionCode(functionName: String): String? = fileFunctions
+    override fun getFunctionsNames(): List<String>? = javaFunctions?.map { it.name }
+    override fun getFunctionCode(functionName: String): String? = javaFunctions
         ?.firstOrNull { it.name == functionName }
         ?.text
 }
