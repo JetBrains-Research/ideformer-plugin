@@ -2,17 +2,12 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.PathUtil.getFileExtension
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.JavaFileClasses
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.KtFileClasses
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.PyFileClasses
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.JavaFileFunctions
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.KtFileFunctions
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.PyFileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileClassesApiForFile
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileFunctionsApiForFile
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 // TODO: split the test file into several ones
@@ -108,14 +103,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedKtMethodsNames: Set<String>
     ) {
-        // TODO: move to utils
-        val fileFunctions = when (val fileExtension = getFileExtension(fileName)) {
-            "kt" -> KtFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
-            "java" -> JavaFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
-            "py" -> PyFileFunctions(ideStateKeeper.currentProjectDirectory, fileName)
-            else -> error("Unsupported file extension: $fileExtension")
-        }
-
+        val fileFunctions = chooseFileFunctionsApiForFile(fileName, ideStateKeeper.currentProjectDirectory)
         fileFunctions.also {
             it.execute()
             assertEquals(
@@ -160,13 +148,7 @@ class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedClassesNames: Set<String>
     ) {
-        val fileClasses = when (val fileExtension = getFileExtension(fileName)) {
-            "kt" -> KtFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
-            "java" -> JavaFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
-            "py" -> PyFileClasses(ideStateKeeper.currentProjectDirectory, fileName)
-            else -> error("Unsupported file extension $fileExtension")
-        }
-
+        val fileClasses = chooseFileClassesApiForFile(fileName, ideStateKeeper.currentProjectDirectory)
         fileClasses.also {
             it.execute()
             assertEquals(
