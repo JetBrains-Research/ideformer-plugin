@@ -14,7 +14,7 @@ import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getFileFunctions(logger: Logger, ideStateKeeper: IdeStateKeeper) {
-    get("/file-methods/{fileName?}") {
+    get("/file-functions/{fileName?}") {
         // TODO: extract to the separate function
         val fileName = call.parameters["fileName"] ?: run {
             logger.error("File name was not provided")
