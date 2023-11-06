@@ -12,8 +12,8 @@ class KtFileClasses(
     private var ktClasses: List<KtClass>? = null
 
     override fun execute() {
-        val ktFile = projectDirectory.findFileByName(fileName)
-        ktClasses = ktFile.childrenOfType<KtClass>()
+        val psiFile = projectDirectory.findFileByName(fileName)
+        ktClasses = psiFile.childrenOfType<KtClass>()
     }
 
     override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }

@@ -12,8 +12,8 @@ class JavaFileClasses(
     private var javaClasses: List<PsiClass>? = null
 
     override fun execute() {
-        val javaFile = projectDirectory.findFileByName(fileName)
-        javaClasses = javaFile.childrenOfType<PsiClass>()
+        val psiFile = projectDirectory.findFileByName(fileName)
+        javaClasses = psiFile.childrenOfType<PsiClass>()
     }
 
     override fun getClassesNames(): List<String>? =

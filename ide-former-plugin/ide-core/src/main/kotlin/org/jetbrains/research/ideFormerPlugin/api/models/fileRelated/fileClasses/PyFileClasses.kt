@@ -12,8 +12,8 @@ class PyFileClasses(
     private var pyClasses: List<PyClass>? = null
 
     override fun execute() {
-        val pyFile = projectDirectory.findFileByName(fileName)
-        pyClasses = pyFile.childrenOfType<PyClass>()
+        val psiFile = projectDirectory.findFileByName(fileName)
+        pyClasses = psiFile.childrenOfType<PyClass>()
     }
 
     override fun getClassesNames(): List<String>? = pyClasses?.mapNotNull { it.name }

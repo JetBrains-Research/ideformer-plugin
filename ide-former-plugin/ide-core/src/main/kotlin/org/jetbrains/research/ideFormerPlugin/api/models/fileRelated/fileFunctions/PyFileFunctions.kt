@@ -10,18 +10,18 @@ class PyFileFunctions(
     private val projectDirectory: PsiDirectory,
     private val pyFileName: String
 ) : FileFunctions {
-    private var fileFunctions: List<PyFunction>? = null
+    private var pyFunctions: List<PyFunction>? = null
 
     private fun PyFile.pyFunctions(): List<PyFunction> =
         PsiTreeUtil.findChildrenOfType(this, PyFunction::class.java).toList()
 
     override fun execute() {
         val pyFile = projectDirectory.findFileByName(pyFileName) as PyFile
-        fileFunctions = pyFile.pyFunctions()
+        pyFunctions = pyFile.pyFunctions()
     }
 
-    override fun getFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
-    override fun getFunctionCode(functionName: String): String? = fileFunctions
+    override fun getFunctionsNames(): List<String>? = pyFunctions?.mapNotNull { it.name }
+    override fun getFunctionCode(functionName: String): String? = pyFunctions
         ?.firstOrNull { it.name == functionName }
         ?.text
 }

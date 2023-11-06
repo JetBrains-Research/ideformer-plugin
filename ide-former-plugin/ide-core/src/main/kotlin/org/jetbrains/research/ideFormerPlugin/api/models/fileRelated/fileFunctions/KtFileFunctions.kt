@@ -10,18 +10,18 @@ class KtFileFunctions(
     private val projectDirectory: PsiDirectory,
     private val ktFileName: String
 ) : FileFunctions {
-    private var fileFunctions: List<KtFunction>? = null
+    private var ktFunctions: List<KtFunction>? = null
 
     private fun KtFile.ktFunctions(): List<KtFunction> =
         PsiTreeUtil.findChildrenOfType(this, KtFunction::class.java).toList()
 
     override fun execute() {
         val ktFile = projectDirectory.findFileByName(ktFileName) as KtFile
-        fileFunctions = ktFile.ktFunctions()
+        ktFunctions = ktFile.ktFunctions()
     }
 
-    override fun getFunctionsNames(): List<String>? = fileFunctions?.mapNotNull { it.name }
-    override fun getFunctionCode(functionName: String): String? = fileFunctions
+    override fun getFunctionsNames(): List<String>? = ktFunctions?.mapNotNull { it.name }
+    override fun getFunctionCode(functionName: String): String? = ktFunctions
         ?.firstOrNull { it.name == functionName }
         ?.text
 }
