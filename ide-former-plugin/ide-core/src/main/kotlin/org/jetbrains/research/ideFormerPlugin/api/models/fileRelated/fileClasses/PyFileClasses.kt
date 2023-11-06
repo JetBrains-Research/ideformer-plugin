@@ -1,9 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses
 
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.python.psi.PyClass
-import com.jetbrains.python.psi.PyFile
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
 
 class PyFileClasses(
@@ -12,11 +12,11 @@ class PyFileClasses(
 ) : FileClasses {
     private var pyClasses: List<PyClass>? = null
 
-    private fun PyFile.pyClasses(): List<PyClass> =
+    private fun PsiFile.pyClasses(): List<PyClass> =
         PsiTreeUtil.findChildrenOfType(this, PyClass::class.java).toList()
 
     override fun execute() {
-        val pyFile = projectDirectory.findFileByName(fileName) as PyFile
+        val pyFile = projectDirectory.findFileByName(fileName)
         pyClasses = pyFile.pyClasses()
     }
 
