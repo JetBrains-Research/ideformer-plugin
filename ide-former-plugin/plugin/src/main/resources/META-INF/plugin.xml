@@ -1,0 +1,16 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>org.jetbrains.research.com.ideAssistant</id>
+    <name>IDE-former</name>
+    <vendor>JetBrains Research</vendor>
+
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="IDE-former chat window" anchor="right" factoryClass="org.jetbrains.research.ideFormerPlugin.IdeFormerToolWindowFactory"/>
+    </extensions>
+
+</idea-plugin>
