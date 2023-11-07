@@ -12,7 +12,7 @@ import org.jetbrains.research.ideFormerPlugin.queryTransmitter.UserQueryTransmit
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerService
 import javax.swing.*
 
-class IdeAssistantToolWindowFactory : ToolWindowFactory, DumbAware {
+class IdeFormerToolWindowFactory : ToolWindowFactory, DumbAware {
     private class IDEAssistantToolWindow(private val userProject: Project) {
         val contentPanel = JPanel()
         private val chatArea = JTextArea(10, 50).apply {
