@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasse
 
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.psiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class JavaFileClasses(
     private val projectDirectory: PsiDirectory,
@@ -12,8 +11,7 @@ class JavaFileClasses(
     private var javaClasses: List<PsiClass>? = null
 
     override fun execute() {
-        val psiFile = projectDirectory.findFileByName(javaFileName)
-        javaClasses = psiFile.psiElementsOfType<PsiClass>()
+        javaClasses = getFilePsiElementsOfType<PsiClass>(projectDirectory, javaFileName)
     }
 
     override fun getClassesNames(): List<String>? =

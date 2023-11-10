@@ -1,10 +1,8 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions
 
 import com.intellij.psi.PsiDirectory
-import com.jetbrains.python.psi.PyFile
 import com.jetbrains.python.psi.PyFunction
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.psiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class PyFileFunctions(
     private val projectDirectory: PsiDirectory,
@@ -13,8 +11,7 @@ class PyFileFunctions(
     private var pyFunctions: List<PyFunction>? = null
 
     override fun execute() {
-        val pyFile = projectDirectory.findFileByName(pyFileName) as PyFile
-        pyFunctions = pyFile.psiElementsOfType<PyFunction>()
+        pyFunctions = getFilePsiElementsOfType<PyFunction>(projectDirectory, pyFileName)
     }
 
     override fun getFunctionsNames(): List<String>? = pyFunctions?.mapNotNull { it.name }
