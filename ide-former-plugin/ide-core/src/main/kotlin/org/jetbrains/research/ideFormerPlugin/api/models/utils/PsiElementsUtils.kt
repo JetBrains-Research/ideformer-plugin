@@ -18,3 +18,8 @@ fun PsiDirectory.findFileByName(fileName: String): PsiFile =
 
 inline fun <reified T : PsiElement> PsiFile.psiElementsOfType(): List<T> =
     PsiTreeUtil.findChildrenOfType(this, T::class.java).toList()
+
+inline fun <reified T : PsiElement> getFilePsiElementsOfType(projectDirectory: PsiDirectory, fileName: String): List<T> {
+    val psiFile = projectDirectory.findFileByName(fileName)
+    return psiFile.psiElementsOfType<T>()
+}

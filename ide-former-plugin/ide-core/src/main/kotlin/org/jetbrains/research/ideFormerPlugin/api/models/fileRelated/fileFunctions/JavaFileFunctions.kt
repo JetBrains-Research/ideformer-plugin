@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFuncti
 
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiMethod
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileByName
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.psiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class JavaFileFunctions(
     private val projectDirectory: PsiDirectory,
@@ -12,8 +11,7 @@ class JavaFileFunctions(
     private var javaFunctions: List<PsiMethod>? = null
 
     override fun execute() {
-        val psiFile = projectDirectory.findFileByName(javaFileName)
-        javaFunctions = psiFile.psiElementsOfType<PsiMethod>()
+        javaFunctions = getFilePsiElementsOfType<PsiMethod>(projectDirectory, javaFileName)
     }
 
     override fun getFunctionsNames(): List<String>? = javaFunctions?.map { it.name }
