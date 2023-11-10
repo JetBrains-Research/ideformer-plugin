@@ -12,7 +12,7 @@ on:
 
 # cancel workflow if there is already one running
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-{github.event_name}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 
@@ -63,11 +63,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: true # ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-          platforms: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          push: true
+          platforms: 'linux/amd64,linux/arm64'
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
-
-

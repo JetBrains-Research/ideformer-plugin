@@ -12,7 +12,7 @@ if [ $# -gt 3 ]; then
     echo "Illegal number of parameters"
     echo "Usage: runPluginStarter.sh <pathToProject> <serverHost> <serverPort>"
     echo "\t<pathToProject> - path to the project to be opened in IDE, default is the plugin itself"
-    echo "\t<serverHost> - host of the server to connect to, default is localhost"
+    echo "\t<serverHost> - host of the server to connect to, default is 0.0.0.0"
     echo "\t<serverPort> - port of the server to connect to, default is 8080"
     echo ""
     echo "Examples:"
@@ -30,8 +30,8 @@ else
 fi
 
 if [ -z "$2" ]; then
-    echo "No server host specified. Using 127.0.0.1"
-    SERVER_HOST="127.0.0.1"
+    echo "No server host specified. Using 0.0.0.0"
+    SERVER_HOST="0.0.0.0"
 else
     SERVER_HOST=$2
 fi
