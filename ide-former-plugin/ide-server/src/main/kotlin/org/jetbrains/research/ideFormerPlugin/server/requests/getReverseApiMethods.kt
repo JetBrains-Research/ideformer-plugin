@@ -12,7 +12,7 @@ fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper)
     get("/reverse-api-methods/{apiMethodsCount?}") {
         val apiMethodsCountString = call.parameters["apiMethodsCount"]
 
-        val reversedApiCallsCount = if (apiMethodsCountString != null) {
+        val reversedApiMethodsCount = if (apiMethodsCountString != null) {
             val apiMethodsCount = apiMethodsCountString.toIntOrNull() ?: run {
                 logger.error("Not a number api methods count parameter for reverse api method request")
                 call.respondJson(
@@ -38,7 +38,7 @@ fun Routing.getReverseApiMethods(logger: Logger, ideStateKeeper: IdeStateKeeper)
             ideStateKeeper.reverseLastApiMethods()
         }
 
-        call.respondJson("Last $reversedApiCallsCount api method(-s) was(were) reversed")
+        call.respondJson("Last $reversedApiMethodsCount api method(-s) was(were) reversed")
         logger.info("Server GET reverse api methods request is processed")
     }
 }
