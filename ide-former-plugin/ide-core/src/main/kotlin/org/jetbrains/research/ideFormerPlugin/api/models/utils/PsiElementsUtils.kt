@@ -13,9 +13,6 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
     return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
 
-fun PsiDirectory.findFileByName(fileName: String): PsiFile =
-    this.findFile(fileName) ?: error("No such file in the current directory")
-
 fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
     val targetFileDirectory = when (
         val fileDirectoryPath = targetFilePath.substringBeforeLast(PATH_DELIMITER, "")
@@ -25,7 +22,8 @@ fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
     }
 
     val fileName = targetFilePath.substringAfterLast(PATH_DELIMITER)
-    return targetFileDirectory.findFileByName(fileName)
+    return targetFileDirectory.findFile(fileName)
+        ?: error("No such file in the current directory")
 }
 
 inline fun <reified T : PsiElement> PsiFile.psiElementsOfType(): List<T> =
@@ -35,6 +33,6 @@ inline fun <reified T : PsiElement> getFilePsiElementsOfType(
     projectDirectory: PsiDirectory,
     fileName: String
 ): List<T> {
-    val psiFile = projectDirectory.findFileByName(fileName)
+    val psiFile = projectDirectory.findFileRecursively(fileName)
     return psiFile.psiElementsOfType<T>()
 }
