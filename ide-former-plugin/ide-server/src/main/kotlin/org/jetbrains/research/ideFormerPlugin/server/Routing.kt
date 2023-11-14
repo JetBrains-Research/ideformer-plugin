@@ -40,4 +40,7 @@ object IdeServerConstants {
     const val API_EXECUTION_UNKNOWN_ERROR = "Unknown error while api method execution"
     const val INCORRECT_REQUESTED_FILE_EXTENSION =
         "Incorrect requested file extension: only .py, .kt, .java file can be processed"
+
+    const val FILENAME_REQUEST_PARAMETER = "fileName"
+    const val CLASSNAME_REQUEST_PARAMETER = "className"
 }

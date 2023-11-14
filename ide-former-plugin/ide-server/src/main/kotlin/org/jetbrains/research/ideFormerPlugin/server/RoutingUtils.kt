@@ -33,11 +33,9 @@ suspend fun ApplicationCall.processRequestParameter(
         null
     }
 
-const val FILENAME_REQUEST_PARAMETER = "fileName"
-
 suspend fun ApplicationCall.processFileNameParameter(logger: Logger): String? =
     this.processRequestParameter(
-        FILENAME_REQUEST_PARAMETER,
+        IdeServerConstants.FILENAME_REQUEST_PARAMETER,
         IdeServerConstants.MISSING_FILENAME,
         logger
     )
