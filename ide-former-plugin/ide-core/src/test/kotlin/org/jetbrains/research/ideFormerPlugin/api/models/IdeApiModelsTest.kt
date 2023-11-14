@@ -51,11 +51,11 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
         assertEquals(expectedProjectDirectoryName, ideStateKeeper.currentProjectDirectory.name)
     }
 
-    protected fun checkFileMethodsExecution(
+    protected fun checkFileFunctionsExecution(
         ideStateKeeper: IdeStateKeeper,
         fileName: String,
         expectedKtMethodsNames: Set<String>
-    ) {
+    ): FileFunctions {
         val fileFunctions = chooseFileFunctionsApiForFile(fileName, ideStateKeeper.currentProjectDirectory)
         fileFunctions.also {
             it.execute()
@@ -63,6 +63,20 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
                 expectedKtMethodsNames,
                 it.getFunctionsNames()?.toSet() ?: error("File functions names list is null")
             )
+        }
+        return fileFunctions
+    }
+
+    /** The absence of the necessary indentation on the 1st line before the start of the function is ok,
+    bc the function text obtained from PSI begins exactly with the first non-space letter of the function code
+     **/
+    protected fun checkFileFunctionCodeGetting(
+        fileFunctions: FileFunctions,
+        functionName: String,
+        expectedMethodCode: String
+    ) {
+        fileFunctions.getFunctionCode(functionName)?.also {
+            assertEquals(expectedMethodCode, it)
         }
     }
 

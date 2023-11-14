@@ -9,27 +9,66 @@ class FileFunctionsTest : IdeApiModelsTest() {
 
         checkChangeDirectoryExecution(ideStateKeeper, "dir1")
 
-        checkFileMethodsExecution(
+        // TODO: create parametrized tests
+
+         val ktFileMethods = checkFileFunctionsExecution(
             ideStateKeeper,
             "someKtFile2.kt",
             setOf("decreaseNum", "printSomePhrase", "delegatePrinting", "SimpleClass", "ComplexClass")
         )
-        checkFileMethodsExecution(
+        checkFileFunctionCodeGetting(
+            ktFileMethods,
+            "printSomePhrase",
+            """
+                fun printSomePhrase(phrase: String = "some phrase") = println(phrase)
+            """.trimIndent()
+        )
+
+
+        val javaFileMethods = checkFileFunctionsExecution(
             ideStateKeeper,
             "SomeJavaClass.java",
             setOf("setA")
         )
-        checkFileMethodsExecution(
+        checkFileFunctionCodeGetting(
+            javaFileMethods,
+            "setA",
+            """
+               public void setA(Integer a) {
+                       this.a = a;
+                   }
+            """.trimIndent()
+        )
+
+        val pyFileMethods = checkFileFunctionsExecution(
             ideStateKeeper,
             "pyFile.py",
             setOf("a_b", "__init__", "bark")
         )
+        // function outside the class
+        checkFileFunctionCodeGetting(
+            pyFileMethods,
+            "a_b",
+            """
+               def a_b(a: int, b: int) -> int:
+                   return a + b
+            """.trimIndent()
+        )
+        // function inside the class
+        checkFileFunctionCodeGetting(
+            pyFileMethods,
+            "__init__",
+            """
+               def __init__(self, name, age):
+                       self.name = name
+                       self.age = age
+            """.trimIndent()
+        )
 
-        checkChangeDirectoryExecution(ideStateKeeper, "subdir")
-
-        checkFileMethodsExecution(
+        // check file functions for a file with the complex structured path
+        checkFileFunctionsExecution(
             ideStateKeeper,
-            "someKtFile1.kt",
+            "subdir/someKtFile1.kt",
             setOf("main", "increaseNum")
         )
     }
