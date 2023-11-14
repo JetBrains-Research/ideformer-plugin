@@ -19,11 +19,7 @@ class ListDirectoryContents(
     }
 
     override fun execute() {
-        val searchDirectory = when (searchDirectoryName) {
-            DEFAULT_DIRECTORY_NAME -> currentProjectDirectory
-            else -> currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName)
-                ?: error("No such subdirectory: '$searchDirectoryName'")
-        }
+        val searchDirectory = currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName)
         searchDirectoryItems = searchDirectory.fileSystemItems()
     }
 

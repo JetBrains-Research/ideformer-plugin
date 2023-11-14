@@ -13,12 +13,7 @@ class ChangeDirectory(
     private var prevDir: PsiDirectory? = null
 
     override fun execute() {
-        if (targetDirectoryName == DEFAULT_DIRECTORY_NAME) {
-            return
-        }
-
         val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
-            ?: error("No such directory in a project: '$targetDirectoryName'.")
 
         prevDir = ideStateKeeper.currentProjectDirectory
         ideStateKeeper.currentProjectDirectory = targetDir
