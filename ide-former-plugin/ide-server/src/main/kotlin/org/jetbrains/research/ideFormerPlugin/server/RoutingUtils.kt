@@ -19,15 +19,28 @@ suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusC
     )
 }
 
-suspend fun ApplicationCall.processFileNameParameter(logger: Logger): String? =
-    this.parameters["fileName"] ?: run {
-        logger.error("File name was not provided")
+suspend fun ApplicationCall.processRequestParameter(
+    parameterName: String,
+    errorMessage: String,
+    logger: Logger
+): String? =
+    this.parameters[parameterName] ?: run {
+        logger.error(errorMessage)
         this.respondJson(
-            IdeServerConstants.MISSING_FILENAME,
+            errorMessage,
             HttpStatusCode.BadRequest
         )
         null
     }
+
+const val FILENAME_REQUEST_PARAMETER = "fileName"
+
+suspend fun ApplicationCall.processFileNameParameter(logger: Logger): String? =
+    this.processRequestParameter(
+        FILENAME_REQUEST_PARAMETER,
+        IdeServerConstants.MISSING_FILENAME,
+        logger
+    )
 
 suspend fun PipelineContext<Unit, ApplicationCall>.executeAndRespondError(
     ideApiMethod: IdeApiMethod,
