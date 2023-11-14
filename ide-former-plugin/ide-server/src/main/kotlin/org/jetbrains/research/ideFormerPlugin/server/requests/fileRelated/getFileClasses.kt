@@ -5,13 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileClassesApiForFile
 import org.jetbrains.research.ideFormerPlugin.server.*
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.CLASSNAME_REQUEST_PARAMETER
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILENAME_REQUEST_PARAMETER
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.CLASS_NAME_REQUEST_PARAM
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILE_NAME_REQUEST_PARAM
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getFileClasses(logger: Logger, ideStateKeeper: IdeStateKeeper) {
-    get("/file-classes/{$FILENAME_REQUEST_PARAMETER?}{$CLASSNAME_REQUEST_PARAMETER?}") {
+    get("/file-classes/{$FILE_NAME_REQUEST_PARAM?}{$CLASS_NAME_REQUEST_PARAM?}") {
         val fileName = call.processFileNameParameter(logger) ?: return@get
         logger.info("Server GET file classes request for the file '$fileName' is called")
 
@@ -30,7 +30,7 @@ fun Routing.getFileClasses(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             return@get
         }
 
-        val className = call.parameters[CLASSNAME_REQUEST_PARAMETER]
+        val className = call.parameters[CLASS_NAME_REQUEST_PARAM]
         if (className == null) {
             call.respondJson(fileClasses.getClassesNames()!!)
             logger.info("Server GET file classes request for the file '$fileName' is processed")

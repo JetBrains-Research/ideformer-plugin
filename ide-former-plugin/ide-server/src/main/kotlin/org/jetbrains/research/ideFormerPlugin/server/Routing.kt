@@ -42,7 +42,7 @@ object IdeServerConstants {
         "Incorrect requested file extension: only .py, .kt, .java file can be processed"
 
     // TODO: renaming
-    const val FILENAME_REQUEST_PARAMETER = "fileName"
-    const val CLASSNAME_REQUEST_PARAMETER = "className"
-    const val FUNCTION_NAME_REQUEST_PARAMETER = "functionName"
+    const val FILE_NAME_REQUEST_PARAM = "fileName"
+    const val CLASS_NAME_REQUEST_PARAM = "className"
+    const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
 }

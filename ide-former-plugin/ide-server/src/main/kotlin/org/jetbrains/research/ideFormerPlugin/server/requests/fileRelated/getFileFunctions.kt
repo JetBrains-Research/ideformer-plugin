@@ -5,13 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileFunctionsApiForFile
 import org.jetbrains.research.ideFormerPlugin.server.*
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILENAME_REQUEST_PARAMETER
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FUNCTION_NAME_REQUEST_PARAMETER
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILE_NAME_REQUEST_PARAM
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FUNCTION_NAME_REQUEST_PARAM
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getFileFunctions(logger: Logger, ideStateKeeper: IdeStateKeeper) {
-    get("/file-functions/{$FILENAME_REQUEST_PARAMETER?}{$FUNCTION_NAME_REQUEST_PARAMETER?}") {
+    get("/file-functions/{$FILE_NAME_REQUEST_PARAM?}{$FUNCTION_NAME_REQUEST_PARAM?}") {
         val fileName = call.processFileNameParameter(logger) ?: return@get
         logger.info("Server GET file functions request for file '$fileName' is called")
 
@@ -30,7 +30,7 @@ fun Routing.getFileFunctions(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             return@get
         }
 
-        when (val functionName = call.parameters[FUNCTION_NAME_REQUEST_PARAMETER]) {
+        when (val functionName = call.parameters[FUNCTION_NAME_REQUEST_PARAM]) {
             null -> {
                 call.respondJson(fileFunctions.getFunctionsNames()!!)
                 logger.info("Server GET file functions request for file '$fileName' is processed")
