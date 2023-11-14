@@ -5,20 +5,20 @@ import com.intellij.psi.util.PsiTreeUtil
 
 const val PATH_DELIMITER = "/"
 
-fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDirectory? {
-    val nextDirectoryInPath = targetDirectoryPath.substringBefore(PATH_DELIMITER)
-    val currentDirectory = this.findSubdirectory(nextDirectoryInPath) ?: return null
+fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDirectory {
+    val currentDirectory = when (val nextDirectoryInPath = targetDirectoryPath.substringBefore(PATH_DELIMITER)) {
+        DEFAULT_DIRECTORY_NAME -> this
+        else -> this.findSubdirectory(nextDirectoryInPath) ?: error("No such subdirectory: $nextDirectoryInPath")
+    }
     val remainingDirectoryPath = targetDirectoryPath.substringAfter(PATH_DELIMITER, "")
 
     return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
 
 fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
-    val targetFileDirectory = when (
-        val fileDirectoryPath = targetFilePath.substringBeforeLast(PATH_DELIMITER, "")
-    ) {
+    val targetFileDirectory = when (val fileDirectoryPath = targetFilePath.substringBeforeLast(PATH_DELIMITER, "")) {
         "" -> this
-        else -> this.findSubdirectoryRecursively(fileDirectoryPath) ?: error("No such file directory")
+        else -> this.findSubdirectoryRecursively(fileDirectoryPath)
     }
 
     val fileName = targetFilePath.substringAfterLast(PATH_DELIMITER)
