@@ -9,6 +9,7 @@ const val DEFAULT_DIRECTORY_NAME = "."
 
 const val UNSUPPORTED_FILE_EXTENSION_ERROR = "Unsupported file extension"
 const val NO_SUCH_FILE_CLASS = "No such class in a file"
+const val NO_SUCH_FILE_FUNCTION = "No such function in a file"
 
 enum class FileExtensions(val extension: String) {
     KT("kt"),

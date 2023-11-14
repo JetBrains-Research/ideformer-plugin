@@ -2,6 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFuncti
 
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_SUCH_FILE_FUNCTION
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class JavaFileFunctions(
@@ -15,7 +16,9 @@ class JavaFileFunctions(
     }
 
     override fun getFunctionsNames(): List<String>? = javaFunctions?.map { it.name }
-    override fun getFunctionCode(functionName: String): String? = javaFunctions
+
+    override fun getFunctionCode(functionName: String): String = javaFunctions
         ?.firstOrNull { it.name == functionName }
         ?.text
+        ?: error(NO_SUCH_FILE_FUNCTION)
 }
