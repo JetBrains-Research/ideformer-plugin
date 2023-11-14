@@ -3,6 +3,8 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.FileClasses
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.FileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileClassesApiForFile
@@ -18,19 +20,6 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
         configureTestProject()
     }
 
-    /*
-    Test project structure:
-
-    testProject
-              |-- dir1
-                     |-- subdir
-                     |       |-- someKtFile1.kt
-                     |-- someKtFile2.kt
-              |-- dir2
-                     |-- subdir
-                              |-- subsubdir
-                                         |-- someTextFile.txt
-     */
     private fun configureTestProject() {
         myFixture.copyFileToProject("dir1/subdir/someKtFile1.kt")
         myFixture.copyFileToProject("dir1/someKtFile2.kt")
@@ -81,7 +70,7 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
         ideStateKeeper: IdeStateKeeper,
         fileName: String,
         expectedClassesNames: Set<String>
-    ) {
+    ): FileClasses {
         val fileClasses = chooseFileClassesApiForFile(fileName, ideStateKeeper.currentProjectDirectory)
         fileClasses.also {
             it.execute()
@@ -90,8 +79,18 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
                 it.getClassesNames()?.toSet() ?: error("File classes names list is null")
             )
         }
+        return fileClasses
     }
 
+    protected fun checkFileClassCodeGetting(
+        fileClasses: FileClasses,
+        className: String,
+        expectedClassCode: String
+    ) {
+        fileClasses.getClassCode(className)?.also {
+            assertEquals(expectedClassCode, it)
+        }
+    }
 
     protected fun checkFileTextExecution(
         ideStateKeeper: IdeStateKeeper,
