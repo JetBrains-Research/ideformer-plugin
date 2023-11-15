@@ -30,18 +30,22 @@ fun Routing.getFileClasses(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             return@get
         }
 
-        val className = call.parameters[CLASS_NAME_REQUEST_PARAM]
-        if (className == null) {
-            call.respondJson(fileClasses.getClassesNames()!!)
-            logger.info("Server GET file classes request for the file '$fileName' is processed")
-        } else {
-            val classCode = try {
-                fileClasses.getClassCode(className)
-            } catch (e: Exception) {
-                e.message!!
+        when(val className = call.parameters[CLASS_NAME_REQUEST_PARAM]) {
+            null -> {
+                call.respondJson(fileClasses.getClassesNames()!!)
+                logger.info("Server GET file classes request for the file '$fileName' is processed")
             }
-            call.respondJson(classCode)
-            logger.info("Server GET file class code request for the file '$fileName' and the class '$className' is processed")
+
+            else -> {
+                val classCode = try {
+                    fileClasses.getClassCode(className)
+                } catch (e: Exception) {
+                    e.message!!
+                }
+
+                call.respondJson(classCode)
+                logger.info("Server GET file class code request for the file '$fileName' and the class '$className' is processed")
+            }
         }
     }
 }

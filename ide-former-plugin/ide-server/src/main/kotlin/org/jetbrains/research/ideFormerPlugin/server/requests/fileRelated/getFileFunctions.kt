@@ -35,6 +35,7 @@ fun Routing.getFileFunctions(logger: Logger, ideStateKeeper: IdeStateKeeper) {
                 call.respondJson(fileFunctions.getFunctionsNames()!!)
                 logger.info("Server GET file functions request for file '$fileName' is processed")
             }
+
             else -> {
                 val functionCode = try {
                     fileFunctions.getFunctionCode(functionName)
