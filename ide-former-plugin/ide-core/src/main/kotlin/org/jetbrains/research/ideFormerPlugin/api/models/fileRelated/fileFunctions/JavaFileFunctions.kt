@@ -14,11 +14,13 @@ class JavaFileFunctions(
         javaFunctions = getFilePsiElementsOfType<PsiMethod>(projectDirectory, javaFileName)
     }
 
-    override fun getFunctionsNames(): List<String>? = javaFunctions?.map { it.name }
+    override fun getFunctionsNames(): List<String> {
+        if (javaFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return javaFunctions!!.map { it.name }
+    }
 
     override fun getFunctionCode(functionName: String): String {
         if (javaFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
-
         return javaFunctions!!
             .firstOrNull { it.name == functionName }
             ?.text

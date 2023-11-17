@@ -14,7 +14,10 @@ class KtFileClasses(
         ktClasses = getFilePsiElementsOfType<KtClass>(projectDirectory, ktFileName)
     }
 
-    override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String> {
+        if (ktClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return ktClasses!!.mapNotNull { it.name }
+    }
 
     override fun getClassCode(className: String): String {
         if (ktClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)

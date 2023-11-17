@@ -14,7 +14,10 @@ class PyFileClasses(
         pyClasses = getFilePsiElementsOfType<PyClass>(projectDirectory, pyFileName)
     }
 
-    override fun getClassesNames(): List<String>? = pyClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String> {
+        if (pyClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return pyClasses!!.mapNotNull { it.name }
+    }
 
     override fun getClassCode(className: String): String {
         if (pyClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)

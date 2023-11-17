@@ -14,12 +14,13 @@ class JavaFileClasses(
         javaClasses = getFilePsiElementsOfType<PsiClass>(projectDirectory, javaFileName)
     }
 
-    override fun getClassesNames(): List<String>? =
-        javaClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String> {
+        if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return javaClasses!!.mapNotNull { it.name }
+    }
 
     override fun getClassCode(className: String): String {
         if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
-
         return javaClasses!!
             .firstOrNull { it.name == className }
             ?.text

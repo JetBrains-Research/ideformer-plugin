@@ -14,11 +14,13 @@ class PyFileFunctions(
         pyFunctions = getFilePsiElementsOfType<PyFunction>(projectDirectory, pyFileName)
     }
 
-    override fun getFunctionsNames(): List<String>? = pyFunctions?.mapNotNull { it.name }
+    override fun getFunctionsNames(): List<String> {
+        if (pyFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return pyFunctions!!.mapNotNull { it.name }
+    }
 
     override fun getFunctionCode(functionName: String): String {
         if (pyFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
-
         return pyFunctions!!
             .firstOrNull { it.name == functionName }
             ?.text

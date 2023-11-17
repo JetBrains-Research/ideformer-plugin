@@ -14,11 +14,13 @@ class KtFileFunctions(
         ktFunctions = getFilePsiElementsOfType<KtFunction>(projectDirectory, ktFileName)
     }
 
-    override fun getFunctionsNames(): List<String>? = ktFunctions?.mapNotNull { it.name }
+    override fun getFunctionsNames(): List<String> {
+        if (ktFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return ktFunctions!!.mapNotNull { it.name }
+    }
 
     override fun getFunctionCode(functionName: String): String {
         if (ktFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
-
         return ktFunctions!!
             .firstOrNull { it.name == functionName }
             ?.text
