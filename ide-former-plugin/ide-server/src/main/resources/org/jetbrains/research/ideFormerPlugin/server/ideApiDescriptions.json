@@ -165,6 +165,21 @@
     "optional_parameters": []
   },
   {
+    "name": "git_branch",
+    "url": "/git-branch",
+    "description": "Creates a new branch with a given name in a Git repository.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "branchName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of a new branch to be created."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "reverse_last_api_methods",
     "url": "/reverse-api-methods",
     "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
