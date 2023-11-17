@@ -23,5 +23,6 @@ class GitAdd(
 
     override fun reverse() {
         TODO("Not yet implemented")
+        // delete file from the index
     }
 }

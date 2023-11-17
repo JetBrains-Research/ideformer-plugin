@@ -23,5 +23,6 @@ class GitCommit(
 
     override fun reverse() {
         TODO("Not yet implemented")
+        // drop the new commit
     }
 }

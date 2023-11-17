@@ -23,5 +23,6 @@ class GitBranch(
 
     override fun reverse() {
         TODO("Not yet implemented")
+        // delete a new branch
     }
 }
