@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.*
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 
 class GitStatus(
     private val project: Project,
@@ -19,6 +20,8 @@ class GitStatus(
         status = statusCommandResult.outputAsJoinedString
     }
 
-    // TODO
-    fun getStatus(): String = status ?: ""
+    fun getStatus(): String {
+        if (status == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return status!!
+    }
 }
