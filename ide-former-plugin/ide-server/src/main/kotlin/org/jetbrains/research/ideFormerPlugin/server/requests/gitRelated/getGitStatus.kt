@@ -12,9 +12,7 @@ fun Routing.getGitStatus(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         logger.info("Server GET git status is called")
 
         val gitStatus = GitStatus(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot)
-        if (!executeAndRespondError(gitStatus, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(gitStatus, logger)) return@get
 
         call.respondJson(gitStatus.getStatus())
         logger.info("Server GET git status is processed")
