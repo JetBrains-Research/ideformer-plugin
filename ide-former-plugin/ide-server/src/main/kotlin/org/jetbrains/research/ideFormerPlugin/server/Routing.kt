@@ -46,8 +46,8 @@ object IdeServerConstants {
     const val NEGATIVE_API_METHODS_CNT = "apiMethodsCount parameter should be a positive integer"
     const val NOT_A_NUMBER_API_METHODS_CNT = "apiMethodsCount parameter should be a number"
     const val API_EXECUTION_UNKNOWN_ERROR = "Unknown error while api method execution"
-    const val INCORRECT_REQUESTED_FILE_EXTENSION =
-        "Incorrect requested file extension: only .py, .kt, .java file can be processed"
+    const val NO_SUCH_FILE_CLASS = "No such class in a file"
+    const val NO_SUCH_FILE_FUNCTION = "No such function in a file"
 
     // TODO: renaming
     const val FILE_NAME_REQUEST_PARAM = "fileName"

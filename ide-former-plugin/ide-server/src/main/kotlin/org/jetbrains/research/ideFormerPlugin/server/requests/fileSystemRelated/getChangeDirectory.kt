@@ -19,9 +19,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             ChangeDirectory(ideStateKeeper, it)
         } ?: ChangeDirectory(ideStateKeeper)
 
-        if (!executeAndRespondError(changeDirectory, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(changeDirectory, logger)) return@get
 
         ideStateKeeper.saveReversibleApiMethod(changeDirectory)
         logger.info("Change directory api method was saved on the api calls stack")
