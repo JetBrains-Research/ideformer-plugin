@@ -180,6 +180,21 @@
     "optional_parameters": []
   },
   {
+    "name": "git_checkout",
+    "url": "/git-checkout",
+    "description": "Switches Git repository to a given existing branch.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "branchName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of an existing git branch to switch to."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "reverse_last_api_methods",
     "url": "/reverse-api-methods",
     "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
