@@ -19,11 +19,10 @@ class JavaFileClasses(
         return javaClasses!!.mapNotNull { it.name }
     }
 
-    override fun getClassCode(className: String): String {
+    override fun getClassCode(className: String): String? {
         if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
         return javaClasses!!
             .firstOrNull { it.name == className }
             ?.text
-            ?: error(NO_SUCH_FILE_CLASS)
     }
 }
