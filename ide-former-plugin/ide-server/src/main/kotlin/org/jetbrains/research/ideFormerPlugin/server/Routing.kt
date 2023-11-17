@@ -9,8 +9,7 @@ import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFil
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getProjectModules
-import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.getGitAdd
-import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.getGitStatus
+import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
@@ -36,13 +35,14 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         // git related
         getGitStatus(logger, ideStateKeeper)
         getGitAdd(logger, ideStateKeeper)
+        getGitCommit(logger, ideStateKeeper)
     }
 }
 
 object IdeServerConstants {
     const val NO_API_AVAILABLE = "No IDE API available"
     const val ROOT_PAGE_TEXT = "IDE server"
-    const val MISSING_FILENAME = "Missing file name"
+
     const val PROJECT_DIR_REMAINS_THE_SAME = "Project directory remains the same"
     const val PROJECT_DIR_WAS_CHANGED_TO = "Project directory was successfully changed to"
     const val NEGATIVE_API_METHODS_CNT = "apiMethodsCount parameter should be a positive integer"
@@ -52,7 +52,13 @@ object IdeServerConstants {
     const val NO_SUCH_FILE_FUNCTION = "No such function in a file"
 
     // TODO: renaming
+    // requests parameters
     const val FILE_NAME_REQUEST_PARAM = "fileName"
     const val CLASS_NAME_REQUEST_PARAM = "className"
     const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
+    const val COMMIT_MESSAGE_REQUEST_PARAM = "commitMessage"
+
+    // request parameters errors
+    const val MISSING_FILENAME = "Missing file name"
+    const val MISSING_COMMIT_MESSAGE = "Missing commit message"
 }
