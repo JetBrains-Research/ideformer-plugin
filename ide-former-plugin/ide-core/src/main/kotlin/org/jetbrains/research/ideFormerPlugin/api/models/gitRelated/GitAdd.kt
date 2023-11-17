@@ -18,7 +18,7 @@ class GitAdd(
         addCommandHandler.addParameters(fileNames)
 
         val addCommandResult: GitCommandResult = git.runCommand(addCommandHandler)
-        if (!addCommandResult.success()) error("Error while git add execution")
+        if (!addCommandResult.success()) error(addCommandResult.errorOutputAsJoinedString)
     }
 
     override fun reverse() {

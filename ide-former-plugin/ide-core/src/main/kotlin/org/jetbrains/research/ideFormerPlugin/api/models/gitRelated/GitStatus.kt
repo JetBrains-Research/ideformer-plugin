@@ -14,9 +14,11 @@ class GitStatus(
 
     override fun execute() {
         val git = Git.getInstance()
-        val statusCommandResult: GitCommandResult = git.runCommand(
-            GitLineHandler(project, projectGitRoot, GitCommand.STATUS)
-        )
+
+        val statusCommandHandler = GitLineHandler(project, projectGitRoot, GitCommand.STATUS)
+        val statusCommandResult: GitCommandResult = git.runCommand(statusCommandHandler)
+
+        if (!statusCommandResult.success()) error(statusCommandResult.errorOutputAsJoinedString)
         status = statusCommandResult.outputAsJoinedString
     }
 
