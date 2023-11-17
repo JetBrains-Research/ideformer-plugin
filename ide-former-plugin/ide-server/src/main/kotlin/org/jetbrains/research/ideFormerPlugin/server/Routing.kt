@@ -36,6 +36,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getGitStatus(logger, ideStateKeeper)
         getGitAdd(logger, ideStateKeeper)
         getGitCommit(logger, ideStateKeeper)
+        getGitBranch(logger, ideStateKeeper)
     }
 }
 
@@ -57,6 +58,7 @@ object IdeServerConstants {
     const val CLASS_NAME_REQUEST_PARAM = "className"
     const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
     const val COMMIT_MESSAGE_REQUEST_PARAM = "commitMessage"
+    const val BRANCH_NAME_REQUEST_PARAM = "branchName"
 
     const val MISSING_REQUEST_PARAM = "Missing request parameter"
 }
