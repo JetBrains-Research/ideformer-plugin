@@ -2,6 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileRecursively
 
 class FileText(
@@ -15,5 +16,8 @@ class FileText(
         fileText = psiFile.text
     }
 
-    fun getFileText(): String? = fileText
+    fun getFileText(): String {
+        if (fileText == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return fileText!!
+    }
 }

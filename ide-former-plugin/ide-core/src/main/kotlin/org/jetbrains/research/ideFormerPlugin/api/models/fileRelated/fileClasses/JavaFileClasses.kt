@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasse
 
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_SUCH_FILE_CLASS
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 
 class JavaFileClasses(
     private val projectDirectory: PsiDirectory,
@@ -18,9 +17,12 @@ class JavaFileClasses(
     override fun getClassesNames(): List<String>? =
         javaClasses?.mapNotNull { it.name }
 
-    // TODO: to think about the case when javaClasses is not initialized yet
-    override fun getClassCode(className: String): String = javaClasses
-        ?.firstOrNull { it.name == className }
-        ?.text
-        ?: error(NO_SUCH_FILE_CLASS)
+    override fun getClassCode(className: String): String {
+        if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+
+        return javaClasses!!
+            .firstOrNull { it.name == className }
+            ?.text
+            ?: error(NO_SUCH_FILE_CLASS)
+    }
 }

@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasse
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_SUCH_FILE_CLASS
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 
 class KtFileClasses(
     private val projectDirectory: PsiDirectory,
@@ -17,8 +16,12 @@ class KtFileClasses(
 
     override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
 
-    override fun getClassCode(className: String): String = ktClasses
-        ?.firstOrNull { it.name == className }
-        ?.text
-        ?: error(NO_SUCH_FILE_CLASS)
+    override fun getClassCode(className: String): String {
+        if (ktClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+
+        return ktClasses!!
+            .firstOrNull { it.name == className }
+            ?.text
+            ?: error(NO_SUCH_FILE_CLASS)
+    }
 }

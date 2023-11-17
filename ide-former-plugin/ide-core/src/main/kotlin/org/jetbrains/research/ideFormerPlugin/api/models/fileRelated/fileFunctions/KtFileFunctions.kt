@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFuncti
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_SUCH_FILE_FUNCTION
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 
 class KtFileFunctions(
     private val projectDirectory: PsiDirectory,
@@ -17,8 +16,12 @@ class KtFileFunctions(
 
     override fun getFunctionsNames(): List<String>? = ktFunctions?.mapNotNull { it.name }
 
-    override fun getFunctionCode(functionName: String): String = ktFunctions
-        ?.firstOrNull { it.name == functionName }
-        ?.text
-        ?: error(NO_SUCH_FILE_FUNCTION)
+    override fun getFunctionCode(functionName: String): String {
+        if (ktFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+
+        return ktFunctions!!
+            .firstOrNull { it.name == functionName }
+            ?.text
+            ?: error(NO_SUCH_FILE_FUNCTION)
+    }
 }
