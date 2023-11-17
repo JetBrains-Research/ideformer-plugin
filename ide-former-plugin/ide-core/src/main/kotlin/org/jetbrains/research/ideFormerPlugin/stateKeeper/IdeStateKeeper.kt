@@ -12,6 +12,8 @@ import git4idea.actions.GitPull
 import git4idea.branch.GitBranchUtil
 import git4idea.repo.GitRepository
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_GIT_REPO_FOR_PROJECT
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.NO_GIT_ROOTS
 import java.util.*
 
 class IdeStateKeeper(val userProject: Project) {
@@ -21,13 +23,17 @@ class IdeStateKeeper(val userProject: Project) {
     private val projectGitRepo: GitRepository
     val projectGitRoot: VirtualFile
 
+    companion object {
+        const val DEFAULT_API_METHODS_COUNT_TO_REVERSE = 1
+    }
+
     init {
         val gitVcs = GitVcs.getInstance(userProject)
         val gitRoots = GitPull.getGitRoots(userProject, gitVcs)
-        if (gitRoots.isNullOrEmpty()) error("No git roots was found")
+        if (gitRoots.isNullOrEmpty()) error(NO_GIT_ROOTS)
 
         projectGitRepo = GitBranchUtil.guessRepositoryForOperation(userProject, DataContext.EMPTY_CONTEXT)
-            ?: error("No git repository was found for user project")
+            ?: error(NO_GIT_REPO_FOR_PROJECT)
         projectGitRoot = projectGitRepo.root
     }
 
@@ -51,5 +57,3 @@ class IdeStateKeeper(val userProject: Project) {
         return apiMethodsCount
     }
 }
-
-const val DEFAULT_API_METHODS_COUNT_TO_REVERSE = 1
