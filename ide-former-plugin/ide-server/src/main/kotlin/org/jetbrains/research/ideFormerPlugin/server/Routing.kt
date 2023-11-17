@@ -37,6 +37,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getGitAdd(logger, ideStateKeeper)
         getGitCommit(logger, ideStateKeeper)
         getGitBranch(logger, ideStateKeeper)
+        getGitCheckout(logger, ideStateKeeper)
     }
 }
 
