@@ -9,6 +9,7 @@ import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFil
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getProjectModules
+import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.getGitAdd
 import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.getGitStatus
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -34,6 +35,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
         // git related
         getGitStatus(logger, ideStateKeeper)
+        getGitAdd(logger, ideStateKeeper)
     }
 }
 
