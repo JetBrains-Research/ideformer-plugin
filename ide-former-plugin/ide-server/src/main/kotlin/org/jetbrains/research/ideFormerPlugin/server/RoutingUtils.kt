@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.MISSING_REQUEST_PARAM
 import org.slf4j.Logger
 
 object RoutingUtils {
@@ -21,10 +22,10 @@ suspend fun ApplicationCall.respondJson(responseObject: Any, status: HttpStatusC
 
 suspend fun ApplicationCall.processRequestParameter(
     parameterName: String,
-    errorMessage: String,
     logger: Logger
 ): String? =
     this.parameters[parameterName] ?: run {
+        val errorMessage = "$MISSING_REQUEST_PARAM: $parameterName"
         logger.error(errorMessage)
         this.respondJson(
             errorMessage,
@@ -36,7 +37,6 @@ suspend fun ApplicationCall.processRequestParameter(
 suspend fun ApplicationCall.processFileNameParameter(logger: Logger): String? =
     this.processRequestParameter(
         IdeServerConstants.FILE_NAME_REQUEST_PARAM,
-        IdeServerConstants.MISSING_FILENAME,
         logger
     )
 

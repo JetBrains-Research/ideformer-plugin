@@ -58,7 +58,5 @@ object IdeServerConstants {
     const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
     const val COMMIT_MESSAGE_REQUEST_PARAM = "commitMessage"
 
-    // request parameters errors
-    const val MISSING_FILENAME = "Missing file name"
-    const val MISSING_COMMIT_MESSAGE = "Missing commit message"
+    const val MISSING_REQUEST_PARAM = "Missing request parameter"
 }

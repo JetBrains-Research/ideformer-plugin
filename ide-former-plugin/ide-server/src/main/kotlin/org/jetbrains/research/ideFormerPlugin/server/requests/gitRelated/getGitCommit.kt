@@ -5,17 +5,13 @@ import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.gitRelated.GitCommit
 import org.jetbrains.research.ideFormerPlugin.server.*
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.COMMIT_MESSAGE_REQUEST_PARAM
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.MISSING_COMMIT_MESSAGE
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getGitCommit(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/git-commit/{${COMMIT_MESSAGE_REQUEST_PARAM}?}") {
-        val commitMessage = call.processRequestParameter(
-            COMMIT_MESSAGE_REQUEST_PARAM,
-            MISSING_COMMIT_MESSAGE,
-            logger
-        ) ?: return@get
+        val commitMessage = call.processRequestParameter(COMMIT_MESSAGE_REQUEST_PARAM, logger)
+            ?: return@get
         logger.info("Server GET git commit with the message '$commitMessage' is called")
 
         val gitCommit = GitCommit(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot, commitMessage)
