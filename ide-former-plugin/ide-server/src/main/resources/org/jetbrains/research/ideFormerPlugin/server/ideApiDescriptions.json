@@ -150,6 +150,21 @@
     "optional_parameters": []
   },
   {
+    "name": "git_commit",
+    "url": "/git-commit",
+    "description": "Creates a snapshot of the staged changes along a timeline of a Git projects' history.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "commitMessage",
+        "type": "STRING",
+        "regex": "[^\"\\{\\}]*?",
+        "description": "A short message that describes and summarizes the changes the were made in the commit and why they were made."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "reverse_last_api_methods",
     "url": "/reverse-api-methods",
     "description": "Reverses last several api methods that, importantly, have modified the state of the user project. Returns the project to the state it was in before these api methods execution.",
