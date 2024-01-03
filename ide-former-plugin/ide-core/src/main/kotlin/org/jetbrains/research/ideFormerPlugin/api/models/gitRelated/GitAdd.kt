@@ -2,23 +2,16 @@ package org.jetbrains.research.ideFormerPlugin.api.models.gitRelated
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import git4idea.commands.*
-import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
+import git4idea.commands.GitCommand
 
 class GitAdd(
-    private val project: Project,
-    private val projectGitRoot: VirtualFile,
-    private val fileNames: List<String>
-) : ReversibleApiMethod {
+    project: Project,
+    projectGitRoot: VirtualFile,
+    fileNames: List<String>
+) : GitApiMethod(project, projectGitRoot) {
+    override var gitCommand: GitCommand? = GitCommand.ADD
+    override var gitCommandParameters: List<String>? = fileNames
 
-    override fun execute() {
-        executeGitCommand(project, projectGitRoot, GitCommand.ADD, fileNames)
-    }
-
-    override fun reverse() {
-        // delete files from the index
-        val rmCommandParameters = listOf("--cached") + fileNames
-        executeGitCommand(project, projectGitRoot, GitCommand.RM, rmCommandParameters)
-    }
+    override var gitReverseCommand: GitCommand? = GitCommand.RM
+    override var gitReverseCommandParameters: List<String>? = listOf("--cached") + fileNames
 }
