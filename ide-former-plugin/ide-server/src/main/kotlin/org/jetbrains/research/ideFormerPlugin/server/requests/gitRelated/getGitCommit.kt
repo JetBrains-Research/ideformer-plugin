@@ -17,6 +17,9 @@ fun Routing.getGitCommit(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val gitCommit = GitCommit(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot, commitMessage)
         if (!executeAndRespondError(gitCommit, logger)) return@get
 
+        ideStateKeeper.saveReversibleApiMethod(gitCommit)
+        logger.info("Git commit api method was saved on the api methods stack")
+
         call.respondJson("Git commit was processed successfully")
         logger.info("Server GET git commit with the message '$commitMessage' is processed")
     }
