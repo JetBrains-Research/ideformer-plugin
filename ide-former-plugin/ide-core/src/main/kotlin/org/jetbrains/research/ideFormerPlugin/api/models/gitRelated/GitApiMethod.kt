@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.GitCommand
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
 
 open class GitApiMethod(
@@ -16,8 +17,22 @@ open class GitApiMethod(
     open var gitReverseCommand: GitCommand? = null
     open var gitReverseCommandParameters: List<String>? = null
 
+    var gitCommandOutputString: String? = null
+        get() {
+            if (field == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+            return field!!
+        }
+        private set
+
+    var gitReverseCommandOutputString: String? = null
+        get() {
+            if (field == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+            return field!!
+        }
+        private set
+
     override fun execute() {
-        executeGitCommand(
+        gitCommandOutputString = executeGitCommand(
             project,
             projectGitRoot,
             gitCommand!!,
@@ -31,7 +46,7 @@ open class GitApiMethod(
      **/
     override fun reverse() {
         gitReverseCommand?.let {
-            executeGitCommand(
+            gitReverseCommandOutputString = executeGitCommand(
                 project,
                 projectGitRoot,
                 it,
