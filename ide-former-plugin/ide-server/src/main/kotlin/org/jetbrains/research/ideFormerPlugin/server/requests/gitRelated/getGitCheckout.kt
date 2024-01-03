@@ -17,6 +17,9 @@ fun Routing.getGitCheckout(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val gitCheckout = GitCheckout(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot, branchName)
         if (!executeAndRespondError(gitCheckout, logger)) return@get
 
+        ideStateKeeper.saveReversibleApiMethod(gitCheckout)
+        logger.info("Git checkout api method was saved on the api methods stack")
+
         call.respondJson("Git checkout $branchName was processed successfully")
         logger.info("Server GET git checkout $branchName is processed")
     }

@@ -11,13 +11,19 @@ class GitCheckout(
     private val projectGitRoot: VirtualFile,
     private val branchName: String
 ) : ReversibleApiMethod {
-    // TODO: to add a current branch for reverse method
+    private val previousBranchName: String = executeGitCommand(
+        project,
+        projectGitRoot,
+        GitCommand.REV_PARSE,
+        listOf("--abbrev-ref", "HEAD")
+        )
 
     override fun execute() {
         executeGitCommand(project, projectGitRoot, GitCommand.CHECKOUT, listOf(branchName))
     }
 
     override fun reverse() {
-        TODO("Not yet implemented")
+        // checkout to the previous branch
+        executeGitCommand(project, projectGitRoot, GitCommand.CHECKOUT, listOf(previousBranchName))
     }
 }
