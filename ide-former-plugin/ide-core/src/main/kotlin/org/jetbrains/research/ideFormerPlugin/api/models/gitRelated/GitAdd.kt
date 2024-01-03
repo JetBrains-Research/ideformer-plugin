@@ -17,7 +17,8 @@ class GitAdd(
     }
 
     override fun reverse() {
-        TODO("Not yet implemented")
         // delete files from the index
+        val rmCommandParameters = listOf("--cached") + fileNames
+        executeGitCommand(project, projectGitRoot, GitCommand.RM, rmCommandParameters)
     }
 }

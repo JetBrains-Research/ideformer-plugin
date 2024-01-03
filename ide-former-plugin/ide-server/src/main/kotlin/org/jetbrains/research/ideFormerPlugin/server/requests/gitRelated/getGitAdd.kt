@@ -17,6 +17,9 @@ fun Routing.getGitAdd(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val gitAdd = GitAdd(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot, listOf(fileName))
         if (!executeAndRespondError(gitAdd, logger)) return@get
 
+        ideStateKeeper.saveReversibleApiMethod(gitAdd)
+        logger.info("Git add api method was saved on the api methods stack")
+
         call.respondJson("File $fileName was successfully added to Git")
         logger.info("Server GET git add for the file '$fileName' is processed")
     }
