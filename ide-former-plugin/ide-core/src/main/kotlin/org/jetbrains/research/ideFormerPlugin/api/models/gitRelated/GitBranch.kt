@@ -17,7 +17,8 @@ class GitBranch(
     }
 
     override fun reverse() {
-        TODO("Not yet implemented")
         // delete a new branch
+        val deleteBranchCommandParameters = listOf("--delete", branchName)
+        executeGitCommand(project, projectGitRoot, GitCommand.BRANCH, deleteBranchCommandParameters)
     }
 }

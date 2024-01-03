@@ -17,6 +17,9 @@ fun Routing.getGitBranch(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         val gitBranch = GitBranch(ideStateKeeper.userProject, ideStateKeeper.projectGitRoot, branchName)
         if (!executeAndRespondError(gitBranch, logger)) return@get
 
+        ideStateKeeper.saveReversibleApiMethod(gitBranch)
+        logger.info("Git branch api method was saved on the api methods stack")
+
         call.respondJson("Git branch $branchName was processed successfully")
         logger.info("Server GET git branch $branchName is processed")
     }
