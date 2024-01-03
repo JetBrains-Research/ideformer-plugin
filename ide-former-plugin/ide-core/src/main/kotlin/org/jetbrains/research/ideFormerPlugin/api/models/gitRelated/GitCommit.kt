@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
 
 class GitCommit(
     private val project: Project,
@@ -12,13 +13,7 @@ class GitCommit(
 ) : ReversibleApiMethod {
 
     override fun execute() {
-        val git = Git.getInstance()
-
-        val commitCommandHandler = GitLineHandler(project, projectGitRoot, GitCommand.COMMIT)
-        commitCommandHandler.addParameters("-m", commitMessage)
-
-        val commitCommandResult: GitCommandResult = git.runCommand(commitCommandHandler)
-        if (!commitCommandResult.success()) error(commitCommandResult.errorOutputAsJoinedString)
+        executeGitCommand(project, projectGitRoot, GitCommand.COMMIT, listOf("-m", commitMessage))
     }
 
     override fun reverse() {

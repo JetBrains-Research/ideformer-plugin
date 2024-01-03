@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.*
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
 
 class GitStatus(
     private val project: Project,
@@ -13,13 +14,7 @@ class GitStatus(
     private var status: String? = null
 
     override fun execute() {
-        val git = Git.getInstance()
-
-        val statusCommandHandler = GitLineHandler(project, projectGitRoot, GitCommand.STATUS)
-        val statusCommandResult: GitCommandResult = git.runCommand(statusCommandHandler)
-
-        if (!statusCommandResult.success()) error(statusCommandResult.errorOutputAsJoinedString)
-        status = statusCommandResult.outputAsJoinedString
+        status = executeGitCommand(project, projectGitRoot, GitCommand.STATUS, null)
     }
 
     fun getStatus(): String {

@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
 
 class GitAdd(
     private val project: Project,
@@ -12,17 +13,11 @@ class GitAdd(
 ) : ReversibleApiMethod {
 
     override fun execute() {
-        val git = Git.getInstance()
-
-        val addCommandHandler = GitLineHandler(project, projectGitRoot, GitCommand.ADD)
-        addCommandHandler.addParameters(fileNames)
-
-        val addCommandResult: GitCommandResult = git.runCommand(addCommandHandler)
-        if (!addCommandResult.success()) error(addCommandResult.errorOutputAsJoinedString)
+        executeGitCommand(project, projectGitRoot, GitCommand.ADD, fileNames)
     }
 
     override fun reverse() {
         TODO("Not yet implemented")
-        // delete file from the index
+        // delete files from the index
     }
 }

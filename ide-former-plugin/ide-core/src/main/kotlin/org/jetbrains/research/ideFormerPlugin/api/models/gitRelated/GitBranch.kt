@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import git4idea.commands.*
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.executeGitCommand
 
 class GitBranch(
     private val project: Project,
@@ -12,13 +13,7 @@ class GitBranch(
 ) : ReversibleApiMethod {
 
     override fun execute() {
-        val git = Git.getInstance()
-
-        val branchCommandHandler = GitLineHandler(project, projectGitRoot, GitCommand.BRANCH)
-        branchCommandHandler.addParameters(branchName)
-
-        val branchCommandResult: GitCommandResult = git.runCommand(branchCommandHandler)
-        if (!branchCommandResult.success()) error(branchCommandResult.errorOutputAsJoinedString)
+        executeGitCommand(project, projectGitRoot, GitCommand.BRANCH, listOf( branchName))
     }
 
     override fun reverse() {
