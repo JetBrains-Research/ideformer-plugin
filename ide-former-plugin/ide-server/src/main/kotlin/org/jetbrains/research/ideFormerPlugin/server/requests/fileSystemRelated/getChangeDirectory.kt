@@ -22,7 +22,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         if (!executeAndRespondError(changeDirectory, logger)) return@get
 
         ideStateKeeper.saveReversibleApiMethod(changeDirectory)
-        logger.info("Change directory api method was saved on the api calls stack")
+        logger.info("Change directory api method was saved on the api methods stack")
 
         val response = targetDirName?.let {
             "$PROJECT_DIR_WAS_CHANGED_TO $targetDirName."
