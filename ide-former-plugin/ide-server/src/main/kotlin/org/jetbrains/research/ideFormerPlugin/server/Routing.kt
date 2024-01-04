@@ -34,6 +34,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
 
         // git related
         getGitStatus(logger, ideStateKeeper)
+        getGitLog(logger, ideStateKeeper)
         getGitAdd(logger, ideStateKeeper)
         getGitCommit(logger, ideStateKeeper)
         getGitBranch(logger, ideStateKeeper)
