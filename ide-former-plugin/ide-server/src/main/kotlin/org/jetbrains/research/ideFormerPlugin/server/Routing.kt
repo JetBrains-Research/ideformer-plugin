@@ -30,6 +30,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getListDirectoryContents(logger, ideStateKeeper)
         getChangeDirectory(logger, ideStateKeeper)
         getCreateFile(logger, ideStateKeeper)
+        getDeleteFile(logger, ideStateKeeper)
         getCreateDirectory(logger, ideStateKeeper)
 
         // git related
