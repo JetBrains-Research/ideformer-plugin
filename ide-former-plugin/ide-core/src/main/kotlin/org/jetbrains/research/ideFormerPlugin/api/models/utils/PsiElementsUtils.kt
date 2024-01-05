@@ -1,8 +1,10 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.utils
 
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.Document
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
+import java.util.concurrent.CompletableFuture
 
 const val PATH_DELIMITER = "/"
 
@@ -16,6 +18,7 @@ fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDi
     return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
 
+
 fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
     val targetFileDirectory = when (val fileDirectoryPath = targetFilePath.substringBeforeLast(PATH_DELIMITER, "")) {
         "" -> this
@@ -26,6 +29,7 @@ fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
     return targetFileDirectory.findFile(fileName)
         ?: error("No such file in the current directory")
 }
+
 
 inline fun <reified T : PsiElement> PsiFile.psiElementsOfType(): List<T> =
     PsiTreeUtil.findChildrenOfType(this, T::class.java).toList()
@@ -38,21 +42,52 @@ inline fun <reified T : PsiElement> getFilePsiElementsOfType(
     return psiFile.psiElementsOfType<T>()
 }
 
-fun PsiDirectory.createFileByName(fileName: String) {
-    WriteCommandAction.runWriteCommandAction(this.project) {
-        this.createFile(fileName)
+
+fun PsiDirectory.createFileByName(fileName: String) : PsiFile {
+    val createdFileFuture = CompletableFuture<PsiFile>()
+
+    ApplicationManager.getApplication().let {
+        it.invokeAndWait {
+             val createdFile = it.runWriteAction<PsiFile> {
+                this.createFile(fileName)
+            }
+            createdFileFuture.complete(createdFile)
+        }
+    }
+    return createdFileFuture.get()
+}
+
+
+fun PsiDirectory.deleteFileByName(fileName: String) {
+    ApplicationManager.getApplication().let {
+        it.invokeAndWait {
+            it.runWriteAction {
+                this.findFileRecursively(fileName).delete()
+            }
+        }
     }
 }
 
-fun PsiDirectory.deleteFileByName(fileName: String) {
-    WriteCommandAction.runWriteCommandAction(this.project) {
-        this.findFileRecursively(fileName).delete()
+fun PsiFile.setText(text: String) {
+    ApplicationManager.getApplication().let {
+        it.invokeAndWait {
+            it.runWriteAction {
+                val psiDocumentManager = PsiDocumentManager.getInstance(this.project)
+                val document: Document? = psiDocumentManager.getDocument(this)
+
+                if (document != null) {
+                    document.setText(text)
+                    psiDocumentManager.commitDocument(document)
+                }
+            }
+        }
     }
 }
 
 fun createDirectory() {
 
 }
+
 
 fun deleteDirectory() {
 
