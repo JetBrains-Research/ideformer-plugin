@@ -135,6 +135,14 @@
     "optional_parameters": []
   },
   {
+    "name": "git_log",
+    "url": "/git-log",
+    "description": "Lists the commits made in that repository in reverse chronological order; that is, the most recent commits show up first.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": []
+  },
+  {
     "name": "git_add",
     "url": "/git-add",
     "description": "Adds the file to the Git index to prepare it for the next commit.",
@@ -150,6 +158,21 @@
     "optional_parameters": []
   },
   {
+    "name": "git_rm",
+    "url": "/git-rm",
+    "description": "Removes the file from the Git index.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "description": "The name of the file that should be removed from the Git index."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
     "name": "git_commit",
     "url": "/git-commit",
     "description": "Creates a snapshot of the staged changes along a timeline of a Git projects' history.",
@@ -160,6 +183,21 @@
         "type": "STRING",
         "regex": "[^\"\\{\\}]*?",
         "description": "A short message that describes and summarizes the changes the were made in the commit and why they were made."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_reset",
+    "url": "/git-reset",
+    "description": "Is used to undo the changes in the working directory and get back to a specific commit while discarding all the commits made after that one.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "commitsCount",
+        "type": "INT",
+        "regex": "^[1-9]\\d*",
+        "description": "Count of the last commits that should be dropped from the branch."
       }
     ],
     "optional_parameters": []
