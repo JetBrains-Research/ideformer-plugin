@@ -30,6 +30,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getListDirectoryContents(logger, ideStateKeeper)
         getChangeDirectory(logger, ideStateKeeper)
         getCreateFile(logger, ideStateKeeper)
+        getCreateDirectory(logger, ideStateKeeper)
 
         // git related
         getGitStatus(logger, ideStateKeeper)
@@ -59,6 +60,7 @@ object IdeServerConstants {
     // TODO: renaming
     // requests parameters
     const val FILE_NAME_REQUEST_PARAM = "fileName"
+    const val DIRECTORY_NAME_REQUEST_PARAM = "directoryName"
     const val CLASS_NAME_REQUEST_PARAM = "className"
     const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
     const val COMMIT_MESSAGE_REQUEST_PARAM = "commitMessage"
