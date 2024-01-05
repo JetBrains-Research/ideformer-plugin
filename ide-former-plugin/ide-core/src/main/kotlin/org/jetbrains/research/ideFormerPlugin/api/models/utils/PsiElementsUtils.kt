@@ -1,5 +1,6 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.utils
 
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 
@@ -35,4 +36,24 @@ inline fun <reified T : PsiElement> getFilePsiElementsOfType(
 ): List<T> {
     val psiFile = projectDirectory.findFileRecursively(fileName)
     return psiFile.psiElementsOfType<T>()
+}
+
+fun PsiDirectory.createFileByName(fileName: String) {
+    WriteCommandAction.runWriteCommandAction(this.project) {
+        this.createFile(fileName)
+    }
+}
+
+fun PsiDirectory.deleteFileByName(fileName: String) {
+    WriteCommandAction.runWriteCommandAction(this.project) {
+        this.findFileRecursively(fileName).delete()
+    }
+}
+
+fun createDirectory() {
+
+}
+
+fun deleteDirectory() {
+
 }

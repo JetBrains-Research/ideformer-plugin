@@ -1,9 +1,9 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated
 
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileRecursively
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.createFileByName
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.deleteFileByName
 
 class CreateFile(
     private val projectDirectory: PsiDirectory,
@@ -13,14 +13,10 @@ class CreateFile(
     override fun execute() {
         // TODO: to fix: if a file is deleted manually from the project, it's still has status 'exist' in the project directory
         // TODO: common problem. projectDirectory isn't updated when manually actions are done.
-        WriteCommandAction.runWriteCommandAction(projectDirectory.project) {
-            projectDirectory.createFile(fileName)
-        }
+        projectDirectory.createFileByName(fileName)
     }
 
     override fun reverse() {
-        WriteCommandAction.runWriteCommandAction(projectDirectory.project) {
-            projectDirectory.findFileRecursively(fileName).delete()
-        }
+        projectDirectory.deleteFileByName(fileName)
     }
 }
