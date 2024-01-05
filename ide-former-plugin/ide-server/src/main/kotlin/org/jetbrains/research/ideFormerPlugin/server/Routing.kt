@@ -6,9 +6,7 @@ import org.jetbrains.research.ideFormerPlugin.server.requests.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileClasses
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileFunctions
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileText
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getChangeDirectory
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getListDirectoryContents
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.getProjectModules
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
@@ -31,6 +29,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getProjectModules(logger, ideStateKeeper)
         getListDirectoryContents(logger, ideStateKeeper)
         getChangeDirectory(logger, ideStateKeeper)
+        getCreateFile(logger, ideStateKeeper)
 
         // git related
         getGitStatus(logger, ideStateKeeper)
