@@ -41,6 +41,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getGitReset(logger, ideStateKeeper)
         getGitBranch(logger, ideStateKeeper)
         getGitCheckout(logger, ideStateKeeper)
+        getGitMerge(logger, ideStateKeeper)
     }
 }
 

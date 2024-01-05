@@ -9,7 +9,7 @@ fun executeGitCommand(
     projectGitRoot: VirtualFile,
     gitCommand: GitCommand,
     gitCommandParameters: List<String>?
-) : String {
+): String {
     val git = Git.getInstance()
 
     val gitCommandHandler = GitLineHandler(project, projectGitRoot, gitCommand)
