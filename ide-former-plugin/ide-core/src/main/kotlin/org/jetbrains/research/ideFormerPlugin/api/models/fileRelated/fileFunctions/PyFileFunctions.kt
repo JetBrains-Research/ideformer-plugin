@@ -2,6 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFuncti
 
 import com.intellij.psi.PsiDirectory
 import com.jetbrains.python.psi.PyFunction
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class PyFileFunctions(
@@ -14,8 +15,15 @@ class PyFileFunctions(
         pyFunctions = getFilePsiElementsOfType<PyFunction>(projectDirectory, pyFileName)
     }
 
-    override fun getFunctionsNames(): List<String>? = pyFunctions?.mapNotNull { it.name }
-    override fun getFunctionCode(functionName: String): String? = pyFunctions
-        ?.firstOrNull { it.name == functionName }
-        ?.text
+    override fun getFunctionsNames(): List<String> {
+        if (pyFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return pyFunctions!!.mapNotNull { it.name }
+    }
+
+    override fun getFunctionCode(functionName: String): String? {
+        if (pyFunctions == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return pyFunctions!!
+            .firstOrNull { it.name == functionName }
+            ?.text
+    }
 }

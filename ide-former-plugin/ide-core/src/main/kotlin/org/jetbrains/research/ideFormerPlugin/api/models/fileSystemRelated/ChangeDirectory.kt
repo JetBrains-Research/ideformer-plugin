@@ -1,9 +1,8 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated
 
 import com.intellij.psi.PsiDirectory
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.DEFAULT_DIRECTORY_NAME
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findSubdirectoryRecursively
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
 class ChangeDirectory(
@@ -20,7 +19,9 @@ class ChangeDirectory(
     }
 
     override fun reverse() {
-        prevDir?.let {
+        if (prevDir == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+
+        prevDir!!.let {
             ideStateKeeper.currentProjectDirectory = it
             prevDir = null
         }

@@ -17,11 +17,9 @@ fun Routing.getListDirectoryContents(logger: Logger, ideStateKeeper: IdeStateKee
             ListDirectoryContents(ideStateKeeper.currentProjectDirectory, it)
         } ?: ListDirectoryContents(ideStateKeeper.currentProjectDirectory)
 
-        if (!executeAndRespondError(listDirectoryContents, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(listDirectoryContents, logger)) return@get
 
-        call.respondJson(listDirectoryContents.getSearchDirectoryItemsNames()!!)
+        call.respondJson(listDirectoryContents.getSearchDirectoryItemsNames())
         logger.info("Server GET ls request for dir '$dirName' is processed")
     }
 }
