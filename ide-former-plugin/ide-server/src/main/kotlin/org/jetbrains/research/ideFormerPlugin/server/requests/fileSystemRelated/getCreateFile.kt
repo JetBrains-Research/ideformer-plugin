@@ -18,7 +18,7 @@ fun Routing.getCreateFile(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         ideStateKeeper.saveReversibleApiMethod(createFile)
         logger.info("Create file api method was saved on the api methods stack")
 
-        call.respondJson("A file with name '$fileName' has been created successfully")
+        call.respondJson("A file with the name '$fileName' has been created successfully")
         logger.info("Server GET create '$fileName' file request is processed")
     }
 }
