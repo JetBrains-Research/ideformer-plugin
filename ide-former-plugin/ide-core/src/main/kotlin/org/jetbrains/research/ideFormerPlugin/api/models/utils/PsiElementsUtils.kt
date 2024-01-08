@@ -1,7 +1,8 @@
 package org.jetbrains.research.ideFormerPlugin.api.models.utils
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.Document
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import java.util.concurrent.CompletableFuture
@@ -43,12 +44,12 @@ inline fun <reified T : PsiElement> getFilePsiElementsOfType(
 }
 
 
-fun PsiDirectory.createFileByName(fileName: String) : PsiFile {
+fun PsiDirectory.createFileByName(fileName: String): PsiFile {
     val createdFileFuture = CompletableFuture<PsiFile>()
 
     ApplicationManager.getApplication().let {
         it.invokeAndWait {
-             val createdFile = it.runWriteAction<PsiFile> {
+            val createdFile = it.runWriteAction<PsiFile> {
                 this.createFile(fileName)
             }
             createdFileFuture.complete(createdFile)
@@ -68,21 +69,33 @@ fun PsiDirectory.deleteFileByName(fileName: String) {
     }
 }
 
+fun getPsiFileText(projectDirectory: PsiDirectory, fileName: String): String {
+    return projectDirectory.findFileRecursively(fileName).text
+}
+
 fun PsiFile.setText(text: String) {
     ApplicationManager.getApplication().let {
         it.invokeAndWait {
-            it.runWriteAction {
-                val psiDocumentManager = PsiDocumentManager.getInstance(this.project)
-                val document: Document? = psiDocumentManager.getDocument(this)
+            val psiDocumentManager = PsiDocumentManager.getInstance(this.project)
+            val document = psiDocumentManager.getDocument(this)
+                ?: error("No document for the psi file ${this.name}")
 
-                if (document != null) {
-                    document.setText(text)
-                    psiDocumentManager.commitDocument(document)
-                }
+            WriteCommandAction.runWriteCommandAction(project) {
+                document.setText(text)
+            }
+            psiDocumentManager.commitDocument(document)
+
+            // Optionally, we can also reformat the code if needed
+            // CodeStyleManager.getInstance(project).reformat(this)
+
+            // Save the document explicitly to ensure changes are written to disk
+            this.virtualFile?.run {
+                FileDocumentManager.getInstance().saveDocument(document)
             }
         }
     }
 }
+
 
 fun createDirectory() {
 
