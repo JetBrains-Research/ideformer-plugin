@@ -26,6 +26,15 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("dir1/pyFile.py")
         myFixture.copyFileToProject("dir1/SomeJavaClass.java")
         myFixture.copyFileToProject("dir2/subdir/subsubdir/someTextFile.txt")
+
+        // git repo init
+//        val git = Git.getInstance()
+//        val commandResult = git.init(project, project.projectFile!!)
+//        if (!commandResult.success()) {
+//            println("Git was successfully initialized for this project")
+//        } else {
+//            error("Error while git repo init")
+//        }
     }
 
     protected fun checkListDirectoryContentsExecution(
