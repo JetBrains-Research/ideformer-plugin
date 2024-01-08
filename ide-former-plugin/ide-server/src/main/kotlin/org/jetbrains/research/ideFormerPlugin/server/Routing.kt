@@ -3,9 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.server
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.*
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileClasses
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileFunctions
-import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.getFileText
+import org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.fileSystemRelated.*
 import org.jetbrains.research.ideFormerPlugin.server.requests.gitRelated.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
@@ -24,6 +22,7 @@ fun Application.configureRouting(ideStateKeeper: IdeStateKeeper, logger: Logger)
         getFileText(logger, ideStateKeeper)
         getFileFunctions(logger, ideStateKeeper)
         getFileClasses(logger, ideStateKeeper)
+        getSetFileText(logger, ideStateKeeper)
 
         // file system related
         getProjectModules(logger, ideStateKeeper)
@@ -64,6 +63,7 @@ object IdeServerConstants {
     const val DIRECTORY_NAME_REQUEST_PARAM = "directoryName"
     const val CLASS_NAME_REQUEST_PARAM = "className"
     const val FUNCTION_NAME_REQUEST_PARAM = "functionName"
+    const val FILE_TEXT_REQUEST_PARAM = "fileText"
     const val COMMIT_MESSAGE_REQUEST_PARAM = "commitMessage"
     const val BRANCH_NAME_REQUEST_PARAM = "branchName"
     const val COMMITS_COUNT_REQUEST_PARAM = "commitsCount"
