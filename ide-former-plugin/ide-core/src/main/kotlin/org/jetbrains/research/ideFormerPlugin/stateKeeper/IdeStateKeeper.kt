@@ -1,12 +1,10 @@
 package org.jetbrains.research.ideFormerPlugin.stateKeeper
 
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiManager
+import findProjectBaseDirectory
 import git4idea.GitVcs
 import git4idea.actions.GitPull
 import git4idea.branch.GitBranchUtil
@@ -18,7 +16,7 @@ import java.util.*
 
 class IdeStateKeeper(val userProject: Project) {
     private val apiMethodStack: Stack<ReversibleApiMethod> = Stack<ReversibleApiMethod>()
-    var currentProjectDirectory: PsiDirectory = findProjectBaseDirectory()
+    var currentProjectDirectory: PsiDirectory = userProject.findProjectBaseDirectory()
 
     private val projectGitRepo: GitRepository
     val projectGitRoot: VirtualFile
@@ -36,13 +34,6 @@ class IdeStateKeeper(val userProject: Project) {
             ?: error(NO_GIT_REPO_FOR_PROJECT)
         projectGitRoot = projectGitRepo.root
     }
-
-    // TODO: to think about null project path processing
-    private fun findProjectBaseDirectory() = userProject.guessProjectDir()?.let { projectBaseDir ->
-        ApplicationManager.getApplication().runReadAction<PsiDirectory> {
-            PsiManager.getInstance(userProject).findDirectory(projectBaseDir)
-        }
-    } ?: error("No project file path")
 
     fun saveReversibleApiMethod(apiMethod: ReversibleApiMethod) = apiMethodStack.addElement(apiMethod)
 
