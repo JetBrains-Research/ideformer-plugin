@@ -40,7 +40,7 @@
     ]
   },
   {
-    "name": "file_text",
+    "name": "get_file_text",
     "url": "/file-text",
     "description": "Gets a text of the requested file.",
     "method": "GET",
@@ -50,6 +50,21 @@
         "type": "STRING",
         "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
         "description": "The name of the file whose text should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "set_file_text",
+    "url": "/set-file-text",
+    "description": "Sets a new text to the requested file.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "description": "The name of the file whose text should be changed."
       }
     ],
     "optional_parameters": []
