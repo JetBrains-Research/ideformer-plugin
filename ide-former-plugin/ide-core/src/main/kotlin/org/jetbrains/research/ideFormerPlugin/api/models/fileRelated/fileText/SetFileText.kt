@@ -1,4 +1,4 @@
-package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated
+package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileText
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.ReversibleApiMethod

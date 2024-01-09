@@ -2,7 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.FileText
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileText.GetFileText
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses.FileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.FileFunctions
 import org.jetbrains.research.ideFormerPlugin.api.models.fileSystemRelated.ChangeDirectory
@@ -120,7 +120,7 @@ abstract class IdeApiModelsTest : BasePlatformTestCase() {
         fileName: String,
         expectedFileText: String
     ) {
-        FileText(ideStateKeeper.currentProjectDirectory, fileName).also {
+        GetFileText(ideStateKeeper.currentProjectDirectory, fileName).also {
             it.execute()
             assertEquals(expectedFileText, it.getFileText())
         }

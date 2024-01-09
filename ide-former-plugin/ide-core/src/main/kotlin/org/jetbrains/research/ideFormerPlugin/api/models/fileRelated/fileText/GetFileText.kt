@@ -1,11 +1,11 @@
-package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated
+package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileText
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileRecursively
 
-class FileText(
+class GetFileText(
     private val projectDirectory: PsiDirectory,
     private val fileName: String
 ) : IdeApiMethod {

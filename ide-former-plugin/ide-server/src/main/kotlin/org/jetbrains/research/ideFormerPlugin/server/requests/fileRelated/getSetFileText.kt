@@ -2,7 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.server.requests.fileRelated
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.SetFileText
+import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileText.SetFileText
 import org.jetbrains.research.ideFormerPlugin.server.*
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILE_NAME_REQUEST_PARAM
 import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILE_TEXT_REQUEST_PARAM

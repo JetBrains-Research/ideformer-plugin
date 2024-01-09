@@ -3,7 +3,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiModelsTest
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 
-class FileTextTest : IdeApiModelsTest() {
+class GetFileTextTest : IdeApiModelsTest() {
     fun testFileText() {
         val ideStateKeeper = IdeStateKeeper(project)
 
