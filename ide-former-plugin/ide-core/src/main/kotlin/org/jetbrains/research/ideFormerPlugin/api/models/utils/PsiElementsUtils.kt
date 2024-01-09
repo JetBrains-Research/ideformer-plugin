@@ -69,9 +69,6 @@ fun PsiDirectory.deleteFileByName(fileName: String) {
     }
 }
 
-fun getPsiFileText(projectDirectory: PsiDirectory, fileName: String): String {
-    return projectDirectory.findFileRecursively(fileName).text
-}
 
 fun PsiFile.setText(text: String) {
     ApplicationManager.getApplication().let {

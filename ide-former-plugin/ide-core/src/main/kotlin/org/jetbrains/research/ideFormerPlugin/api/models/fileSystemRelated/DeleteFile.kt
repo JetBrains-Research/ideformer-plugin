@@ -11,14 +11,13 @@ class DeleteFile(
     private val deletedFileText: String = projectDirectory.findFileRecursively(fileName).text
 
     override fun execute() {
-        // TODO: to fix: if a file is deleted manually from the project, it's still has status 'exist' in the project directory
-        // TODO: common problem. projectDirectory isn't updated when manually actions are done.
+        // TODO: to add this refreshing everywhere
+        projectDirectory.virtualFile.refresh(false, false)
         projectDirectory.deleteFileByName(fileName)
     }
 
     override fun reverse() {
         val psiFile = projectDirectory.createFileByName(fileName)
-        // TODO: to fix it. a method doesn't work
         psiFile.setText(deletedFileText)
     }
 }
