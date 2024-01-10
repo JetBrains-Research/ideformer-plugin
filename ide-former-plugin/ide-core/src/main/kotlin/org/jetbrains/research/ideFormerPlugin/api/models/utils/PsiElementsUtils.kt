@@ -39,6 +39,7 @@ inline fun <reified T : PsiElement> getFilePsiElementsOfType(
     projectDirectory: PsiDirectory,
     fileName: String
 ): List<T> {
+    projectDirectory.refresh()
     val psiFile = projectDirectory.findFileRecursively(fileName)
     return psiFile.psiElementsOfType<T>()
 }
@@ -67,6 +68,11 @@ fun PsiDirectory.deleteFileByName(fileName: String) {
             }
         }
     }
+}
+
+
+fun PsiDirectory.refresh() {
+    this.virtualFile.refresh(false, true)
 }
 
 

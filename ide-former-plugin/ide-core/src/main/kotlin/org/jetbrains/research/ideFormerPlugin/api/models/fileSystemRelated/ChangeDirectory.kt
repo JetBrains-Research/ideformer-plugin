@@ -9,21 +9,24 @@ class ChangeDirectory(
     private val ideStateKeeper: IdeStateKeeper,
     private val targetDirectoryName: String = DEFAULT_DIRECTORY_NAME
 ) : ReversibleApiMethod {
-    private var prevDir: PsiDirectory? = null
+    private var previousDirectory: PsiDirectory? = null
 
     override fun execute() {
-        val targetDir = ideStateKeeper.currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
+        val currentProjectDirectory = ideStateKeeper.currentProjectDirectory
+        currentProjectDirectory.refresh()
 
-        prevDir = ideStateKeeper.currentProjectDirectory
+        val targetDir = currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
+
+        previousDirectory = currentProjectDirectory
         ideStateKeeper.currentProjectDirectory = targetDir
     }
 
     override fun reverse() {
-        if (prevDir == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        if (previousDirectory == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
 
-        prevDir!!.let {
+        previousDirectory!!.let {
             ideStateKeeper.currentProjectDirectory = it
-            prevDir = null
+            previousDirectory = null
         }
     }
 }

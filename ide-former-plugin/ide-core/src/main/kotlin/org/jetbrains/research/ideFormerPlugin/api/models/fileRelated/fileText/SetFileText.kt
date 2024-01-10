@@ -12,7 +12,7 @@ class SetFileText(
     private var previousText: String? = null
 
     override fun execute() {
-        projectDirectory.virtualFile.refresh(false, false)
+        projectDirectory.refresh()
         val psiFile = projectDirectory.findFileRecursively(fileName)
         previousText = psiFile.text
         psiFile.setText(newText)

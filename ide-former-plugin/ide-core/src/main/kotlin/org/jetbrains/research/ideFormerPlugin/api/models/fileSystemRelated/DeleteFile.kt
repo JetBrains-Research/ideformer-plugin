@@ -11,12 +11,12 @@ class DeleteFile(
     private val deletedFileText: String = projectDirectory.findFileRecursively(fileName).text
 
     override fun execute() {
-        // TODO: to add this refreshing everywhere
-        projectDirectory.virtualFile.refresh(false, false)
+        projectDirectory.refresh()
         projectDirectory.deleteFileByName(fileName)
     }
 
     override fun reverse() {
+        projectDirectory.refresh()
         val psiFile = projectDirectory.createFileByName(fileName)
         psiFile.setText(deletedFileText)
     }

@@ -2,8 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileText
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.ideFormerPlugin.api.models.IdeApiMethod
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.findFileRecursively
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 
 class GetFileText(
     private val projectDirectory: PsiDirectory,
@@ -12,6 +11,7 @@ class GetFileText(
     private var fileText: String? = null
 
     override fun execute() {
+        projectDirectory.refresh()
         val psiFile = projectDirectory.findFileRecursively(fileName)
         fileText = psiFile.text
     }

@@ -18,6 +18,7 @@ class ListDirectoryContents(
     }
 
     override fun execute() {
+        currentProjectDirectory.refresh()
         val searchDirectory = currentProjectDirectory.findSubdirectoryRecursively(searchDirectoryName)
         searchDirectoryItems = searchDirectory.fileSystemItems()
     }

@@ -11,6 +11,7 @@ class ProjectModules(private val project: Project) : IdeApiMethod {
     private fun Project.modules(): List<Module> = ModuleManager.getInstance(this).modules.toList()
 
     override fun execute() {
+        project.projectFile?.refresh(false, false)
         projectModules = project.modules()
     }
 
