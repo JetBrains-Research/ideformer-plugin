@@ -40,6 +40,21 @@
     ]
   },
   {
+    "name": "create_directory",
+    "url": "/create-directory",
+    "description": "Creates a new directory with a given name in a current working directory.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": [
+      {
+        "name": "directoryName",
+        "type": "STRING",
+        "regex": "[^\"\\{\\}]*?",
+        "description": "The name of the directory that should be created."
+      }
+    ]
+  },
+  {
     "name": "create_file",
     "url": "/create-file",
     "description": "Creates a new file with a given name in a current working directory.",
