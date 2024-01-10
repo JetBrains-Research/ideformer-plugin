@@ -19,8 +19,12 @@ class SetFileText(
     }
 
     override fun reverse() {
-        val psiFile = projectDirectory.findFileRecursively(fileName)
         if (previousText == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
-        psiFile.setText(previousText!!)
+
+        previousText!!.let {
+            val psiFile = projectDirectory.findFileRecursively(fileName)
+            psiFile.setText(it)
+            previousText = null
+        }
     }
 }

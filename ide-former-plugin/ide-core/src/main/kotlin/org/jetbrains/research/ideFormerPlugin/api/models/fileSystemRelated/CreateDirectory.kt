@@ -21,7 +21,8 @@ class CreateDirectory(
     override fun reverse() {
         WriteCommandAction.runWriteCommandAction(projectDirectory.project) {
             projectDirectory.refresh()
-            projectDirectory.findSubdirectoryRecursively(directoryName).delete()
+            val psiDirectory = projectDirectory.findSubdirectoryRecursively(directoryName)
+            psiDirectory.delete()
         }
     }
 }

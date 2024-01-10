@@ -8,7 +8,7 @@ class DeleteFile(
     private val projectDirectory: PsiDirectory,
     private val fileName: String
 ) : ReversibleApiMethod {
-    private val deletedFileText: String = projectDirectory.findFileRecursively(fileName).text
+    private var deletedFileText: String? = projectDirectory.findFileRecursively(fileName).text
 
     override fun execute() {
         projectDirectory.refresh()
@@ -18,6 +18,10 @@ class DeleteFile(
     override fun reverse() {
         projectDirectory.refresh()
         val psiFile = projectDirectory.createFileByName(fileName)
-        psiFile.setText(deletedFileText)
+
+        deletedFileText!!.let {
+            psiFile.setText(it)
+            deletedFileText = null
+        }
     }
 }
