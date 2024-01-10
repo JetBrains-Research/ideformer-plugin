@@ -8,6 +8,7 @@ import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.DIRECTOR
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
+// TODO: make it a post method
 fun Routing.getCreateDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/create-directory/{$DIRECTORY_NAME_REQUEST_PARAM?}") {
         val directoryName = call.processRequestParameter(

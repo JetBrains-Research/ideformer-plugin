@@ -9,6 +9,7 @@ import org.slf4j.Logger
 
 fun Routing.getGitReset(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/git-reset/{${IdeServerConstants.COMMITS_COUNT_REQUEST_PARAM}?}") {
+        // TODO: fix parsing
         val commitsCount = call.parameters[IdeServerConstants.COMMITS_COUNT_REQUEST_PARAM]?.toIntOrNull() ?: return@get
         logger.info("Server GET git reset for '$commitsCount' commits is called")
 

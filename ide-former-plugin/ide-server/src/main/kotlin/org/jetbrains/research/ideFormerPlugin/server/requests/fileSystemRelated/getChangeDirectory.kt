@@ -10,6 +10,7 @@ import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
+// TODO: make it a post method
 fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/change-dir/{targetDirName?}") {
         val targetDirName = call.parameters["targetDirName"]

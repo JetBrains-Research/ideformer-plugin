@@ -12,6 +12,7 @@ class DeleteFile(
 
     override fun execute() {
         projectDirectory.refresh()
+        // TODO: getting deleting file text should be here. when execute() is called it may be different
         projectDirectory.deleteFileByName(fileName)
     }
 

@@ -7,6 +7,7 @@ import org.jetbrains.research.ideFormerPlugin.server.*
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
+// TODO: make it a post method
 fun Routing.getCreateFile(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/create-file/{fileName?}") {
         val fileName = call.processFileNameParameter(logger) ?: return@get
