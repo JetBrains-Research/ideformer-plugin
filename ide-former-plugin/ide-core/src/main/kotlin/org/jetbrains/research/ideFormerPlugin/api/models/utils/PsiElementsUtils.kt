@@ -70,6 +70,21 @@ fun PsiDirectory.deleteFileByName(fileName: String) {
     }
 }
 
+fun PsiDirectory.createSubdirectoryByName(directoryName: String) {
+    WriteCommandAction.runWriteCommandAction(project) {
+        this.refresh()
+        this.createSubdirectory(directoryName)
+    }
+}
+
+fun PsiDirectory.deleteSubdirectoryByName(directoryName: String) {
+    WriteCommandAction.runWriteCommandAction(project) {
+        this.refresh()
+        val psiDirectory = this.findSubdirectoryRecursively(directoryName)
+        psiDirectory.delete()
+    }
+}
+
 
 fun PsiDirectory.refresh() {
     this.virtualFile.refresh(false, true)
