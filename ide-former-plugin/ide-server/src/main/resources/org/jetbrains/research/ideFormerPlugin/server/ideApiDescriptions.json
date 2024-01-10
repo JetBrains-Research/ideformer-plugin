@@ -70,6 +70,21 @@
     ]
   },
   {
+    "name": "delete_file",
+    "url": "/delete-file",
+    "description": "Deletes a file with a given name in a current working directory.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "[^\"\\{\\}]*?",
+        "description": "The name of the file that should be deleted."
+      }
+    ]
+  },
+  {
     "name": "get_file_text",
     "url": "/file-text",
     "description": "Gets a text of the requested file.",
