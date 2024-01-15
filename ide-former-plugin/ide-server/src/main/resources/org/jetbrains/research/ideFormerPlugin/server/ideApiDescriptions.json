@@ -110,6 +110,12 @@
         "type": "STRING",
         "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
         "description": "The name of the file whose text should be changed."
+      },
+      {
+        "name": "fileText",
+        "type": "STRING",
+        "regex": "*",
+        "description": "A new text to be inserted into the file."
       }
     ],
     "optional_parameters": []
