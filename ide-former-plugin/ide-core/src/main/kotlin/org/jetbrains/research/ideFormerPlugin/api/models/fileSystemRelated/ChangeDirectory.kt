@@ -15,7 +15,10 @@ class ChangeDirectory(
         val currentProjectDirectory = ideStateKeeper.currentProjectDirectory
         currentProjectDirectory.refresh()
 
-        val targetDir = currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
+        val targetDir = when(targetDirectoryName) {
+            PARENT_DIRECTORY_NAME -> currentProjectDirectory.parentDirectory ?: error("No parent directory")
+            else -> currentProjectDirectory.findSubdirectoryRecursively(targetDirectoryName)
+        }
 
         previousDirectory = currentProjectDirectory
         ideStateKeeper.currentProjectDirectory = targetDir

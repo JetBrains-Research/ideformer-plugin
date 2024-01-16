@@ -26,7 +26,7 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         logger.info("Change directory api method was saved on the api methods stack")
 
         val response = targetDirName?.let {
-            "$PROJECT_DIR_WAS_CHANGED_TO $targetDirName."
+            "$PROJECT_DIR_WAS_CHANGED_TO '$targetDirName'."
         } ?: PROJECT_DIR_REMAINS_THE_SAME
 
         call.respondJson(response)

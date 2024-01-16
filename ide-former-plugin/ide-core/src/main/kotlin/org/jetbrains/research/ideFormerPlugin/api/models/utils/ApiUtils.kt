@@ -6,6 +6,7 @@ import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.*
 
 const val DEFAULT_DIRECTORY_NAME = "."
+const val PARENT_DIRECTORY_NAME = ".."
 
 const val UNCALLED_EXECUTE_BEFORE_RESULT_GETTING =
     "Execute() must be called before getting the result. The property storing the result has not been initialized yet"
