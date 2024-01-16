@@ -114,7 +114,6 @@
       {
         "name": "fileText",
         "type": "STRING",
-        "regex": ".*",
         "description": "A new text to be inserted into the file."
       }
     ],
