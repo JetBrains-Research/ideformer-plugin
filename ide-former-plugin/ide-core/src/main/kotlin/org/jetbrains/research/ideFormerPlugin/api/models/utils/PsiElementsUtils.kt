@@ -9,21 +9,22 @@ import java.util.concurrent.CompletableFuture
 
 const val PATH_DELIMITER = "/"
 
-fun PsiDirectory.findSubdirectoryRecursively(targetDirectoryPath: String): PsiDirectory {
+fun PsiDirectory.findDirectoryRecursively(targetDirectoryPath: String): PsiDirectory {
     val currentDirectory = when (val nextDirectoryInPath = targetDirectoryPath.substringBefore(PATH_DELIMITER)) {
         DEFAULT_DIRECTORY_NAME -> this
+        PARENT_DIRECTORY_NAME -> this.parentDirectory ?: error("Current directory doesn't have a parent directory")
         else -> this.findSubdirectory(nextDirectoryInPath) ?: error("No such subdirectory: $nextDirectoryInPath")
     }
     val remainingDirectoryPath = targetDirectoryPath.substringAfter(PATH_DELIMITER, "")
 
-    return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findSubdirectoryRecursively(remainingDirectoryPath) else currentDirectory
+    return if (remainingDirectoryPath.isNotEmpty()) currentDirectory.findDirectoryRecursively(remainingDirectoryPath) else currentDirectory
 }
 
 
 fun PsiDirectory.findFileRecursively(targetFilePath: String): PsiFile {
     val targetFileDirectory = when (val fileDirectoryPath = targetFilePath.substringBeforeLast(PATH_DELIMITER, "")) {
         "" -> this
-        else -> this.findSubdirectoryRecursively(fileDirectoryPath)
+        else -> this.findDirectoryRecursively(fileDirectoryPath)
     }
 
     val fileName = targetFilePath.substringAfterLast(PATH_DELIMITER)
@@ -64,6 +65,7 @@ fun PsiDirectory.deleteFileByName(fileName: String) {
     ApplicationManager.getApplication().let {
         it.invokeAndWait {
             it.runWriteAction {
+                // TODO: можно возвращать отсюда старый удаленный файл и как бы из него текст вытаскивать....
                 this.findFileRecursively(fileName).delete()
             }
         }
@@ -80,7 +82,7 @@ fun PsiDirectory.createSubdirectoryByName(directoryName: String) {
 fun PsiDirectory.deleteSubdirectoryByName(directoryName: String) {
     WriteCommandAction.runWriteCommandAction(project) {
         this.refresh()
-        val psiDirectory = this.findSubdirectoryRecursively(directoryName)
+        val psiDirectory = this.findDirectoryRecursively(directoryName)
         psiDirectory.delete()
     }
 }
