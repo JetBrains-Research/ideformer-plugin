@@ -40,7 +40,52 @@
     ]
   },
   {
-    "name": "file_text",
+    "name": "create_directory",
+    "url": "/create-directory",
+    "description": "Creates a new directory with a given name in a current working directory.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": [
+      {
+        "name": "directoryName",
+        "type": "STRING",
+        "regex": "[^\"\\{\\}]*?",
+        "description": "The name of the directory that should be created."
+      }
+    ]
+  },
+  {
+    "name": "create_file",
+    "url": "/create-file",
+    "description": "Creates a new file with a given name in a current working directory.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file that should be created."
+      }
+    ]
+  },
+  {
+    "name": "delete_file",
+    "url": "/delete-file",
+    "description": "Deletes a file with a given name in a current working directory.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file that should be deleted."
+      }
+    ]
+  },
+  {
+    "name": "get_file_text",
     "url": "/file-text",
     "description": "Gets a text of the requested file.",
     "method": "GET",
@@ -48,8 +93,28 @@
       {
         "name": "fileName",
         "type": "STRING",
-        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
         "description": "The name of the file whose text should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "set_file_text",
+    "url": "/set-file-text",
+    "description": "Sets a new text to the requested file.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file whose text should be changed."
+      },
+      {
+        "name": "fileText",
+        "type": "STRING",
+        "description": "A new text to be inserted into the file."
       }
     ],
     "optional_parameters": []
@@ -63,8 +128,29 @@
       {
         "name": "fileName",
         "type": "STRING",
-        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
         "description": "The name of the file whose functions should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "file_function_code",
+    "url": "/file-functions",
+    "description": "Gets a list of names of the requested file functions.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file in which the requested function code is located."
+      },
+      {
+        "name": "functionName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of the function whose code should be returned."
       }
     ],
     "optional_parameters": []
@@ -78,8 +164,150 @@
       {
         "name": "fileName",
         "type": "STRING",
-        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2, 3, 4, 5}$",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
         "description": "The name of the file whose classes should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "file_class_code",
+    "url": "/file-classes",
+    "description": "Gets a list of names of the requested file classes.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file in which the requested function code is located."
+      },
+      {
+        "name": "className",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of the class whose code should be returned."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_status",
+    "url": "/git-status",
+    "description": "Displays the state of the working directory and the staging area. It lets see which changes have been staged, which haven't, and which files aren't being tracked by Git. Status output does not show any information regarding the committed project history.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_log",
+    "url": "/git-log",
+    "description": "Lists the commits made in that repository in reverse chronological order; that is, the most recent commits show up first.",
+    "method": "GET",
+    "required_parameters": [],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_add",
+    "url": "/git-add",
+    "description": "Adds the file to the Git index to prepare it for the next commit.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file that should be added to Git index."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_rm",
+    "url": "/git-rm",
+    "description": "Removes the file from the Git index.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "fileName",
+        "type": "STRING",
+        "regex": "^[\\w,\\s-]+\\.[A-Za-z]{2,5}$",
+        "description": "The name of the file that should be removed from the Git index."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_commit",
+    "url": "/git-commit",
+    "description": "Creates a snapshot of the staged changes along a timeline of a Git projects' history.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "commitMessage",
+        "type": "STRING",
+        "regex": "[^\"\\{\\}]*?",
+        "description": "A short message that describes and summarizes the changes the were made in the commit and why they were made."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_reset",
+    "url": "/git-reset",
+    "description": "Is used to undo the changes in the working directory and get back to a specific commit while discarding all the commits made after that one.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "commitsCount",
+        "type": "INT",
+        "regex": "^[1-9]\\d*",
+        "description": "Count of the last commits that should be dropped from the branch."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_branch",
+    "url": "/git-branch",
+    "description": "Creates a new branch with a given name in a Git repository.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "branchName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of a new branch to be created."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_checkout",
+    "url": "/git-checkout",
+    "description": "Switches Git repository to a given existing branch.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "branchName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of an existing git branch to switch to."
+      }
+    ],
+    "optional_parameters": []
+  },
+  {
+    "name": "git_merge",
+    "url": "/git-merge",
+    "description": "Merge commits from the given branch to the current branch of a Git repository.",
+    "method": "GET",
+    "required_parameters": [
+      {
+        "name": "branchName",
+        "type": "STRING",
+        "regex": "[A-Za-z]*",
+        "description": "The name of a branch that should be merged to the current branch of a Git repository."
       }
     ],
     "optional_parameters": []

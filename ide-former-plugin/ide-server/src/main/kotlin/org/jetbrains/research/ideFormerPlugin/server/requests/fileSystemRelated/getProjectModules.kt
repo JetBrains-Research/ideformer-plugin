@@ -13,11 +13,9 @@ fun Routing.getProjectModules(logger: Logger, ideStateKeeper: IdeStateKeeper) {
         logger.info("Server GET project modules request is called")
 
         val projectModules = ProjectModules(ideStateKeeper.userProject)
-        if (!executeAndRespondError(projectModules, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(projectModules, logger)) return@get
 
-        call.respondJson(projectModules.getProjectModulesNames()!!)
+        call.respondJson(projectModules.getProjectModulesNames())
         logger.info("Server GET project modules request is processed")
     }
 }

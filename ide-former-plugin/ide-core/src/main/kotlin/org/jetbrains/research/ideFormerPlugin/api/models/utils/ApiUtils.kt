@@ -6,7 +6,13 @@ import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasses
 import org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileFunctions.*
 
 const val DEFAULT_DIRECTORY_NAME = "."
-const val UNSUPPORTED_FILE_EXTENSION_ERROR = "Unsupported file extension"
+const val PARENT_DIRECTORY_NAME = ".."
+
+const val UNCALLED_EXECUTE_BEFORE_RESULT_GETTING =
+    "Execute() must be called before getting the result. The property storing the result has not been initialized yet"
+const val UNSUPPORTED_FILE_EXTENSION_ERROR = "Unsupported file extension: only .py, .kt, .java file can be processed"
+const val NO_GIT_ROOTS = "No git roots was found"
+const val NO_GIT_REPO_FOR_PROJECT = "No git repository was found for the project"
 
 enum class FileExtensions(val extension: String) {
     KT("kt"),

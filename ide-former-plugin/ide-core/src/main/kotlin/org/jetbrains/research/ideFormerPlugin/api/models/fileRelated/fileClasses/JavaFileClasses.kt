@@ -2,7 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasse
 
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
-import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.*
 
 class JavaFileClasses(
     private val projectDirectory: PsiDirectory,
@@ -14,10 +14,15 @@ class JavaFileClasses(
         javaClasses = getFilePsiElementsOfType<PsiClass>(projectDirectory, javaFileName)
     }
 
-    override fun getClassesNames(): List<String>? =
-        javaClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String> {
+        if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return javaClasses!!.mapNotNull { it.name }
+    }
 
-    override fun getClassCode(className: String): String? = javaClasses
-        ?.firstOrNull { it.name == className }
-        ?.text
+    override fun getClassCode(className: String): String? {
+        if (javaClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return javaClasses!!
+            .firstOrNull { it.name == className }
+            ?.text
+    }
 }

@@ -10,6 +10,7 @@ import org.jetbrains.research.ideFormerPlugin.server.respondJson
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
+// TODO: make it a post method
 fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
     get("/change-dir/{targetDirName?}") {
         val targetDirName = call.parameters["targetDirName"]
@@ -19,15 +20,13 @@ fun Routing.getChangeDirectory(logger: Logger, ideStateKeeper: IdeStateKeeper) {
             ChangeDirectory(ideStateKeeper, it)
         } ?: ChangeDirectory(ideStateKeeper)
 
-        if (!executeAndRespondError(changeDirectory, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(changeDirectory, logger)) return@get
 
         ideStateKeeper.saveReversibleApiMethod(changeDirectory)
-        logger.info("Change directory api method was saved on the api calls stack")
+        logger.info("Change directory api method was saved on the api methods stack")
 
         val response = targetDirName?.let {
-            "$PROJECT_DIR_WAS_CHANGED_TO $targetDirName."
+            "$PROJECT_DIR_WAS_CHANGED_TO '$targetDirName'."
         } ?: PROJECT_DIR_REMAINS_THE_SAME
 
         call.respondJson(response)

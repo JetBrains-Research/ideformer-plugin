@@ -2,6 +2,7 @@ package org.jetbrains.research.ideFormerPlugin.api.models.fileRelated.fileClasse
 
 import com.intellij.psi.PsiDirectory
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.research.ideFormerPlugin.api.models.utils.UNCALLED_EXECUTE_BEFORE_RESULT_GETTING
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.getFilePsiElementsOfType
 
 class KtFileClasses(
@@ -14,9 +15,15 @@ class KtFileClasses(
         ktClasses = getFilePsiElementsOfType<KtClass>(projectDirectory, ktFileName)
     }
 
-    override fun getClassesNames(): List<String>? = ktClasses?.mapNotNull { it.name }
+    override fun getClassesNames(): List<String> {
+        if (ktClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return ktClasses!!.mapNotNull { it.name }
+    }
 
-    override fun getClassCode(className: String): String? = ktClasses
-        ?.firstOrNull { it.name == className }
-        ?.text
+    override fun getClassCode(className: String): String? {
+        if (ktClasses == null) error(UNCALLED_EXECUTE_BEFORE_RESULT_GETTING)
+        return ktClasses!!
+            .firstOrNull { it.name == className }
+            ?.text
+    }
 }

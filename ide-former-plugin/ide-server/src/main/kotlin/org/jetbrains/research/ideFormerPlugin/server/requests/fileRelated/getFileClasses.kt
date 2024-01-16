@@ -4,34 +4,41 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.research.ideFormerPlugin.api.models.utils.chooseFileClassesApiForFile
-import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants
-import org.jetbrains.research.ideFormerPlugin.server.executeAndRespondError
-import org.jetbrains.research.ideFormerPlugin.server.processFileNameParameter
-import org.jetbrains.research.ideFormerPlugin.server.respondJson
+import org.jetbrains.research.ideFormerPlugin.server.*
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.CLASS_NAME_REQUEST_PARAM
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.FILE_NAME_REQUEST_PARAM
+import org.jetbrains.research.ideFormerPlugin.server.IdeServerConstants.NO_SUCH_FILE_CLASS
 import org.jetbrains.research.ideFormerPlugin.stateKeeper.IdeStateKeeper
 import org.slf4j.Logger
 
 fun Routing.getFileClasses(logger: Logger, ideStateKeeper: IdeStateKeeper) {
-    get("/file-classes/{fileName?}") {
-        val fileName = call.processFileNameParameter(logger)
-            ?: return@get
-        logger.info("Server GET file classes request for file '$fileName' is called")
+    get("/file-classes/{$FILE_NAME_REQUEST_PARAM?}{$CLASS_NAME_REQUEST_PARAM?}") {
+        val fileName = call.processFileNameParameter(logger) ?: return@get
+        logger.info("Server GET file classes request for the file '$fileName' is called")
 
         val fileClasses = try {
             chooseFileClassesApiForFile(fileName, ideStateKeeper.currentProjectDirectory)
         } catch (e: Exception) {
             logger.error(e.message)
             return@get call.respondJson(
-                IdeServerConstants.INCORRECT_REQUESTED_FILE_EXTENSION,
+                e.message!!,
                 HttpStatusCode.BadRequest
             )
         }
 
-        if (!executeAndRespondError(fileClasses, logger)) {
-            return@get
-        }
+        if (!executeAndRespondError(fileClasses, logger)) return@get
 
-        call.respondJson(fileClasses.getClassesNames()!!)
-        logger.info("Server GET file classes request for file '$fileName' is processed")
+        when (val className = call.parameters[CLASS_NAME_REQUEST_PARAM]) {
+            null -> {
+                call.respondJson(fileClasses.getClassesNames())
+                logger.info("Server GET file classes request for the file '$fileName' is processed")
+            }
+
+            else -> {
+                val classCode = fileClasses.getClassCode(className) ?: NO_SUCH_FILE_CLASS
+                call.respondJson(classCode)
+                logger.info("Server GET file class code request for the file '$fileName' and the class '$className' is processed")
+            }
+        }
     }
 }
